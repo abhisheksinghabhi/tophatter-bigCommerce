@@ -1,0 +1,308 @@
+html,
+body {
+    height: 100%;
+}
+
+.wrap {
+    min-height: 100%;
+    height: auto;
+    margin: 0 auto -60px;
+    padding: 0 0 60px;
+}
+
+.wrap > .container {
+    padding: 70px 15px 20px;
+}
+
+.footer {
+    height: 60px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.jumbotron {
+    text-align: center;
+    background-color: transparent;
+}
+
+.jumbotron .btn {
+    font-size: 21px;
+    padding: 14px 24px;
+}
+
+.not-set {
+    color: #c55;
+    font-style: italic;
+}
+
+/* add sorting icons to gridview sort links */
+a.asc:after, a.desc:after {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    padding-left: 5px;
+}
+
+a.asc:after {
+    content: /*"\e113"*/ "\e151";
+}
+
+a.desc:after {
+    content: /*"\e114"*/ "\e152";
+}
+
+.sort-numerical a.asc:after {
+    content: "\e153";
+}
+
+.sort-numerical a.desc:after {
+    content: "\e154";
+}
+
+.sort-ordinal a.asc:after {
+    content: "\e155";
+}
+
+.sort-ordinal a.desc:after {
+    content: "\e156";
+}
+
+.grid-view th {
+    white-space: nowrap;
+}
+
+.hint-block {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+}
+
+.error-summary {
+    color: #a94442;
+    background: #fdf7f7;
+    border-left: 3px solid #eed3d7;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
+}
+
+/* 7 nov api page css*/
+ .entry-edit-head h4 {
+    color: black;
+    font-size: 10px;
+    margin-bottom: 10px;
+  font-size:20px;
+}
+.entry-edit-head {
+    background: #dfdfdf none repeat scroll 0 0;
+    padding: 1px 10px;
+}
+.form-list .value_label {
+    width: 250px;
+    float: left;
+}
+.product_api.api_container, .order_api, .return_api{
+    
+    margin-bottom: 20px;
+}
+.enable_api {
+    padding: 10px;
+    border: 1px solid #dfdfdf;
+}
+.tesst_api .notice {
+    font-size: 18px;
+}
+.jetcategory .box {
+    border: 1px solid #dfdfdf;
+    padding: 10px;
+}
+.jetcategory .enable_api .hot-scroll input {
+    display: inline-block !important;
+}
+.enabled-text {
+    color: #337ab7;
+    font-size: 15px;
+}
+.value{
+    float: left;
+}
+.jetcategory > h4 {
+    border-bottom: 4px solid #CBCBCB;
+    padding-bottom: 8px;
+}
+
+/* 13 nov sub menu css*/
+.dropdown-submenu {
+    position:relative;
+}
+.dropdown-submenu>.dropdown-menu {
+    top:0;
+    left:100%;
+    margin-top:-6px;
+    margin-left:-1px;
+    -webkit-border-radius:0 6px 6px 6px;
+    -moz-border-radius:0 6px 6px 6px;
+    border-radius:0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+    display:block;
+}
+.dropdown-submenu>a:after {
+    display:block;
+    content:" ";
+    float:right;
+    width:0;
+    height:0;
+    border-color:transparent;
+    border-style:solid;
+    border-width:5px 0 5px 5px;
+    border-left-color:#cccccc;
+    margin-top:5px;
+    margin-right:-10px;
+}
+.dropdown-submenu:hover>a:after {
+    border-left-color:#ffffff;
+}
+.dropdown-submenu .dropdown-menu a {
+    float:none;
+   word-wrap: break-word;
+    white-space: normal !important;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+    left:-100%;
+    margin-left:10px;
+    -webkit-border-radius:6px 0 6px 6px;
+    -moz-border-radius:6px 0 6px 6px;
+    border-radius:6px 0 6px 6px;
+}
+.dropdown-menu > li > a:hover{
+	color:#fff;
+	background-color:#337AB7;
+}
+
+
+
+.navbar-header .navbar-brand {
+  padding: 3px 5px;
+}
+.navbar-header .navbar-brand > img {
+  width: 145px;
+}
+.jumbotron .jet-logo-big {
+  border-radius: 10px;
+  margin-bottom: 25px;
+}
+
+
+
+.text-validator {
+  background-image: url("../images/note_triangle.png");
+  background-position: 0 2px;
+  background-repeat: no-repeat;
+  background-size: 12px auto;
+  display: block;
+  font-size: 12px;
+  margin-top: 4px;
+  padding-left: 15px;
+}
+.tab-content .form-group {
+  margin-bottom: 0px;
+  margin-top: 20px;
+}
+
+.text-values, .text-boxes1 {
+  float: left;
+  list-style: outside none none;
+  padding: 5px 16px;
+  width:30%;
+  padding-left:0px;
+}
+
+.text-values text-boxes, .text-boxes1 .text-boxes
+{
+        border:1px solid #8a8a8a;
+}
+.field-jetproduct-jet_attributes {
+  border: 1px solid #9E9E9E;
+  margin-bottom: 15px !important;
+  padding: 11px 7px;
+}
+.field-jetproduct-jet_attributes .attribute_listing {
+  padding-left: 0;
+}
+.span-unit {
+    display: block;
+}
+
+.table_class {
+  border-left: 0 none !important;
+  border-right: 0 none !important;
+  border-top: 0 none !important;
+  display: block;
+  height: 110px;
+  width: 273px;
+  word-wrap: break-word;
+}
+.btn-primary.button-inline{
+	font-family: arial;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+.text-validator {
+    margin-bottom: 15px!important;
+}
+.deascription-wrapp {
+  padding-left: 15px;
+  padding-right: 15px;
+  text-align: justify;
+}
+.deascription-wrapp > p {
+  font-size: 15px;
+  line-height: 30px;
+}
+.deascription-wrapp .features{
+    list-style: none;
+}
+.deascription-wrapp .features li {
+  line-height: 25px;
+  margin-bottom: 5px;
+  padding-left: 30px;
+  position: relative;
+}
+.deascription-wrapp .features li::before {
+  background: #333 none repeat scroll 0 0;
+  content: "";
+  height: 7px;
+  left: 3px;
+  position: absolute;
+  top: 10px;
+  width: 7px;
+}
+.deascription-wrapp .api-list li {
+  font-size: 15px;
+  line-height: 25px;
+  list-style: outside none none;
+  margin-bottom: 5px;
+}
+.deascription-wrapp .api-list li span {
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+.jet-plan-wrapper {
+  background: rgb(234, 234, 234) none repeat scroll 0 0;
+  margin: 0 auto;
+  text-align: center;
+  width: 330px;
+}
+.plan-heading {
+  background: rgb(250, 148, 47) none repeat scroll 0 0;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  margin: 0;
+  padding: 15px 10px;
+}

@@ -1,0 +1,50 @@
+
+body {
+  font-size: 13px !important;
+}
+.yii_notice{
+	font-size: 12px !important;
+	margin-top: 5px;
+}
+.wrap > .container{
+	/*width: 100% !important;*/
+}
+.wrap .grid-view {
+  /*overflow-x: scroll !important;*/
+}
+#return_grid.grid-view ,#refund_grid.grid-view{
+  overflow-x: scroll;
+}
+.wrap > .container footer .container{
+	width:100% !important;
+}
+.wrap > .container {
+  padding: 50px 15px 20px!important;
+}
+.dropdown-menu > li > a{
+	font-size:13px;
+}
+.lead ,.jumbotron p{
+  font-size: 18px !important;
+}
+.start.breadcrumb > h3 {
+  float: left;
+  font-size: 18px;
+  margin-bottom: 0;
+  margin-top: 10px !important;
+}
+.navbar-nav > li > a {
+  font-size: 13px;
+}
+/*  .navbar-fixed-top{
+  display:none !important;
+}  */
+.logout_merchant {
+  display:none !important;
+}
+.content-section {
+  padding: 30px;
+} 
+/* .container{
+	margin-top: 1%	
+} */
