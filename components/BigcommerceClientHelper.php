@@ -1,5 +1,5 @@
 <?php
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 use Yii;
 use yii\base\Component;
 use Exception;
@@ -34,7 +34,7 @@ class BigcommerceClientHelper extends Component{
 	}
 
 	public function getbuybox($upc){
-		$api_url = 'http://api.walmartlabs.com/v1/items?apiKey=xm2kns3xv2hyt773y597yph5&upc='.$upc;
+		$api_url = 'http://api.tophatterlabs.com/v1/items?apiKey=xm2kns3xv2hyt773y597yph5&upc='.$upc;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-Auth-Client:'.$this->clientid,'X-Auth-Token:'.$this->token,'Accept: application/json', 'Content-Length: 0'));
 		curl_setopt( $ch, CURLOPT_URL, $api_url );
@@ -50,7 +50,7 @@ class BigcommerceClientHelper extends Component{
 
 	// Get the URL required to request authorization
 	public function getAuthorizeUrl($shop, $redirect_url='') {
-		$url = "https://{$shop}/manage/marketplace/apps/".WALMART_APP_ID;
+		$url = "https://{$shop}/manage/marketplace/apps/".TOPHATTER_APP_ID;
 		/* if ($redirect_url != '')
 		{
 			$url .= "&redirect_uri=" .$redirect_url;
@@ -67,7 +67,7 @@ class BigcommerceClientHelper extends Component{
 		$signature = base64_decode($encodedSignature);
 		$jsonStr = base64_decode($encodedData);
 		$data = json_decode($jsonStr, true);
-		$clientSecret = WALMART_APP_SECRET;
+		$clientSecret = TOPHATTER_APP_SECRET;
 		// confirm the signature
 		$expectedSignature = hash_hmac('sha256', $jsonStr, $clientSecret, $raw = false);
 		if(!function_exists('hash_equals')) {

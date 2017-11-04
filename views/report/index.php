@@ -10,19 +10,19 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 
-$this->title = 'Walmart Report';
+$this->title = 'Tophatter Report';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div>
     <div class="form new-section">
-        <div class="walmart-tax-codes-index">
+        <div class="tophatter-tax-codes-index">
             <h1><?= Html::encode($this->title) ?></h1>
         </div>
     </div>
 </div>
 <div >
     <div class="form new-section">
-        <div class="walmart-tax-codes-index">
+        <div class="tophatter-tax-codes-index">
             <div class="cards-wrapper">
                 <div class="cards">
 
@@ -50,8 +50,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'label' => 'PRODUCT TITLE',
                                 /*'value' => 'PRODUCT TITLE',*/
                                 'value' => function ($items) {
-                                    if (!empty($items['PRODUCT TITLE ON WALMART'])) {
-                                        return $items['PRODUCT TITLE ON WALMART'];
+                                    if (!empty($items['PRODUCT TITLE ON TOPHATTER'])) {
+                                        return $items['PRODUCT TITLE ON TOPHATTER'];
                                     } else {
                                         return $items['PRODUCT TITLE'];
                                     }
@@ -103,7 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="form new-section">
-        <div class="walmart-tax-codes-index">
+        <div class="tophatter-tax-codes-index">
             <div class="cards-wrapper">
                 <div class="cards">
                     <h2><?= Html::encode('Low Stock Report') ?></h2>

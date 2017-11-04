@@ -1,5 +1,5 @@
 <?php
-use frontend\modules\walmart\assets\AppAsset;
+use frontend\modules\tophatter\assets\AppAsset;
 use frontend\widgets\Alert;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;

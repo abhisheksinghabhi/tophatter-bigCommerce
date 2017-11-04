@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 use frontend\components\Data;
-use frontend\modules\walmart\components\Dashboard\LatestUpdates;
+use frontend\modules\tophatter\components\Dashboard\LatestUpdates;
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Latest Updates'];

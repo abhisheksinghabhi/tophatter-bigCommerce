@@ -1,12 +1,12 @@
 <?php
-use frontend\modules\walmart\assets\AppAsset;
+use frontend\modules\tophatter\assets\AppAsset;
 //use frontend\components\Jetappdetails;
 use frontend\widgets\Alert;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\helpers\Html;
 use yii\widgets\Breadcrumbs;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 use yii\widgets\Menu;
 $valuecheck="";
 //$obj=new Jetappdetails();
@@ -28,7 +28,7 @@ $feedbackurl = \yii\helpers\Url::toRoute(['site/feedback']);
 	<link rel="stylesheet" href="<?= Yii::$app->getUrlManager()->getBaseUrl();?>/css/font-awesome.min.css">
 	<script type="text/javascript" src="<?= Yii::$app->getUrlManager()->getBaseUrl();?>/js/jquery.datetimepicker.full.min.js"></script>
 	    <?= Html::csrfMetaTags() ?>
-	     <title><?= Html::encode("BigCommerce Walmart Integration | CedCommerce");?></title>
+	     <title><?= Html::encode("BigCommerce Tophatter Integration | CedCommerce");?></title>
 	<title><?= Html::encode($this->title) ?></title>
 	    <?php $this->head() ?>
 
@@ -52,7 +52,7 @@ if(Yii::$app->controller->action->id=='pricing') {
 
 <?php $this->beginBody() ?>
     <!--<div class="trial-wrapper">
-        <div class="col-sm-9 plateform-switch-body no-padding"><div class="install-walmart">
+        <div class="col-sm-9 plateform-switch-body no-padding"><div class="install-tophatter">
             <div class="install-button">
                 <div>
                     <!-- <h2 class="rw-sentence">
@@ -108,29 +108,29 @@ if(Yii::$app->controller->action->id=='pricing') {
 									?> -->
 	
 							<ul class="nav navbar-nav navbar-right">
-								<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/site/index">Home</a></li>
+								<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/site/index">Home</a></li>
 								<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Products<span class="caret"></span></a>
 									<ul class="dropdown-menu">
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/categorymap/index">Map Category</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmart-attributemap/index">Attributes Mapping</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmartproduct/index">Manage Products</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/categorymap/index">Map Category</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatter-attributemap/index">Attributes Mapping</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatterproduct/index">Manage Products</a></li>
 										<li role="separator"></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmartrepricing/index">Repricing</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmarttaxcodes/index">Get Taxcodes</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmartproductfeed/index">Walmart Feeds</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatterrepricing/index">Repricing</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophattertaxcodes/index">Get Taxcodes</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatterproductfeed/index">tophatter Feeds</a></li>
 									</ul>
 								</li>
 
 								<!-- <li>
-									<a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmart-carriers-map/index">Carrier Mapping</a>
+									<a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatter-carriers-map/index">Carrier Mapping</a>
 								</li> -->
 
 								<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Order<span class="caret"></span></a>
 									<ul class="dropdown-menu">
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmartorderdetail/index">Sales Order</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmartorderimporterror/index">Failed Order</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatterorderdetail/index">Sales Order</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatterorderimporterror/index">Failed Order</a></li>
 										
 									</ul>
 								</li>
@@ -139,25 +139,25 @@ if(Yii::$app->controller->action->id=='pricing') {
 	                                   aria-haspopup="true" aria-expanded="false">Import/Export<span
 	                                            class="caret"></span></a>
 	                                <ul class="dropdown-menu">
-	                                    <li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/updatecsv/index">Product Update</a></li>
+	                                    <li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/updatecsv/index">Product Update</a></li>
 	                                    <li>
-	                                        <a href="<?= Yii::$app->request->baseUrl ?>/walmart/productcsv/index">Price, Inventory and Barcode</a></li>
+	                                        <a href="<?= Yii::$app->request->baseUrl ?>/tophatter/productcsv/index">Price, Inventory and Barcode</a></li>
 	                                    <li>
-	                                        <a href="<?= Yii::$app->request->baseUrl ?>/walmart/updatecsv/index-retire">Retire Product</a></li>
+	                                        <a href="<?= Yii::$app->request->baseUrl ?>/tophatter/updatecsv/index-retire">Retire Product</a></li>
 	                                </ul>
                             	</li>
-                            	<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/faq/index">FAQs</a></li>
+                            	<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/faq/index">FAQs</a></li>
 
 		
                                 <!--<a class="icon-items">
-                                    <img src="<?= Yii::getAlias('@walmartbasepath') ?>/assets/images/walmart-guide/icons/Layer-6.png">
+                                    <img src="<?= Yii::getAlias('@tophatterbasepath') ?>/assets/images/tophatter-guide/icons/Layer-6.png">
                                 </a>-->
                             </li>
 
                             
                                 <li>
                                     <a class="icon-items" href="javascript:void(0)" onclick="callView()">
-                                        <img src="<?= Yii::getAlias('@walmartbasepath') ?>/assets/images/walmart-guide/icons/Layer-7.png">
+                                        <img src="<?= Yii::getAlias('@tophatterbasepath') ?>/assets/images/tophatter-guide/icons/Layer-7.png">
                                     </a>
                                 </li>
 
@@ -165,21 +165,21 @@ if(Yii::$app->controller->action->id=='pricing') {
 
                             <li>
                                 <a class="icon-items"
-                                   href="<?= Yii::$app->request->baseUrl ?>/walmart/walmartconfiguration/index"><img
-                                            src="<?= Yii::getAlias('@walmartbasepath') ?>/assets/images/walmart-guide/icons/Layer-4.png"></a>
+                                   href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatterconfiguration/index"><img
+                                            src="<?= Yii::getAlias('@tophatterbasepath') ?>/assets/images/tophatter-guide/icons/Layer-4.png"></a>
                             </li>
 
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle icon-items" data-toggle="dropdown" role="button"
                                    aria-haspopup="true" aria-expanded="false"><img
-                                            src="<?= Yii::getAlias('@walmartbasepath') ?>/assets/images/walmart-guide/icons/Layer-5.png"></a>
+                                            src="<?= Yii::getAlias('@tophatterbasepath') ?>/assets/images/tophatter-guide/icons/Layer-5.png"></a>
 									<ul class="dropdown-menu">
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart-marketplace/paymentplan">Payment Plan</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter-marketplace/paymentplan">Payment Plan</a></li>
 										<li><a href="http://support.cedcommerce.com/">Support</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart-marketplace/sell-on-walmart">Documentation</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/site/index?tour">Quick Tour</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/report/index">Report</a></li>
-										<li class="logout_merchant"><a href="<?= Yii::$app->request->baseUrl ?>/walmart/site/logout">Logout</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter-marketplace/sell-on-tophatter">Documentation</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/site/index?tour">Quick Tour</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/report/index">Report</a></li>
+										<li class="logout_merchant"><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/site/logout">Logout</a></li>
 									</ul>
 								</li>
 							</ul>
@@ -189,38 +189,38 @@ if(Yii::$app->controller->action->id=='pricing') {
 								<li class="dropdowns">
 								<a href="#">Products</a>
 									<ul class="dropdown-menus">
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/categorymap/index">Map Category</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmart-attributemap/index">Attributes Mapping</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmartproduct/index">Manage Products</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/categorymap/index">Map Category</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatter-attributemap/index">Attributes Mapping</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatterproduct/index">Manage Products</a></li>
 										<li role="separator"></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmarttaxcodes/index">Get Taxcodes</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmartproductfeed/index">Walmart Feeds</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophattertaxcodes/index">Get Taxcodes</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatterproductfeed/index">tophatter Feeds</a></li>
 									</ul>
 								</li>
 
 								<li>
-									<a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmart-carriers-map/index">Carrier Mapping</a>
+									<a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatter-carriers-map/index">Carrier Mapping</a>
 								</li>
 
 								<li class="dropdowns">
 								<a href="#">Order</a>
 									<ul class="dropdown-menus">
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmartorderdetail/index">Sales Order</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/walmartorderimporterror/index">Failed Order</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatterorderdetail/index">Sales Order</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatterorderimporterror/index">Failed Order</a></li>
 										
 									</ul>
 								</li>
 
-								<li ><a class="icon-items" href="<?= Yii::$app->request->baseUrl ?>/walmart/walmartconfiguration/index">Setting</a></li>
+								<li ><a class="icon-items" href="<?= Yii::$app->request->baseUrl ?>/tophatter/tophatterconfiguration/index">Setting</a></li>
 
 								<li class="dropdowns">
 								<a href="#">Account</a>
 									<ul class="dropdown-menus">
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart-marketplace/paymentplan">Payment Plan</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter-marketplace/paymentplan">Payment Plan</a></li>
 										<li><a href="http://support.cedcommerce.com/">Support</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart-marketplace/sell-on-walmart">Documentation</a></li>
-										<li><a href="<?= Yii::$app->request->baseUrl ?>/walmart/site/index?tour">Quick Tour</a></li>
-										<li class="logout_merchant"><a href="<?= Yii::$app->request->baseUrl ?>/walmart/site/logout">Logout</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter-marketplace/sell-on-tophatter">Documentation</a></li>
+										<li><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/site/index?tour">Quick Tour</a></li>
+										<li class="logout_merchant"><a href="<?= Yii::$app->request->baseUrl ?>/tophatter/site/logout">Logout</a></li>
 									</ul>
 								</li>
 							</ul>
@@ -249,7 +249,7 @@ if(Yii::$app->controller->action->id=='pricing') {
 						 		
 						 			$appurls=Data::checkInstalledApp($merchant_id,true);
 						 		?>
-			 					<div class="install-walmart">
+			 					<div class="install-tophatter">
 		 							<div class="install-button">
 		 								<div id="show_apps_div">
 		 								<div>
@@ -273,8 +273,8 @@ if(Yii::$app->controller->action->id=='pricing') {
                         					<p>Hurricane may effect disturbance in Product and Order Management for short Duration</p> -->
 		 								</div>
 		 								<div id="display_apps" style="display: none;">
-		 									<div class="walmart">
-		 										<span class="walmart-app">Jet app</span>
+		 									<div class="tophatter">
+		 										<span class="tophatter-app">Jet app</span>
 		 										<a <?php if($appurls['jet']['type']=="Install"){ echo 
 				 											"target='_blank' href=".$appurls['jet']['url'];}
 				 											else{echo "href=".$appurls['jet']['url']."/".$newpath;}?>>
@@ -485,7 +485,7 @@ if(Yii::$app->controller->action->id=='pricing') {
 			$('#imp-notice-hide').css("display","none");
 		}
 	</script>
-	<!-- Hotjar Tracking Code for http://bigcommerce.cedcommerce.com/integration/walmart -->
+	<!-- Hotjar Tracking Code for http://bigcommerce.cedcommerce.com/integration/tophatter -->
 <script>
     (function(h,o,t,j,a,r){
         h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};

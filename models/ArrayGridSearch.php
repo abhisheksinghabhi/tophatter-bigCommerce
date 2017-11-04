@@ -1,5 +1,5 @@
 <?php 
-namespace frontend\modules\walmart\models;
+namespace frontend\modules\tophatter\models;
 
 use \yii\base\Model;
 

@@ -1,7 +1,7 @@
 <?php 
 use yii\grid\GridView;
 use yii\helpers\Html;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 
 $this->title = 'Not In App Products';
 $this->params['breadcrumbs'][] = $this->title;
@@ -19,7 +19,7 @@ $bulkActionForm = $bulkActionSelect . $bulkActionSubmit;
 <div class="content-section jet-product-index">
 	<div class="form new-section">
 
-		<div class="jet-pages-heading walmart-title">
+		<div class="jet-pages-heading tophatter-title">
             <div class="title-need-help">
                 <h1 class="Jet_Products_style"><?= Html::encode($this->title) ?></h1>
             </div>

@@ -1,10 +1,10 @@
 <?php 
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 
 use Yii;
 use yii\base\Component;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\models\WalmartAttributeMap;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\models\TophatterAttributeMap;
 
 class AttributeMap extends Component
 {
@@ -20,7 +20,7 @@ class AttributeMap extends Component
         if(is_null($merchant_id))
             $merchant_id = MERCHANT_ID;
 
-        $query = "SELECT `product_type`,`category_id` FROM `walmart_category_map` WHERE `category_id`!='' AND `merchant_id`=".$merchant_id;
+        $query = "SELECT `product_type`,`category_id` FROM `tophatter_category_map` WHERE `category_id`!='' AND `merchant_id`=".$merchant_id;
         $records = Data::sqlRecords($query, 'all');
         if($records)
             return $records;
@@ -29,12 +29,12 @@ class AttributeMap extends Component
     }
 
     /**
-     * Get Walmart Category Attributes
+     * Get tophatter Category Attributes
      *
      * @param string $category_id
      * @return array|bool
      */
-    /*public static function getWalmartCategoryAttributes($category_id)
+    /*public static function gettophatterCategoryAttributes($category_id)
     {
     	//echo $category_id;
         $session = Yii::$app->session;
@@ -45,7 +45,7 @@ class AttributeMap extends Component
         // {
             //die("ghj");
         	//echo $category_id;die("dfds");
-            $query = 'SELECT `title`,`parent_id`,`attributes`,`attribute_values`,`walmart_attributes`,`walmart_attribute_values` FROM `walmart_category` WHERE `category_id`="'.$category_id.'" LIMIT 0,1';
+            $query = 'SELECT `title`,`parent_id`,`attributes`,`attribute_values`,`tophatter_attributes`,`tophatter_attribute_values` FROM `tophatter_category` WHERE `category_id`="'.$category_id.'" LIMIT 0,1';
             $records = Data::sqlRecords($query, 'one');
             
             
@@ -82,23 +82,23 @@ class AttributeMap extends Component
                 if($records['parent_id'] != '0')
                     $categoryId = $records['parent_id'];
 
-                $attrs = Walmartapi::isValidateVariant($categoryId);
+                $attrs = tophatterapi::isValidateVariant($categoryId);
                 
                 //print_r($attrs);die;
                 $k1=0;
 
-                if($records['walmart_attributes'] != '') {
-                    $optionalAttrs = explode(',', $records['walmart_attributes']);
+                if($records['tophatter_attributes'] != '') {
+                    $optionalAttrs = explode(',', $records['tophatter_attributes']);
                     foreach ($optionalAttrs as $optionalAttr) {
                         $key = trim(str_replace('/', '->', $optionalAttr));
                        // if(!isset($attributes[$key]))
                        // {
                             $subAttr = explode('/', $optionalAttr);
                             if(count($attrs)>$k1){
-                            $query = 'SELECT `walmart_attribute_name` FROM `walmart_confattributes` WHERE `walmart_attribute_name`="'.$attrs[$k1].'" LIMIT 0,1';
+                            $query = 'SELECT `tophatter_attribute_name` FROM `tophatter_confattributes` WHERE `tophatter_attribute_name`="'.$attrs[$k1].'" LIMIT 0,1';
                             $records_data = Data::sqlRecords($query, 'one');
                             if($records_data){
-                            	$attributes[$records_data['walmart_attribute_name']] = $records_data['walmart_attribute_name'];
+                            	$attributes[$records_data['tophatter_attribute_name']] = $records_data['tophatter_attribute_name'];
                             }
                             
                             if(in_array($subAttr[0], $attrs))
@@ -138,8 +138,8 @@ class AttributeMap extends Component
                         }
                     }
                 }
-                if($records['walmart_attribute_values'] != '') {
-                    $_attributeValues = json_decode($records['walmart_attribute_values'], true);
+                if($records['tophatter_attribute_values'] != '') {
+                    $_attributeValues = json_decode($records['tophatter_attribute_values'], true);
                     foreach ($_attributeValues as $_attrValue) {
                         if(is_array($_attrValue)) {
                             $key = key($_attrValue);
@@ -153,7 +153,7 @@ class AttributeMap extends Component
 
                 if($records['parent_id'])
                 {
-                    $parentAttributes = self::getWalmartCategoryAttributes($records['parent_id']);
+                    $parentAttributes = self::getTophatterCategoryAttributes($records['parent_id']);
                     if($parentAttributes)
                     {
                         $attributes = array_merge($attributes, $parentAttributes['attributes']);
@@ -179,14 +179,14 @@ class AttributeMap extends Component
     }*/
 
 
- public static function getWalmartCategoryAttributes1($category_id)
+ public static function getTophatterCategoryAttributes1($category_id)
     {
         $session = Yii::$app->session;
         
         $index = self::getCatAttributeSessionIdx($category_id);
         if(!isset($session[$index]))
         {
-            $query = 'SELECT `title`,`parent_id`,`attributes`,`attribute_values`,`walmart_attributes`,`walmart_attribute_values` FROM `walmart_category` WHERE `category_id`="'.$category_id.'" LIMIT 0,1';
+            $query = 'SELECT `title`,`parent_id`,`attributes`,`attribute_values`,`tophatter_attributes`,`tophatter_attribute_values` FROM `tophatter_category` WHERE `category_id`="'.$category_id.'" LIMIT 0,1';
             $records = Data::sqlRecords($query, 'one');
             
             if($records)
@@ -222,10 +222,10 @@ class AttributeMap extends Component
                 if($records['parent_id'] != '0')
                     $categoryId = $records['parent_id'];
 
-                $attrs = Walmartapi::isValidateVariant($categoryId);
+                $attrs = Tophatterapi::isValidateVariant($categoryId);
 
-                if($records['walmart_attributes'] != '') {
-                    $optionalAttrs = explode(',', $records['walmart_attributes']);
+                if($records['tophatter_attributes'] != '') {
+                    $optionalAttrs = explode(',', $records['tophatter_attributes']);
                     foreach ($optionalAttrs as $optionalAttr) {
                         $key = trim(str_replace('/', '->', $optionalAttr));
                         if(!isset($attributes[$key]))
@@ -256,8 +256,8 @@ class AttributeMap extends Component
                         }
                     }
                 }
-                if($records['walmart_attribute_values'] != '') {
-                    $_attributeValues = json_decode($records['walmart_attribute_values'], true);
+                if($records['tophatter_attribute_values'] != '') {
+                    $_attributeValues = json_decode($records['tophatter_attribute_values'], true);
                     foreach ($_attributeValues as $_attrValue) {
                         if(is_array($_attrValue)) {
                             $key = key($_attrValue);
@@ -271,7 +271,7 @@ class AttributeMap extends Component
 
                 if($records['parent_id'])
                 {
-                    $parentAttributes = self::getWalmartCategoryAttributes($records['parent_id']);
+                    $parentAttributes = self::getTophatterCategoryAttributes($records['parent_id']);
                     if($parentAttributes)
                     {
                         $attributes = array_merge($attributes, $parentAttributes['attributes']);
@@ -296,7 +296,7 @@ class AttributeMap extends Component
         }
     }
 
-     public static function getWalmartCategoryAttributes($category_id, $parent_id)
+     public static function getTophatterCategoryAttributes($category_id, $parent_id)
     {
         /*$session = Yii::$app->session;
 
@@ -404,7 +404,7 @@ class AttributeMap extends Component
     
     public static function getCatAttributeSessionIdx($category_id)
     {
-    	$index = 'walmart_cat_attributes_for_'.addslashes($category_id);
+    	$index = 'tophatter_cat_attributes_for_'.addslashes($category_id);
     	return $index;
     }
     /**
@@ -458,7 +458,7 @@ class AttributeMap extends Component
         if(is_null($merchant_id))
             $merchant_id = MERCHANT_ID;
 
-        $query = 'SELECT `walmart_attribute_code`,`attribute_value_type`,`attribute_value` FROM `walmart_attribute_map` WHERE `shopify_product_type`="'.$product_type.'" AND `merchant_id`='.$merchant_id;
+        $query = 'SELECT `tophatter_attribute_code`,`attribute_value_type`,`attribute_value` FROM `tophatter_attribute_map` WHERE `shopify_product_type`="'.$product_type.'" AND `merchant_id`='.$merchant_id;
         
         $records = Data::sqlRecords($query, 'all');
 
@@ -467,7 +467,7 @@ class AttributeMap extends Component
         {
             foreach ($records as $value) {
                 if($value['attribute_value'] != '') {
-                    $mapped_values[$value['walmart_attribute_code']] = ['type'=>$value['attribute_value_type'], 'value'=>$value['attribute_value']];
+                    $mapped_values[$value['tophatter_attribute_code']] = ['type'=>$value['attribute_value_type'], 'value'=>$value['attribute_value']];
                 }
             }
         }
@@ -481,7 +481,7 @@ class AttributeMap extends Component
      * @param int|null $merchant_id
      * @return array
      */
-    public static function getMappedWalmartAttributes($shopify_product_type, $option_id, $merchant_id=null)
+    public static function getMappedTophatterAttributes($shopify_product_type, $option_id, $merchant_id=null)
     {
         $mapped_attributes = [];
         $attribute_values = [];
@@ -490,11 +490,11 @@ class AttributeMap extends Component
         $attributeMapValues = self::getAttributeMapValues($shopify_product_type);
         //print_r($attributeMapValues);die;
         foreach ($attributeMapValues as $walAttrCode => $walAttrValue) {
-            if($walAttrValue['type'] == WalmartAttributeMap::VALUE_TYPE_SHOPIFY) {
+            if($walAttrValue['type'] == TophatterAttributeMap::VALUE_TYPE_SHOPIFY) {
                 $mapped_attributes[$walAttrCode] = $walAttrValue['value'];
             }
-            elseif($walAttrValue['type'] == WalmartAttributeMap::VALUE_TYPE_TEXT || 
-                $walAttrValue['type'] == WalmartAttributeMap::VALUE_TYPE_WALMART) {
+            elseif($walAttrValue['type'] == TophatterAttributeMap::VALUE_TYPE_TEXT || 
+                $walAttrValue['type'] == TophatterAttributeMap::VALUE_TYPE_TOPHATTER) {
                 $common_attributes[$walAttrCode] = $walAttrValue['value'];
             }
         }
@@ -583,7 +583,7 @@ class AttributeMap extends Component
      */
     public static function isProductTypeAttributeMapped($product_type)
     {
-        $query = 'SELECT `id` FROM `walmart_attribute_map` WHERE `shopify_product_type`="'.$product_type.'" LIMIT 0,1';
+        $query = 'SELECT `id` FROM `tophatter_attribute_map` WHERE `shopify_product_type`="'.$product_type.'" LIMIT 0,1';
 
         $records = Data::sqlRecords($query, 'one');
 
@@ -603,7 +603,7 @@ class AttributeMap extends Component
 
     public static function getAttrMapSessionMainIdx($merchant_id)
     {
-        $index = 'walmart_attribute_map_'.$merchant_id;
+        $index = 'tophatter_attribute_map_'.$merchant_id;
         return $index;
     }
 

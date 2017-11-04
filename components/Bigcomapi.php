@@ -1,8 +1,8 @@
 <?php
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 use Yii;
 use yii\base\Component;
-use frontend\modules\walmart\components\BigcommerceApiException;
+use frontend\modules\tophatter\components\BigcommerceApiException;
 use app\models\JetConfiguration;
 
 class Bigcomapi extends component{

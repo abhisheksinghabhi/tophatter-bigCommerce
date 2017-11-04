@@ -1,11 +1,11 @@
 <?php
 
-namespace frontend\modules\walmart\models;
+namespace frontend\modules\tophatter\models;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\modules\walmart\models\JetProduct;
+use frontend\modules\tophatter\models\JetProduct;
 
 /**
  * JetProductSearch represents the model behind the search form about `app\models\JetProduct`.

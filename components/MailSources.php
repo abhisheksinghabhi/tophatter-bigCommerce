@@ -1,5 +1,5 @@
 <?php 
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 use Yii;
 use yii\base\Component;
 use Mailgun\Mailgun;

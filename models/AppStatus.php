@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\modules\walmart\models;
+namespace frontend\modules\tophatter\models;
 
 use Yii;
 
@@ -18,7 +18,7 @@ class AppStatus extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'walmartapp_status';
+        return 'tophatterapp_status';
     }
 
     /**

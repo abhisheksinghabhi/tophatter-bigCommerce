@@ -6,11 +6,11 @@ use yii\widgets\Pjax;
 $this->title = 'Manage Products';
 $this->params['breadcrumbs'][] = $this->title;
 $merchant_id=MERCHANT_ID;
-$urlJet= \yii\helpers\Url::toRoute(['walmartproduct/getwalmartdata']);
-$urlJetEdit= \yii\helpers\Url::toRoute(['walmartproduct/editdata']);
-$urlJetError= \yii\helpers\Url::toRoute(['walmartproduct/errorwalmart']);
-$urlGetTax=\yii\helpers\Url::toRoute(['walmartproduct/gettaxcode']);
-$saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantimage']);
+$urlJet= \yii\helpers\Url::toRoute(['tophatterproduct/gettophatterdata']);
+$urlJetEdit= \yii\helpers\Url::toRoute(['tophatterproduct/editdata']);
+$urlJetError= \yii\helpers\Url::toRoute(['tophatterproduct/errorwalmart']);
+$urlGetTax=\yii\helpers\Url::toRoute(['tophatterproduct/gettaxcode']);
+$saveVariantImageUrl= yii\helpers\Url::toRoute(['tophatterproduct/changevariantimage']);
 ?>
 
 <style>
@@ -73,7 +73,7 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
 }
 </style>
 <div class="jet-product-index">
-<?= Html::beginForm(['walmartproduct/ajax-bulk-upload'],'post');//Html::beginForm(['walmartproduct/bulk'],'post');?>
+<?= Html::beginForm(['tophatterproduct/ajax-bulk-upload'],'post');//Html::beginForm(['walmartproduct/bulk'],'post');?>
 	<div class="jet-pages-heading">
 		<h1 class="Jet_Products_style"><?= Html::encode($this->title) ?></h1>
     <?= Html::a('Update Product Price', ['updateprice'], ['class' => 'btn btn-primary']) ?>
@@ -98,7 +98,7 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
       <i class="fa fa-list" aria-hidden="true"></i>
       <!-- <i class="fa fa-bell fa-1x"></i> -->
     </span>
-    Don't see all of your products? Just click <a href="<?= yii\helpers\Url::toRoute('categorymap/index');?>">here</a> to map all bigcommerce product type(s) with walmart category.
+    Don't see all of your products? Just click <a href="<?= yii\helpers\Url::toRoute('categorymap/index');?>">here</a> to map all bigcommerce product type(s) with tophatter category.
     <div class="list-page" style="float:right">
       Show per page 
       <select onchange="selectPage(this)" class="form-control" style="display: inline-block; width: auto; margin-top: 0px; margin-left: 5px; margin-right: 5px;" name="per-page">
@@ -226,7 +226,7 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
             'attribute'=>'status',
             'label'=>'Status',
             'headerOptions' => ['width' => '160'],
-            'filter' => ["Items Processing"=>"Submitted on walmart","Not Uploaded"=>"Not Uploaded","PUBLISHED"=>"PUBLISHED"],
+            'filter' => ["Items Processing"=>"Submitted on tophatter","Not Uploaded"=>"Not Uploaded","PUBLISHED"=>"PUBLISHED"],
               'value' => function ($data) 
               {
                  return $data['status'];
@@ -288,12 +288,12 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
 	if(isset($productPopup))
 	{            	
 	?>
-	<div class="walmart_config_popup walmart_config_popup_error" style="">
+	<div class="tophatter_config_popup walmart_config_popup_error" style="">
 		<div id="jet-import-product" class="import-product" >
 			<div class="fieldset welcome_message">
 				<div class="entry-edit-head">
 					<h4 class="fieldset-legend">
-						Welcome! to Walmart Products Import Section
+						Welcome! to Tophatter Products Import Section
 					</h4>
 				</div>
 				<?php 
@@ -307,7 +307,7 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
 						</div>
 						<div class="import-btn">
 							<h4>Click to import BigCommerce store products to Walmart Marketplace Integration App<h4>
-							<a href="<?php echo \yii\helpers\Url::toRoute(['walmartproduct/batchimport'])?>" class="btn">Import Products</a>		
+							<a href="<?php echo \yii\helpers\Url::toRoute(['tophatterproduct/batchimport'])?>" class="btn">Import Products</a>		
 						</div>
 						<?php 
 					}else{
@@ -325,7 +325,7 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
 			</div>
 		</div>
 	</div>
-	<div class="walmart_config_popup_overlay" style=""></div>
+	<div class="tophatter_config_popup_overlay" style=""></div>
 <?php }?>
 <div id="view_jet_product" style="display:none">
 </div>

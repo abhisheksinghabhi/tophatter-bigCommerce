@@ -1,6 +1,6 @@
 <?php
 use yii\helpers\Html;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 
 $this->title = 'Validate Feed XML';
 $this->params['breadcrumbs'][] = $this->title;

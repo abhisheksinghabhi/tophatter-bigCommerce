@@ -1,8 +1,8 @@
 <?php 
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 use Yii;
 use yii\base\Component;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 
 class Mail extends MailSources
 {
@@ -60,13 +60,13 @@ class Mail extends MailSources
 		if(file_exists($file)){
 			return $file;
 		}
-		$file = dirname(Yii::getAlias('@webroot')).'/frontend/modules/walmart/views/templates/'.$this->_template;
+		$file = dirname(Yii::getAlias('@webroot')).'/frontend/modules/tophatter/views/templates/'.$this->_template;
 		$serach[]=$file;
 		if(file_exists($file)){
 			return $file;
 		}
 
-		$file = Yii::getAlias('@webroot').'/frontend/modules/walmart/views/templates/'.$this->_template;
+		$file = Yii::getAlias('@webroot').'/frontend/modules/tophatter/views/templates/'.$this->_template;
 		$serach[]=$file;
 		if(file_exists($file)){
 			return $file;
@@ -128,7 +128,7 @@ class Mail extends MailSources
 		try{
 			if(isset($this->_data['merchant_id']) && !empty($this->_data['merchant_id'])){
 				$template = str_replace('.html', '', $this->_template);
-				 $query = "SELECT `value` FROM  `walmart_config` WHERE `merchant_id`='".$this->_data['merchant_id']."' AND `data`='".$template."'";
+				 $query = "SELECT `value` FROM  `tophatter_config` WHERE `merchant_id`='".$this->_data['merchant_id']."' AND `data`='".$template."'";
                 $emailTemplatevalue = Data::sqlRecords($query,"one");
               
                 

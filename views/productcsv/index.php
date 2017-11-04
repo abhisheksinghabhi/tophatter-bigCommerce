@@ -22,7 +22,7 @@ $importUrl = \yii\helpers\Url::toRoute(['productcsv/readcsv']);
                 <form action="<?php echo \yii\helpers\Url::toRoute(['productcsv/export']); ?>" method="post">
                     <h4>Export Product Infromation</h4>
                     <p>Export csv file to update the product information such as price and inventory in
-                        bulk for upload product on walmart.com.</p>
+                        bulk for upload product on Tophatter.com.</p>
                     <select name="export" class="form-control csv-dropdown">
                         <option value="">Select Options</option>
                         <option value="price">Update Price</option>

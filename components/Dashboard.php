@@ -1,11 +1,11 @@
 <?php 
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 
 use Yii;
 use yii\base\Component;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\models\WalmartProduct;
-use frontend\modules\walmart\models\WalmartOrderDetail;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\models\TophatterProduct;
+use frontend\modules\tophatter\models\TophatterOrderDetail;
 
 class Dashboard extends Component
 {
@@ -26,18 +26,18 @@ class Dashboard extends Component
         elseif(is_null($merchantId) && defined('MERCHANT_ID'))
             $merchantId = MERCHANT_ID;
 
-        if(!isset($session['walmart_dashboard']))
+        if(!isset($session['tophatter_dashboard']))
         {
             try
             {
-                $live_products_query = "SELECT COUNT(*) as `live_products` FROM `walmart_product` LEFT JOIN `walmart_product_variants` ON `walmart_product`.`product_id`=`walmart_product_variants`.`product_id` WHERE `walmart_product`.`merchant_id`=".$merchantId." AND `walmart_product`.`status`='".WalmartProduct::PRODUCT_STATUS_UPLOADED."' AND `walmart_product_variants`.`status`='".WalmartProduct::PRODUCT_STATUS_UPLOADED."'";
+                $live_products_query = "SELECT COUNT(*) as `live_products` FROM `tophatter_product` LEFT JOIN `tophatter_product_variants` ON `tophatter_product`.`product_id`=`tophatter_product_variants`.`product_id` WHERE `tophatter_product`.`merchant_id`=".$merchantId." AND `tophatter_product`.`status`='".TophatterProduct::PRODUCT_STATUS_UPLOADED."' AND `tophatter_product_variants`.`status`='".TophatterProduct::PRODUCT_STATUS_UPLOADED."'";
                 $availableProduct = Data::sqlRecords($live_products_query, 'one');
 
-                $completedOrders = Data::sqlRecords("SELECT COUNT(*) as `total_orders` FROM `walmart_order_details` WHERE `status`='".WalmartOrderDetail::ORDER_STATUS_COMPLETED."' AND `merchant_id`=$merchantId", 'one');
+                $completedOrders = Data::sqlRecords("SELECT COUNT(*) as `total_orders` FROM `tophatter_order_details` WHERE `status`='".TophatterOrderDetail::ORDER_STATUS_COMPLETED."' AND `merchant_id`=$merchantId", 'one');
                 
-                $readytoshipOrders = Data::sqlRecords("SELECT COUNT(*) as `ready` FROM `walmart_order_details` WHERE `status` = '".WalmartOrderDetail::ORDER_STATUS_ACKNOWLEDGED."' AND `merchant_id`=$merchantId", 'one');
+                $readytoshipOrders = Data::sqlRecords("SELECT COUNT(*) as `ready` FROM `tophatter_order_details` WHERE `status` = '".TophatterOrderDetail::ORDER_STATUS_ACKNOWLEDGED."' AND `merchant_id`=$merchantId", 'one');
                 
-                $result = Data::sqlRecords("SELECT `order_total` FROM `walmart_order_details` WHERE `status` = '".WalmartOrderDetail::ORDER_STATUS_COMPLETED."' AND `merchant_id`=$merchantId", 'all');
+                $result = Data::sqlRecords("SELECT `order_total` FROM `tophatter_order_details` WHERE `status` = '".TophatterOrderDetail::ORDER_STATUS_COMPLETED."' AND `merchant_id`=$merchantId", 'all');
                     
                 $total = 0;
                 if(is_array($result) && count($result)>0)
@@ -63,11 +63,11 @@ class Dashboard extends Component
             
             
             //print_r($dashboard);die;
-            $session->set('walmart_dashboard', $dashboard);
+            $session->set('tophatter_dashboard', $dashboard);
         }
         else
         {
-            $dashboard = $session['walmart_dashboard'];
+            $dashboard = $session['tophatter_dashboard'];
         }
         return $dashboard;
     }
@@ -88,7 +88,7 @@ class Dashboard extends Component
             $merchantId = MERCHANT_ID;
 
         //if ($id==14) {
-        $distinct_sku = Data::sqlRecords("SELECT `sku`  FROM `walmart_order_details` WHERE `status` LIKE '".WalmartOrderDetail::ORDER_STATUS_COMPLETED."' AND `merchant_id` = $merchantId", 'all');
+        $distinct_sku = Data::sqlRecords("SELECT `sku`  FROM `tophatter_order_details` WHERE `status` LIKE '".TophatterOrderDetail::ORDER_STATUS_COMPLETED."' AND `merchant_id` = $merchantId", 'all');
         if ($distinct_sku)
         {
             foreach ($distinct_sku as $sku_key=>$sku_count)
@@ -135,11 +135,11 @@ class Dashboard extends Component
         elseif(is_null($merchantId) && defined('MERCHANT_ID'))
             $merchantId = MERCHANT_ID;
   
-        $all_prod = Data::sqlRecords("SELECT COUNT(*) as `all_product` FROM `walmart_product` WHERE `merchant_id`=$merchantId", 'one');
+        $all_prod = Data::sqlRecords("SELECT COUNT(*) as `all_product` FROM `tophatter_product` WHERE `merchant_id`=$merchantId", 'one');
             
-        $simple_prod_with_stnd_code = Data::sqlRecords("SELECT COUNT(*) as `simple_pro` FROM `walmart_product` WHERE `status` LIKE '".WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED."' AND `product_type`='simple' AND `merchant_id`=$merchantId", 'one');
+        $simple_prod_with_stnd_code = Data::sqlRecords("SELECT COUNT(*) as `simple_pro` FROM `tophatter_product` WHERE `status` LIKE '".TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED."' AND `product_type`='simple' AND `merchant_id`=$merchantId", 'one');
             
-        $variants_prod_with_stnd_code = Data::sqlRecords("SELECT COUNT(*) as `variant_pro` FROM `walmart_product` WHERE `status` LIKE '".WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED."' AND `product_type`='variants' AND `merchant_id`=$merchantId", 'one');
+        $variants_prod_with_stnd_code = Data::sqlRecords("SELECT COUNT(*) as `variant_pro` FROM `tophatter_product` WHERE `status` LIKE '".TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED."' AND `product_type`='variants' AND `merchant_id`=$merchantId", 'one');
                         
         $donut_chart_data['all_prod'] = $all_prod['all_product'];
         //$donut_chart_data['mapped_prod'] = $mapped_prod;

@@ -10,12 +10,12 @@
  * conditions:
  *
  * @category    Ced
- * @package     Ced_Walmart
+ * @package     Ced_tophatter
  * @author 		CedCommerce Core Team <connect@cedcommerce.com>
  * @copyright   Copyright CedCommerce (http://cedcommerce.com/)
  */
 
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 
 use Yii;
 use yii\base\Component;
@@ -73,8 +73,8 @@ class Signature extends component
     )
     {
 
-//      $this->requestUrl = 'http://marketplace.walmartapis.com/' . $requestUrl;
-        $this->requestUrl = "https://marketplace.walmartapis.com/" . $requestUrl;
+//      $this->requestUrl = 'http://marketplace.tophatterapis.com/' . $requestUrl;
+        $this->requestUrl = "https://marketplace.tophatterapis.com/" . $requestUrl;
         $this->requestMethod =  $requestMethod;
         $this->consumerId = $consumerId;
         $this->privateKey = $privateKey;
@@ -96,7 +96,7 @@ class Signature extends component
 
     /**
      * Static method for quick calls to calculate a signature.
-     * @link https://developer.walmartapis.com/#authentication
+     * @link https://developer.tophatterapis.com/#authentication
      * @param string $consumerId
      * @param string $privateKey
      * @param string $requestUrl

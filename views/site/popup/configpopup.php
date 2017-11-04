@@ -5,14 +5,14 @@
 		<div id="walmart_config_setting" class="Walmart_config" style="display:none">
 			<div class="entry-edit-head">
 				<h4 class="fieldset-legend" id="change_mode">
-					Walmart  Api Keys 
+					Tophatter  Api Keys 
 					<span>
-						<a href="http://walmart-partner.force.com/knowledgebase/articles/Article/API-Settings-in-the-Seller-Center?c=&q=consumer&l=en_US&kb=" title="Help" target="_blank">
+						<a href="http://tophatter-partner.force.com/knowledgebase/articles/Article/API-Settings-in-the-Seller-Center?c=&q=consumer&l=en_US&kb=" title="Help" target="_blank">
 							<i class="fa fa-info-circle" aria-hidden="true"></i>
 						</a>
 					</span>
 					(Get api details from Seller Partner Panel.Click 
-					<a href="https://seller.walmart.com" target="_blank">here</a>
+					<a href="https://seller.tophatter.com" target="_blank">here</a>
 					) 
 				</h4>
 			</div>
@@ -26,36 +26,36 @@
 					<tbody>
 						<tr>
 							<td class="value_label" width="45%">
-								<span>Walmart Consumer ID</span>
+								<span>Tophatter Consumer ID</span>
 							</td>
 							<td class="value form-group field-configuration-consumer_id required" width="100%">
 								<input id="configuration-consumer_id" class="form-control" type="text" value="" name="consumer_id" maxlength="255">
 								<div class="has-error">
-									<p class="help-block help-block-error error_category_map" style="display: none;">Walmart Consumer ID is Mandatory</p>
+									<p class="help-block help-block-error error_category_map" style="display: none;">Tophatter Consumer ID is Mandatory</p>
 								</div>
 							</td>
 						</tr>
 						<tr>
 							<td class="value_label" width="45%">
-								<span>Walmart Secret Key</span>
+								<span>Tophatter Secret Key</span>
 							</td>
 							<td class="value form-group field-configuration-secret_key required" width="100%">
 								<!-- <input id="configuration-secret_key" class="form-control" type="text" value="" name="secret_key" maxlength="255"> -->
 								<textarea id="configuration-secret_key" class="form-control" name="secret_key"></textarea>
 								<div class="has-error">
-									<p class="help-block help-block-error error_category_map" style="display: none;">Walmart Secret Key is Mandatory</p>
+									<p class="help-block help-block-error error_category_map" style="display: none;">Tophatter Secret Key is Mandatory</p>
 								</div>
 							</td>
 						</tr>
 
 						<tr>
 							<td class="value_label" width="45%">
-								<span>Walmart Consumer Channel Type ID</span>
+								<span>Tophatter Consumer Channel Type ID</span>
 							</td>
 							<td class="value form-group field-configuration-channel_type_id required" width="100%">
 								<input id="configuration-channel_type_id" class="form-control" type="text" value="" name="channel_type_id" maxlength="255">
 								<div class="has-error">
-									<p class="help-block help-block-error error_category_map" style="display: none;">Walmart Channel ID is Mandatory</p>
+									<p class="help-block help-block-error error_category_map" style="display: none;">Tophatter Channel ID is Mandatory</p>
 								</div>
 							</td>
 						</tr>
@@ -79,7 +79,7 @@
 				</table>
 			</div>
 		</div>	
-		<!--   Walmart API Configuration Section end     -->
+		<!--   Tophatter API Configuration Section end     -->
 	</div>
 	<div class="walmart_config_popup_overlay" style="display:none"></div>
 </body>
@@ -94,7 +94,7 @@
 	});
 
 	<?php $liveurl= \yii\helpers\Url::toRoute(['apienable/saveliveapi']);?>
-	<?php $productUrl= \yii\helpers\Url::toRoute(['walmartproduct/index']);?>
+	<?php $productUrl= \yii\helpers\Url::toRoute(['tophatterproduct/index']);?>
 
 	function submitApi() 
 	{	

@@ -1,9 +1,9 @@
 <?php 
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 
 use Yii;
 use yii\base\Component;
-use frontend\modules\walmart\models\WalmartAttributeMap;
+use frontend\modules\tophatter\models\TophatterAttributeMap;
  
 class Category extends Component
 {
@@ -124,7 +124,7 @@ class Category extends Component
     public static function getCategoryAttributes($parentCategory, $addSubCategoryIndex=true)
     {
 
-        //$dir = Yii::getAlias('@webroot') . '/frontend/modules/walmart/components/Attributes/' . $parentCategory;
+        //$dir = Yii::getAlias('@webroot') . '/frontend/modules/tophatter/components/Attributes/' . $parentCategory;
         $dir = __DIR__ . '/Attributes/' . $parentCategory;
         $filePath = $dir . '.php';
 
@@ -217,20 +217,20 @@ class Category extends Component
         /*$attributeValues = json_decode('{"shortDescription":"test description","brand":"Test Brand","mainImageUrl":"http://www.test.com/image.jpg", "colorCategory->colorCategoryValue":"Blue", "swatchImages->swatchImage->swatchVariantAttribute":["color","size"], "swatchImages->swatchImage->swatchImageUrl":["color image url", "size image url"]}', true);*/
 
         /**
-         * Mapping of shopify options with walmart attributes at product level
+         * Mapping of shopify options with tophatter attributes at product level
          * For Example : {"Title":["color->colorValue"]}
          */
 
         //print_r($productArray);die;
 
-        $walmart_attributes = [];
-        if ($productArray['walmart_attributes'] != '') {
-            $walmart_attributes = $productArray['walmart_attributes'];
-            $walmart_attributes = self::getDecodedWalmartAttributes($walmart_attributes);
+        $tophatter_attributes = [];
+        if ($productArray['tophatter_attributes'] != '') {
+            $tophatter_attributes = $productArray['tophatter_attributes'];
+            $tophatter_attributes = self::getDecodedTophatterAttributes($tophatter_attributes);
         }
 
         /**
-         * All Required walmart attribute values
+         * All Required tophatter attribute values
          * For Example : {"shirtSize":"30","color->colorValue":"Blue"} OR 
          *               {"carats->unit":"Carat","chainLength->unit":"Inches","gender":"Women","jewelryStyle":"Fashion"}
          */
@@ -241,7 +241,7 @@ class Category extends Component
 
         $variation_information = [];
         $variantAttributesName = [];
-        $walmart_optional_attributes = [];
+        $tophatter_optional_attributes = [];
 
         $attributeValues = [];
 
@@ -253,12 +253,12 @@ class Category extends Component
         if($productArray['type'] == 'simple')
         {
             /**
-             * All Optional walmart attribute values
+             * All Optional tophatter attribute values
              * For Example : {"swatchImages->swatchImage->swatchImageUrl":"image url", "swatchImages->swatchImage->swatchVariantAttribute":"Attribute Name"} OR 
              *               {"swatchImages->swatchImage->swatchVariantAttribute":["color","size"], "swatchImages->swatchImage->swatchImageUrl":["color image url", "size image url"]}
              */
-            if (trim($productArray['walmart_optional_attributes'])) {
-                $walmart_optional_attributes = json_decode($productArray['walmart_optional_attributes'], true);
+            if (trim($productArray['tophatter_optional_attributes'])) {
+                $tophatter_optional_attributes = json_decode($productArray['tophatter_optional_attributes'], true);
             }
 
             /**
@@ -273,12 +273,12 @@ class Category extends Component
 
 
             /**
-             * All Optional walmart attribute values of variant
+             * All Optional tophatter attribute values of variant
              * For Example : {"swatchImages->swatchImage->swatchImageUrl":"image url", "swatchImages->swatchImage->swatchVariantAttribute":"Attribute Name"} OR 
              *               {"swatchImages->swatchImage->swatchVariantAttribute":["color","size"], "swatchImages->swatchImage->swatchImageUrl":["color image url", "size image url"]}
              */
-            if (trim($variantArray['walmart_optional_attributes'])) {
-                $walmart_optional_attributes = json_decode($variantArray['walmart_optional_attributes'], true);
+            if (trim($variantArray['tophatter_optional_attributes'])) {
+                $tophatter_optional_attributes = json_decode($variantArray['tophatter_optional_attributes'], true);
             }
 
             $attr_ids = $productArray['bigcom_attr'];
@@ -298,14 +298,14 @@ class Category extends Component
 
 
             /**
-             * Check Shopify Options are mapped with which walmart attributes
-             * and those walmart attributes will be variant attributes
+             * Check Shopify Options are mapped with which tophatter attributes
+             * and those tophatter attributes will be variant attributes
              */
             foreach ($shopify_options as $shopifyOption) 
             {
-                if(in_array($shopifyOption, $walmart_attributes)) {
-                    $key = array_search($shopifyOption, $walmart_attributes);
-                    $key = Walmartapi::explodeAttributes($key);
+                if(in_array($shopifyOption, $tophatter_attributes)) {
+                    $key = array_search($shopifyOption, $tophatter_attributes);
+                    $key = Tophatterapi::explodeAttributes($key);
                     $variantAttributesName[$shopifyOption] = $key[0];
                 }
             }
@@ -323,14 +323,14 @@ class Category extends Component
             {
                 /**
                  * override global attribute mapping with product level attribute mapping
-                 * when walmart attribute is mapped with shopify option
+                 * when tophatter attribute is mapped with shopify option
                  */
-                if ($walAttrValue['type'] == WalmartAttributeMap::VALUE_TYPE_SHOPIFY) 
+                if ($walAttrValue['type'] == TophatterAttributeMap::VALUE_TYPE_SHOPIFY) 
                 {
 
-                    if(isset($walmart_attributes[$walAttrCode])) {
-                        if (isset($shopifyOptionValues[$walmart_attributes[$walAttrCode]])) {
-                            $attributeValues[$walAttrCode] = $shopifyOptionValues[$walmart_attributes[$walAttrCode]];
+                    if(isset($tophatter_attributes[$walAttrCode])) {
+                        if (isset($shopifyOptionValues[$tophatter_attributes[$walAttrCode]])) {
+                            $attributeValues[$walAttrCode] = $shopifyOptionValues[$tophatter_attributes[$walAttrCode]];
                         }
                     } 
                     else { 
@@ -357,15 +357,15 @@ class Category extends Component
 
                                 //will be used for variant products only.
                                 if(!isset($variantAttributesName[$option])) {
-                                    $code = Walmartapi::explodeAttributes($walAttrCode);
+                                    $code = Tophatterapi::explodeAttributes($walAttrCode);
                                     $variantAttributesName[$option] = $code[0];
                                 }
                             }
                         }
                     }
                 } 
-                elseif ($walAttrValue['type'] == WalmartAttributeMap::VALUE_TYPE_TEXT ||
-                    $walAttrValue['type'] == WalmartAttributeMap::VALUE_TYPE_WALMART
+                elseif ($walAttrValue['type'] == TophatterAttributeMap::VALUE_TYPE_TEXT ||
+                    $walAttrValue['type'] == TophatterAttributeMap::VALUE_TYPE_TOPHATTER
                 ) {
                     $attributeValues[$walAttrCode] = $walAttrValue['value'];
                 }
@@ -375,7 +375,7 @@ class Category extends Component
         }
         else
         {
-            foreach ($walmart_attributes as $wal_attr => $shopify_option) {
+            foreach ($tophatter_attributes as $wal_attr => $shopify_option) {
                 if(isset($shopifyOptionValues[$shopify_option])) {
                     $attributeValues[$wal_attr] = $shopifyOptionValues[$shopify_option];
                 }
@@ -404,7 +404,7 @@ class Category extends Component
         //print_r($attributeValues);die;
         $attributeValues = array_merge(
             $attributeValues,
-            $walmart_optional_attributes,
+            $tophatter_optional_attributes,
             $variation_information,
             $common_attributes,
             $basicRequiredAttributes
@@ -419,18 +419,18 @@ class Category extends Component
      * For Example : Input = {"Title":["color->colorValue"]}
      *               Output = ['color->colorValue' => 'Title']
      *
-     * @param string $walmart_attributes encoded attribute mapping data
+     * @param string $tophatter_attributes encoded attribute mapping data
      * @return []
      */
-    public static function getDecodedWalmartAttributes($walmart_attributes)
+    public static function getDecodedTophatterAttributes($tophatter_attributes)
     {
         $encodedAttributes = [];
-        if($walmart_attributes != '')
+        if($tophatter_attributes != '')
         {
-            $mapping = json_decode($walmart_attributes, true);
-            foreach ($mapping as $shopifyOptionName => $walmartAttributeCode) {
-                $walmartAttributeCode = current($walmartAttributeCode);
-                $encodedAttributes[$walmartAttributeCode] = $shopifyOptionName;
+            $mapping = json_decode($tophatter_attributes, true);
+            foreach ($mapping as $shopifyOptionName => $tophatterAttributeCode) {
+                $tophatterAttributeCode = current($tophatterAttributeCode);
+                $encodedAttributes[$tophatterAttributeCode] = $shopifyOptionName;
             }
         }
         return $encodedAttributes;
