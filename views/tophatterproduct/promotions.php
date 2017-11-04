@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 use dosamigos\datepicker\DatePicker;
 
 $currentPriceTypes = ['REDUCED','CLEARANCE'];
@@ -17,7 +17,7 @@ $currentPriceTypes = ['REDUCED','CLEARANCE'];
 	          <h4 class="modal-title" style="text-align: center;font-family: "Comic Sans MS";"></h4>
 	        </div>
 	        <div class="modal-body">
-				<form id="promotions-form" action="<?= \yii\helpers\Url::toRoute(['walmartproduct/promotion-save']) ?>">
+				<form id="promotions-form" action="<?= \yii\helpers\Url::toRoute(['tophatterproduct/promotion-save']) ?>">
                 
                     <input type="hidden" name="merchant_id" value="<?= $post['merchant_id'] ?>" />
                     <input type="hidden" name="option_id" value="<?= $post['option_id'] ?>" />
@@ -119,7 +119,7 @@ $currentPriceTypes = ['REDUCED','CLEARANCE'];
         if($('#promotion-tbody tr').length < 10)
         {
             var $tr = $("<tr>");
-            $tr.append($("<td>").html($("<span>",{"style": "font-size: 10px;"}).html("Can't Delete Until Uploaded on Walmart")));
+            $tr.append($("<td>").html($("<span>",{"style": "font-size: 10px;"}).html("Can't Delete Until Uploaded on Tophatter")));
             /*$tr.append($("<td>").html("<?= $post['product_id'] ?>"));*/
             $tr.append($("<td>").html("<?= $post['sku'] ?>"));
             $tr.append($("<td>").html($("<input>", {"type": "text", "class": "form-control", "name": "promotion[orignal_price][]", "value":"<?= $post['price'] ?>"})));

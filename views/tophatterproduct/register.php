@@ -1,15 +1,15 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 
 $session = Yii::$app->session;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\WalmartRegistration */
+/* @var $model frontend\models\tophatterRegistration */
 /* @var $form ActiveForm */
 
-$model = new \frontend\modules\walmart\models\WalmartRegistration();
+$model = new \frontend\modules\tophatter\models\TophatterRegistration();
 
 
 $model->name = isset($session['shop_details']['shop_owner'])?$session['shop_details']['shop_owner']:'';
@@ -18,7 +18,7 @@ $model->email = isset($session['shop_details']['email'])?$session['shop_details'
 
 $shop_name=Yii::$app->user->identity->shop_name;
 
-$tmpdata = Data::sqlRecords("SELECT * FROM `walmart_registration` WHERE `merchant_id`='".MERCHANT_ID ."'", 'all', 'select');
+$tmpdata = Data::sqlRecords("SELECT * FROM `tophatter_registration` WHERE `merchant_id`='".MERCHANT_ID ."'", 'all', 'select');
 
 
 
@@ -40,7 +40,7 @@ $annualRevenueOptions = [
     <div class="content-section">
         <div class="">
             <!-- <strong>ADMIN INFO</strong> -->
-            <?php $form = ActiveForm::begin(['id'=> 'walmartregistration-form','enableAjaxValidation' => true, 'enableClientValidation' => true]); ?>
+            <?php $form = ActiveForm::begin(['id'=> 'tophatterregistration-form','enableAjaxValidation' => true, 'enableClientValidation' => true]); ?>
                <?= $form->field($model, 'name', ['options'=>[],'inputOptions'=>['placeholder'=>'Enter Your Full Name', 'class'=>'form-control','value'=>$tmpdata[0]['name']]]) ?>
                <?= $form->field($model, 'legal_company_name', ['options'=>[],'inputOptions'=>['placeholder'=>'Enter Your Legal Company Name', 'class'=>'form-control','value'=>$$tmpdata[0]['legal_company_name']]]) ?>
                <?= $form->field($model, 'store_name', ['options'=>[],'inputOptions'=>['placeholder'=>'Enter Your DBA SELLER STORE NAME', 'class'=>'form-control','value'=>$shop_name,'readonly'=>'true']]) ?>
@@ -62,13 +62,13 @@ $annualRevenueOptions = [
                <?= $form->field($model, 'products_type_or_category', ['options'=>[],'inputOptions'=>['placeholder'=>'Enter Your Business Category/Type of Products', 'class'=>'form-control','value'=>$tmpdata[0]['products_type_or_category']]]) ?>
 
 
-               <?= $form->field($model, 'selling_on_walmart', ['options'=>[]])->dropDownList(['yes'=>'Yes','no'=>'No'],['prompt'=>'Choose...','value'=>$tmpdata[0]['selling_on_walmart']])->label('Are you already selling on WalMart Marketplace?'); ?> 
-               <?= $form->field($model, 'selling_on_walmart_source', ['options'=>['style'=>'display:none;']])->dropDownList(['channel_partner'=>'Different Channel Partner','other'=>'Others'],['prompt'=>'Choose...'])->label('How do you integrate with WalMart Marketplace?'); ?>
+               <?= $form->field($model, 'selling_on_tophatter', ['options'=>[]])->dropDownList(['yes'=>'Yes','no'=>'No'],['prompt'=>'Choose...','value'=>$tmpdata[0]['selling_on_tophatter']])->label('Are you already selling on Tophatter Marketplace?'); ?> 
+               <?= $form->field($model, 'selling_on_tophatter_source', ['options'=>['style'=>'display:none;']])->dropDownList(['channel_partner'=>'Different Channel Partner','other'=>'Others'],['prompt'=>'Choose...'])->label('How do you integrate with Tophatter Marketplace?'); ?>
                <?= $form->field($model, 'other_selling_source', ['options'=>['style'=>'display:none;'],'inputOptions'=>['class'=>'form-control']]); ?>
 
-               <?= $form->field($model, 'contact_to_walmart', ['options'=>['style'=>'display:none;']])->dropDownList(['yes'=>'Yes','no'=>'No'],['prompt'=>'Choose...'])->label('Have you contacted WalMart Marketplace before?'); ?>
+               <?= $form->field($model, 'contact_to_tophatter', ['options'=>['style'=>'display:none;']])->dropDownList(['yes'=>'Yes','no'=>'No'],['prompt'=>'Choose...'])->label('Have you contacted Tophatter Marketplace before?'); ?>
 
-               <?= $form->field($model, 'approved_by_walmart', ['options'=>['style'=>'display:none;']])->dropDownList(['yes'=>'Yes','no'=>'No'],['prompt'=>'Choose...'])->label('Have you been approved by WalMart to sell on the Marketplace?'); ?>
+               <?= $form->field($model, 'approved_by_tophatter', ['options'=>['style'=>'display:none;']])->dropDownList(['yes'=>'Yes','no'=>'No'],['prompt'=>'Choose...'])->label('Have you been approved by Tophatter to sell on the Marketplace?'); ?>
 
 
                <?= $form->field($model, 'reference', ['options'=>[]])->dropDownList(['App Store'=>'App Store','Facebook'=>'Facebook','Google'=>'Google','Yahoo'=>'Yahoo','LinkedIn'=>'LinkedIn', 'YouTube'=>'YouTube', 'Other'=>'Other'],['prompt'=>'Choose...'])->label('How did you hear about us?'); ?>
@@ -76,9 +76,9 @@ $annualRevenueOptions = [
                <div class="required">
                     <label class="control-label">Terms and conditions</label>
                     <div class="terms-n-condition">   
-                         <strong>CedCommerce Terms & Conditions and Privacy Policy (WALMART Shopify)</strong><br><br>
+                         <strong>CedCommerce Terms & Conditions and Privacy Policy (TOPHATTER Shopify)</strong><br><br>
                          <p>
-                         CedCommerce, LLC currently provides walmart.com integration functionality with integration into other 
+                         CedCommerce, LLC currently provides tophatter.com integration functionality with integration into other 
                          marketplaces. Our goal is to provide reliable service for a competitive price that helps merchants sell 
                          their products across multiple platforms. We work hard to ensure this service works at its full potential
                          and meet each case with the utmost dedication.<br><br>
@@ -87,10 +87,10 @@ $annualRevenueOptions = [
                          providers that may have other measures in place. Therefore, we cannot guarantee a 100% error free 
                          code or website that is accessible at all times. Our service is not liable for any damages or loss of 
                          income, revenue or data. Additionally, there is no guarantee that the error in code or functionality will 
-                         prevent the suspension or deletion of a walmart.com account.<br><br>
+                         prevent the suspension or deletion of a tophatter.com account.<br><br>
                          As a user of CedCommerce.com, products you are responsible for your account as well as any content
                          related to your account. Furthermore, you agree to use CedCommerce.com in compliance with all 
-                         applicable laws and will in no way violate the walmart.com Terms of Use, API Terms of Use, or Seller 
+                         applicable laws and will in no way violate the tophatter.com Terms of Use, API Terms of Use, or Seller 
                          Agreement. <br><br>
                          Furthermore, CedCommerce do not hold responsibility for any illegal use and reserve the right to 
                          close an account for any reason.<br><br>
@@ -135,7 +135,7 @@ $annualRevenueOptions = [
                          <strong>Usage of the Service</strong><br><br>
                          You are responsible for your account, content, and communications with others while using the 
                          Services. You agree to use the Services in compliance with applicable law. This is your responsibility 
-                         and you agree to not use CedCommerce in a way that violates walmart.com Terms of Use 
+                         and you agree to not use CedCommerce in a way that violates tophatter.com Terms of Use 
                          (https://jet.com/terms-of-use) , it’s API Terms of Use (https://developer.jet.com/tos) or agreemenst 
                          with any other marketplace. By using CedCommerce.com, you agree to not violate any of 
                          marketplace terms. In the event of violating any marketplace rules, we have the right to close your 
@@ -250,7 +250,7 @@ $annualRevenueOptions = [
                     </div>
                </div>
 
-                <?= Html::a('View & Download', Yii::$app->request->baseUrl.'/walmart-policy/walmart-bigcommerce.pdf', ['class'=>'btn btn-primary', 'target'=>'_blank']) ?>               
+                <?= Html::a('View & Download', Yii::$app->request->baseUrl.'/tophatter-policy/tophatter-bigcommerce.pdf', ['class'=>'btn btn-primary', 'target'=>'_blank']) ?>               
                <?= $form->field($model, 'agreement', ['options'=>['data-error'=>'This is Required.']])->checkbox();?>
                
                 <div class="form-group clearfix">
@@ -263,9 +263,9 @@ $annualRevenueOptions = [
 </div>
 
 <script type="text/javascript">
-     var url = "<?= Data::getUrl('walmart-register/save') ?>";
+     var url = "<?= Data::getUrl('tophatter-register/save') ?>";
      var saveFlag = false;
-     $('#walmartregistration-form').on('submit', function(event) {
+     $('#tophatterregistration-form').on('submit', function(event) {
           event.preventDefault();
           $('.top_error').hide();
           $('.top_success').hide();
@@ -295,8 +295,8 @@ $annualRevenueOptions = [
      });
 
      $(".next").on('click', function(){
-          $('#walmartregistration-form').data('yiiActiveForm').submitting = true;
-          var resp = $('#walmartregistration-form').yiiActiveForm('validate');
+          $('#tophatterregistration-form').data('yiiActiveForm').submitting = true;
+          var resp = $('#tophatterregistration-form').yiiActiveForm('validate');
      });
 </script>
 
@@ -305,18 +305,18 @@ $(document).ready(function(){
      //introJs().start();
 
      //hide or show other "hear about us" field.
-     $('#walmartregistration-reference').change(function(){
+     $('#tophatterregistration-reference').change(function(){
         if($(this).val()=='Other') {
-            $('.field-walmartregistration-other_reference').css('display', 'block');
+            $('.field-tophatterregistration-other_reference').css('display', 'block');
         } else {
-            $('#walmartregistration-other_reference').val("");
-            $('.field-walmartregistration-other_reference').css('display', 'none');
+            $('#tophatterregistration-other_reference').val("");
+            $('.field-tophatterregistration-other_reference').css('display', 'none');
         }
      });
 
-     $('input[name="WalmartRegistration[shipping_source][]"]').on('click', function(){
+     $('input[name="TophatterRegistration[shipping_source][]"]').on('click', function(){
           var OtherFlag = false;
-          $('input[name="WalmartRegistration[shipping_source][]"]').each(function(){
+          $('input[name="TophatterRegistration[shipping_source][]"]').each(function(){
                if($(this).is(":checked") && $(this).val()=='Other') {
                     OtherFlag = true;
                }
@@ -329,55 +329,55 @@ $(document).ready(function(){
           }
      });
 
-     $('#walmartregistration-country').change(function(){
+     $('#tophatterregistration-country').change(function(){
         if($(this).val()=='Other') {
-            $('.field-walmartregistration-have_valid_tax').show();
-            $('.field-walmartregistration-usa_warehouse').show();
+            $('.field-tophatterregistration-have_valid_tax').show();
+            $('.field-tophatterregistration-usa_warehouse').show();
         } else {
-            $('#walmartregistration-have_valid_tax').val("");
-            $('#walmartregistration-usa_warehouse').val("");
+            $('#tophatterregistration-have_valid_tax').val("");
+            $('#tophatterregistration-usa_warehouse').val("");
 
-            $('.field-walmartregistration-have_valid_tax').hide();
-            $('.field-walmartregistration-usa_warehouse').hide();
+            $('.field-tophatterregistration-have_valid_tax').hide();
+            $('.field-tophatterregistration-usa_warehouse').hide();
         }
      });
 
-     $('#walmartregistration-selling_on_walmart').change(function(){
+     $('#tophatterregistration-selling_on_tophatter').change(function(){
           if($(this).val()=='yes') {
-               $('.field-walmartregistration-selling_on_walmart_source').show();
+               $('.field-tophatterregistration-selling_on_tophatter_source').show();
 
-               $('.field-walmartregistration-contact_to_walmart').hide();
-               $('.field-walmartregistration-approved_by_walmart').hide();
+               $('.field-tophatterregistration-contact_to_tophatter').hide();
+               $('.field-tophatterregistration-approved_by_tophatter').hide();
 
-               $('#walmartregistration-contact_to_walmart').val("");
-               $('#walmartregistration-approved_by_walmart').val("");
+               $('#tophatterregistration-contact_to_tophatter').val("");
+               $('#tophatterregistration-approved_by_tophatter').val("");
           } 
           else if($(this).val()=='no') {
-               $('.field-walmartregistration-contact_to_walmart').show();
-               $('.field-walmartregistration-approved_by_walmart').show();
+               $('.field-tophatterregistration-contact_to_tophatter').show();
+               $('.field-tophatterregistration-approved_by_tophatter').show();
 
-               $('.field-walmartregistration-selling_on_walmart_source').hide();
-               $('#walmartregistration-selling_on_walmart_source').val("");
+               $('.field-tophatterregistration-selling_on_tophatter_source').hide();
+               $('#tophatterregistration-selling_on_tophatter_source').val("");
           } 
           else {
-               $('.field-walmartregistration-contact_to_walmart').hide();
-               $('#walmartregistration-contact_to_walmart').val("");
+               $('.field-tophatterregistration-contact_to_tophatter').hide();
+               $('#tophatterregistration-contact_to_tophatter').val("");
 
-               $('.field-walmartregistration-approved_by_walmart').hide();
-               $('#walmartregistration-approved_by_walmart').val("");
+               $('.field-tophatterregistration-approved_by_tophatter').hide();
+               $('#tophatterregistration-approved_by_tophatter').val("");
 
-               $('.field-walmartregistration-selling_on_walmart_source').hide();
-               $('#walmartregistration-selling_on_walmart_source').val("");
+               $('.field-tophatterregistration-selling_on_tophatter_source').hide();
+               $('#tophatterregistration-selling_on_tophatter_source').val("");
           }
      });
 
-     $('#walmartregistration-selling_on_walmart_source').change(function(){
+     $('#tophatterregistration-selling_on_tophatter_source').change(function(){
         if($(this).val()=='other') {
-            $('.field-walmartregistration-other_selling_source').show();
+            $('.field-tophatterregistration-other_selling_source').show();
         } else {
-            $('#walmartregistration-other_selling_source').val("");
+            $('#tophatterregistration-other_selling_source').val("");
 
-            $('.field-walmartregistration-other_selling_source').hide();
+            $('.field-tophatterregistration-other_selling_source').hide();
         }
      });
  });

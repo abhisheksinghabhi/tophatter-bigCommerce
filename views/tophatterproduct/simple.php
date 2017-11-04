@@ -1,13 +1,13 @@
 <?php 
-use frontend\modules\walmart\components\AttributeMap;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\AttributeMap;
+use frontend\modules\tophatter\components\Data;
 
 $id=$model->category;
 $product_type=$model->jet_product->type;
 $sku=$model->jet_product->sku;
 $merchant_id= $model->merchant_id;	
-$walmart_attributes=array();
-$walmart_attributes = json_decode($model->walmart_attributes,true);
+$tophatter_attributes=array();
+$tophatter_attributes = json_decode($model->tophatter_attributes,true);
 
 $html='';
 ?>
@@ -43,18 +43,18 @@ if(is_array($attributes) && count($attributes)>0)
 
         $_requiredArr[]=$attr_id;
         $v='';
-        if(count($walmart_attributes)>0 && array_key_exists($attr_id,$walmart_attributes))
+        if(count($tophatter_attributes)>0 && array_key_exists($attr_id,$tophatter_attributes))
         {
             
-            $v = $walmart_attributes[$attr_id][0];
+            $v = $tophatter_attributes[$attr_id][0];
             
         }else{
             //by shivam
 
             $shopify_product_type = $model->jet_product->product_type;
-            $walmart_product_value = \frontend\modules\walmart\components\Data::getAttributevalue($merchant_id,$attr_id,$shopify_product_type);
+            $tophatter_product_value = \frontend\modules\tophatter\components\Data::getAttributevalue($merchant_id,$attr_id,$shopify_product_type);
             
-            $v = $walmart_product_value['attribute_value'];
+            $v = $tophatter_product_value['attribute_value'];
             
         }
     	?>
@@ -118,9 +118,9 @@ if(is_array($optional_attr) && count($optional_attr)>1)
             $value=='modelNumber' || $value=='manufacturerPartNumber' || in_array($value,$_requiredArr))
         continue;
         $v='';
-        if(count($walmart_attributes)>0 && array_key_exists($value,$walmart_attributes))
+        if(count($tophatter_attributes)>0 && array_key_exists($value,$tophatter_attributes))
         {
-            $v = $walmart_attributes[$value][0];
+            $v = $tophatter_attributes[$value][0];
         }
         if(is_array($optionalAttrValues) && count($optionalAttrValues)>0)
 		{
@@ -249,12 +249,12 @@ var csrfToken = j$('meta[name=csrf-token]').attr("content");
 
 <?php   if(Data::getConfigValue($merchant_id, 'advanced_attribute_form')) : ?>
 <?php 
-        if(isset($category_data['walmart_attributes']))
+        if(isset($category_data['tophatter_attributes']))
         {
-            $advanced_attributes_values = !empty($category_data['walmart_attribute_values'])?$category_data['walmart_attribute_values']:'[]';
+            $advanced_attributes_values = !empty($category_data['tophatter_attribute_values'])?$category_data['tophatter_attribute_values']:'[]';
             $advanced_attributes_values = json_decode($advanced_attributes_values,true);
 
-            $advanced_attributes = $category_data['walmart_attributes'];
+            $advanced_attributes = $category_data['tophatter_attributes'];
             $advanced_attributes = explode(',', $advanced_attributes);
 
             $common_attr_values = array();
@@ -267,11 +267,11 @@ var csrfToken = j$('meta[name=csrf-token]').attr("content");
                 $skip_attrs = ['swatchImages', 'variantGroupId', 'variantAttributeNames', 'isPrimaryVariant', 'brand'];
 ?>
             <div class="">
-                <table class="walmart-table table-striped table-bordered">
+                <table class="tophatter-table table-striped table-bordered">
                     <thead>
                         <tr>
                             <td colspan="2">
-                                <b>Walmart Advanced Attributes</b>
+                                <b>Tophatter Advanced Attributes</b>
                                 <span style="float: right; margin-right: 50px;" id="toggle_advanced_attr">
                                     <!-- <img height="30" width="30" src="<?= yii::$app->request->baseUrl.'/images/arrow_down.png' ?>"> -->
                                     <span id="open">open</span>
@@ -284,7 +284,7 @@ var csrfToken = j$('meta[name=csrf-token]').attr("content");
             </div>
 
             <div class="advanced_attributes_Wrapper" style="display: none;">
-                <table class="walmart-table table-striped table-bordered simple_php">
+                <table class="tophatter-table table-striped table-bordered simple_php">
                     <tbody>
             <?php   
                     foreach ($advanced_attributes as $attribute) 

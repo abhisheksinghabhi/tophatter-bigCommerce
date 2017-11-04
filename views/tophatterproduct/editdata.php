@@ -1,17 +1,17 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\WalmartPromoStatus;
-use frontend\modules\walmart\components\Appinstall;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\TophatterPromoStatus;
+use frontend\modules\tophatter\components\Appinstall;
 
 $shopUrl = [];
 $tax_code = Data::GetTaxCode($model, MERCHANT_ID);
-$query = "SELECT `shop_url` from `walmart_shop_details` where `merchant_id`=" . MERCHANT_ID;
+$query = "SELECT `shop_url` from `tophatter_shop_details` where `merchant_id`=" . MERCHANT_ID;
 $shopUrl = Data::sqlRecords($query, 'one');
 
-$query2 = "SELECT * FROM `walmart_product` WHERE `product_id` = '".$model->product_id."' AND `merchant_id` =" . MERCHANT_ID ;
-$walmartproduct = Data::sqlRecords($query2, 'one');
+$query2 = "SELECT * FROM `tophatter_product` WHERE `product_id` = '".$model->product_id."' AND `merchant_id` =" . MERCHANT_ID ;
+$tophatterproduct = Data::sqlRecords($query2, 'one');
 
 $shop_url = is_array($shopUrl) && isset($shopUrl['shop_url']) ? trim($shopUrl['shop_url']) : "";
 if (!$tax_code) {
@@ -44,7 +44,7 @@ if (is_null($model->self_description) || $model->self_description == '')
                     <div class="jet-product-form">
                         <?php $form = ActiveForm::begin([
                             'id' => 'jet_edit_form',
-                            'action' => frontend\modules\walmart\components\Data::getUrl('walmartproduct/updateajax/?id=' . $model->product_id),
+                            'action' => frontend\modules\tophatter\components\Data::getUrl('tophatterproduct/updateajax/?id=' . $model->product_id),
                             'method' => 'post',
                         ]); ?>
                         <div class="form-group">
@@ -78,10 +78,10 @@ if (is_null($model->self_description) || $model->self_description == '')
                                         <td>
                                             <?/*= $model->jet_product->title; */?>
                                             <div class="public">
-                                            	<input class="form-control walmart-title" type="text"
-                                                   id="walmart_product_title" name="walmart_product_title"
-                                                   value="<?php if(isset($walmartproduct['product_title']) && !empty($walmartproduct['product_title'])){
-                                                       echo $walmartproduct['product_title'];
+                                            	<input class="form-control tophatter-title" type="text"
+                                                   id="tophatter_product_title" name="tophatter_product_title"
+                                                   value="<?php if(isset($tophatterproduct['product_title']) && !empty($tophatterproduct['product_title'])){
+                                                       echo $tophatterproduct['product_title'];
                                                         }else{
                                                        echo $model->jet_product->title;
                                                        }  ?>">
@@ -99,24 +99,24 @@ if (is_null($model->self_description) || $model->self_description == '')
                                                 <?/*= $model->jet_product->qty; */?>
                                                 <div>
                                                     <div class="pull-left">
-                                                        <!--<input class="form-control walmart-inventory" type="text"
-                                                               id="walmart_product_inventory" name="walmart_product_inventory"
-                                                               value="<?php /*if(isset($walmartproduct['product_qty']) && !empty($walmartproduct['product_qty'])){
-                                                            echo $walmartproduct['product_qty'];
+                                                        <!--<input class="form-control tophatter-inventory" type="text"
+                                                               id="tophatter_product_inventory" name="tophatter_product_inventory"
+                                                               value="<?php /*if(isset($tophatterproduct['product_qty']) && !empty($tophatterproduct['product_qty'])){
+                                                            echo $tophatterproduct['product_qty'];
                                                         }else{
                                                             echo $model->jet_product->qty;
                                                         }  */?>">-->
                                                         <div class="public">
-                                                        <input class="form-control walmart-inventory" type="text"
-                                                               id="walmart_product_inventory" name="walmart_product_inventory"
+                                                        <input class="form-control tophatter-inventory" type="text"
+                                                               id="tophatter_product_inventory" name="tophatter_product_inventory"
                                                                value="<?php
                                                                    echo $model->jet_product->qty;
                                                                  ?>">
                                                                  </div>
                                                     </div>
                                                     <div class="pull-left">
-                                                        <button class="toggle_editor walmart-inventory-button" type="button"
-                                                                onClick="walmartInventory(this);" title="Upload On Walmart" product-id="<?= $model->product_id ?>" product-type="<?= 'simple' ?>"
+                                                        <button class="toggle_editor tophatter-inventory-button" type="button"
+                                                                onClick="tophatterInventory(this);" title="Upload On tophatter" product-id="<?= $model->product_id ?>" product-type="<?= 'simple' ?>"
                                                                 option-id="<?= '' ?>" sku="<?= $model->jet_product->sku ?>"
                                                                 option-inventory="<?= (float)$model->jet_product->qty; ?>" fulfillmentLagTime="<?= $model->fulfillment_lag_time ?>">Update
                                                         </button>
@@ -158,14 +158,14 @@ if (is_null($model->self_description) || $model->self_description == '')
                                     <th>
                                         Short Description
                                         &nbsp;&nbsp;
-                                        <button type="button" onClick="toggleEditor1(this);" class="toggle_editor walmart-inventory-button">
+                                        <button type="button" onClick="toggleEditor1(this);" class="toggle_editor tophatter-inventory-button">
                                             Show/Hide Editor
                                         </button>
                                     </th>
                                     <th>
                                         Self Description
                                         &nbsp;&nbsp;
-                                        <button type="button" onClick="toggleEditor2(this);" class="toggle_editor walmart-inventory-button">
+                                        <button type="button" onClick="toggleEditor2(this);" class="toggle_editor tophatter-inventory-button">
                                             Show/Hide Editor
                                         </button>
                                     </th>
@@ -192,7 +192,7 @@ if (is_null($model->self_description) || $model->self_description == '')
                                             </div>
                                             <span class="text-validator">To get product tax code click <a
                                                         target="_blank"
-                                                        href="<?= yii\helpers\Url::toRoute(['walmarttaxcodes/index']); ?>">here</span>
+                                                        href="<?= yii\helpers\Url::toRoute(['tophattertaxcodes/index']); ?>">here</span>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -280,18 +280,18 @@ if (is_null($model->self_description) || $model->self_description == '')
                                                     <div>
                                                         <div class="pull-left">
                                                         <div class="public">
-                                                            <input class="form-control walmart-price" type="text"
-                                                                   id="walmart_product_price" name="walmart_product_price"
-                                                                   value="<?php if(isset($walmartproduct['product_price']) && !empty($walmartproduct['product_price'])){
-                                                                       echo $walmartproduct['product_price'];
+                                                            <input class="form-control tophatter-price" type="text"
+                                                                   id="tophatter_product_price" name="tophatter_product_price"
+                                                                   value="<?php if(isset($tophatterproduct['product_price']) && !empty($Tophatterproduct['product_price'])){
+                                                                       echo $tophatterproduct['product_price'];
                                                                    }else{
                                                                        echo $model->jet_product->price;
                                                                    }  ?>">
                                                                    </div>
                                                         </div>
                                                         <div class="pull-left">
-                                                            <button class="toggle_editor walmart-price-button" type="button"
-                                                                    onClick="walmartPrice(this);" title="Upload On Walmart" product-id="<?= $model->product_id ?>" product-type="<?= 'simple' ?>"
+                                                            <button class="toggle_editor tophatter-price-button" type="button"
+                                                                    onClick="tophatterPrice(this);" title="Upload On Tophatter" product-id="<?= $model->product_id ?>" product-type="<?= 'simple' ?>"
                                                                     option-id="<?= '' ?>" sku="<?= $model->jet_product->sku ?>"
                                                                     option-price="<?= (float)$model->jet_product->price; ?>" >Update
                                                             </button>
@@ -303,7 +303,7 @@ if (is_null($model->self_description) || $model->self_description == '')
                                                        class="variant-price" product-id="<?= $model->product_id ?>"
                                                        option-id="<?= '' ?>" sku="<?= $model->jet_product->sku ?>"
                                                        option-price="<?= (float)$model->jet_product->price; ?>">
-                                                        <?php if (WalmartPromoStatus::promotionRulesExist($model->jet_product->sku, MERCHANT_ID)) { ?>
+                                                        <?php if (TophatterPromoStatus::promotionRulesExist($model->jet_product->sku, MERCHANT_ID)) { ?>
                                                             Edit Promotional Price
                                                         <?php } else { ?>
                                                             Add Promotional Price
@@ -336,7 +336,7 @@ if (is_null($model->self_description) || $model->self_description == '')
 <!--                                <div id="common_attributes_Wrapper">-->
 
                                 <!--end by shivam-->
-                                    <table class="table table-striped table-bordered ced-walmart-custome-tbl">
+                                    <table class="table table-striped table-bordered ced-tophatter-custome-tbl">
                                         <thead>
                                             <tr>
                                                 <th>Shipping Allowed</th>
@@ -453,7 +453,7 @@ if (is_null($model->self_description) || $model->self_description == '')
                     <?= Html::submitButton('Save', ['class' => 'btn btn-primary', 'id' => 'saveedit', 'onclick' => 'saveData()']) ?>
                     <?php if ($shop_url != "") {
                         $bigcomClient = new Appinstall();
-    	                $checkdetails = $bigcomClient->storedetails(WALMART_APP_KEY,TOKEN,STOREHASH);
+    	                $checkdetails = $bigcomClient->storedetails(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
                         $secure_url=$checkdetails['secure_url'];
                     
                     ?>
@@ -511,7 +511,7 @@ if (is_null($model->self_description) || $model->self_description == '')
     });
 
     function close(){
-    	 $('#edit_walmart_product #myModal').modal('hide');
+    	 $('#edit_tophatter_product #myModal').modal('hide');
     }
     function saveData() {
         var postData = j$("#jet_edit_form").serializeArray();
@@ -628,7 +628,7 @@ if (is_null($model->self_description) || $model->self_description == '')
 
 <!-- Code By Himanshu Start -->
 <?php
-$categoryTabUrl = Data::getUrl('walmartproduct/render-category-tab');
+$categoryTabUrl = Data::getUrl('tophatterproduct/render-category-tab');
 ?>
 <script type="text/javascript">
     j$(document).ready(function () {
@@ -761,9 +761,9 @@ $sync_fields = [
                     
                     <?php if ($model->status != "Not Uploaded") {?>
                         <h4>Are you sure?</h4>
-                    <input type="checkbox" name="retire" value="1" id="retire-from-walmart"/>
+                    <input type="checkbox" name="retire" value="1" id="retire-from-tophatter"/>
                     <label style="font-weight:normal; font-size:14px;" for="retire-from-walmar">Delete(Retire) this
-                        Product from app and Walmart?</label>
+                        Product from app and Tophatter?</label>
                     <?php } else {?>
                         <label style="font-weight:bold; font-size:16px;" for="retire-from-walmar"> Are you sure want to delete this product from app?</label>
                     <?php } ?>  
@@ -779,16 +779,16 @@ $sync_fields = [
 
 <?php
 $merchant_id = MERCHANT_ID;
-$urlWalmartPromotions = \yii\helpers\Url::toRoute(['walmartproduct/promotions']);
-$urlWalmartPrice = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmartprice']);
-$urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmartinventory']);
+$urlTophatterPromotions = \yii\helpers\Url::toRoute(['tophatterproduct/promotions']);
+$urlTophatterPrice = \yii\helpers\Url::toRoute(['tophatterproduct/updatetophatterprice']);
+$urlTophatterInventory = \yii\helpers\Url::toRoute(['tophatterproduct/updatetophatterinventory']);
 
 ?>
 <script type="text/javascript">
 
     var csrfToken = $('meta[name="csrf-token"]').attr("content");
     function priceEdit(element) {
-        var url = '<?= $urlWalmartPromotions; ?>';
+        var url = '<?= $urlTophatterPromotions; ?>';
         var merchant_id = '<?= $merchant_id;?>';
         //j$('#LoadingMSG').show();
         $.ajax({
@@ -807,7 +807,7 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
                 //console.log(msg);
                 $('#LoadingMSG').hide();
                 $('#price-edit').html(msg);
-                //j$('#edit_walmart_product').css("display","block");
+                //j$('#edit_tophatter_product').css("display","block");
                 /*$('#price-edit #price-edit-modal').modal({
                  // keyboard: false,
                  //backdrop: 'static'
@@ -815,7 +815,7 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
 
                 $('body').attr('data-promo', 'show');
                 $('#edit-modal-close').click();
-                $("#edit_walmart_product #myModal").on('hidden.bs.modal', function () {
+                $("#edit_tophatter_product #myModal").on('hidden.bs.modal', function () {
                     if ($('body').attr('data-promo') == 'show') {
                         $('#price-edit #price-edit-modal').modal('show');
                         $('body').removeAttr('data-promo');
@@ -831,11 +831,11 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
         $('#myModal').modal('hide');
     }
 
-    function walmartPrice(element) {
+    function tophatterPrice(element) {
 
-        var price= $('#walmart_product_price'+element.getAttribute('option-id')).val();
+        var price= $('#tophatter_product_price'+element.getAttribute('option-id')).val();
 
-        var url = '<?= $urlWalmartPrice; ?>';
+        var url = '<?= $urlTophatterPrice; ?>';
         var merchant_id = '<?= $merchant_id;?>';
         $.ajax({
             method: "post",
@@ -856,7 +856,7 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
             .done(function (msg) {
                 if (msg.success) {
                     j$('.v_success_msg').html('');
-                    j$('.v_success_msg').append("Price Updated On Walmart Successfully.");
+                    j$('.v_success_msg').append("Price Updated On Tophatter Successfully.");
                     j$('.v_error_msg').hide();
                     j$('.v_success_msg').show();
                 }
@@ -877,11 +877,11 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
 
     }
 
-    function walmartInventory(element) {
+    function tophatterInventory(element) {
 
-        var inventory= $('#walmart_product_inventory'+element.getAttribute('option-id')).val();
+        var inventory= $('#tophatter_product_inventory'+element.getAttribute('option-id')).val();
 
-        var url = '<?= $urlWalmartInventory; ?>';
+        var url = '<?= $urlTophatterInventory; ?>';
         var merchant_id = '<?= $merchant_id;?>';
         $.ajax({
             method: "post",
@@ -902,7 +902,7 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
             .done(function (msg) {
                 if (msg.success) {
                     j$('.v_success_msg').html('');
-                    j$('.v_success_msg').append("Inventory Updated On Walmart Successfully.");
+                    j$('.v_success_msg').append("Inventory Updated On Tophatter Successfully.");
                     j$('.v_error_msg').hide();
                     j$('.v_success_msg').show();
                 }
@@ -929,7 +929,7 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
     function editDescription(event) {
         $('body').attr('data-desc', 'show');
         $('#edit-modal-close').click();
-        $("#edit_walmart_product #myModal").on('hidden.bs.modal', function () {
+        $("#edit_tophatter_product #myModal").on('hidden.bs.modal', function () {
             if ($('body').attr('data-desc') == 'show') {
                 $('#description-edit #description-edit-modal').modal('show');
                 $('body').removeAttr('data-desc');
@@ -941,7 +941,7 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
         });
 
         $("#description-edit #description-edit-modal").on('hidden.bs.modal', function () {
-            $('#edit_walmart_product #myModal').modal('show');
+            $('#edit_tophatter_product #myModal').modal('show');
         });
     }
 
@@ -952,7 +952,7 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
         var nicInstance = nicEditors.findEditor('textarea-description');
         var description = nicInstance.getContent();
 
-        var url = "<?= Data::getUrl('walmartproduct/save-description') ?>";
+        var url = "<?= Data::getUrl('tophatterproduct/save-description') ?>";
         var productId = $("#productid").val();
 
         $.ajax({
@@ -1034,7 +1034,7 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
     function cnfrmSync() {
         $('body').attr('data-sync', 'show');
         $('#edit-modal-close').click();
-        $("#edit_walmart_product #myModal").on('hidden.bs.modal', function () {
+        $("#edit_tophatter_product #myModal").on('hidden.bs.modal', function () {
             if ($('body').attr('data-sync') == 'show') {
                 $('#sync').modal('show');
                 $('body').removeAttr('data-sync');
@@ -1049,7 +1049,7 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
         });
 
         $("#sync").on('hidden.bs.modal', function () {
-            $('#edit_walmart_product #myModal').modal('show');
+            $('#edit_tophatter_product #myModal').modal('show');
         });
     }
 
@@ -1064,7 +1064,7 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
         if (selectCount) {
             $('#sync-cancel').click();
             $('#LoadingMSG').show();
-            var url = "<?= Data::getUrl('walmartscript/bigcomproductsync') ?>";
+            var url = "<?= Data::getUrl('tophatterscript/bigcomproductsync') ?>";
             var productId = $("#productid").val();
 
             var fields = $("#sync-fields-form").serialize();
@@ -1098,7 +1098,7 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
     function cnfrmDelete() {
         $('body').attr('data-cnfrmdel', 'show');
         $('#edit-modal-close').click();
-        $("#edit_walmart_product #myModal").on('hidden.bs.modal', function () {
+        $("#edit_tophatter_product #myModal").on('hidden.bs.modal', function () {
             if ($('body').attr('data-cnfrmdel') == 'show') {
                 $('#confirm-delete').modal('show');
                 $('body').removeAttr('data-cnfrmdel');
@@ -1106,7 +1106,7 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
         });
 
         $("#confirm-delete").on('hidden.bs.modal', function () {
-            $('#edit_walmart_product #myModal').modal('show');
+            $('#edit_tophatter_product #myModal').modal('show');
         });
     }
 
@@ -1114,10 +1114,10 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
         j$('#close-cnfrm-modal').click();
         j$('#LoadingMSG').show();
         //alert('Click OK for confirmation for deletion');
-        var url = "<?= Data::getUrl('walmartscript/deleteproduct') ?>";
+        var url = "<?= Data::getUrl('tophatterscript/deleteproduct') ?>";
         var productId = $("#productid").val();
         var Retire = 0;
-        if ($("#retire-from-walmart").is(":checked")) {
+        if ($("#retire-from-tophatter").is(":checked")) {
             Retire = 1;
         }
 
@@ -1146,13 +1146,13 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
 </script>
 
 <style>
-    .walmart-price {
+    .tophatter-price {
         width: 50px;
     }
-    .walmart-inventory {
+    .tophatter-inventory {
         width: 50px;
     }
-    .walmart-price-button
+    .tophatter-price-button
     {
         background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #73efed 0%, #3b67dd 100%) repeat scroll 0 0;
         border: 1px solid #f2f2f2;
@@ -1163,7 +1163,7 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
         text-transform: capitalize;
         transition: all 0.2s ease 0s;
     }
-    .walmart-inventory-button
+    .tophatter-inventory-button
     {
         background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #73efed 0%, #3b67dd 100%) repeat scroll 0 0;
         border: 1px solid #f2f2f2;
@@ -1178,10 +1178,10 @@ $urlWalmartInventory = \yii\helpers\Url::toRoute(['walmartproduct/updatewalmarti
     .modal-lg{
         width: 1024px !important;
     }
-    .walmart_price{
+    .tophatter_price{
         width: 151px;
     }
-    .walmart_inventory{
+    .tophatter_inventory{
         width: 151px;
     }
 	.field-jetproduct .public input {

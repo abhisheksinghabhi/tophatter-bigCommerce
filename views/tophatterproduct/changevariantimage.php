@@ -1,9 +1,9 @@
 <?php 
 
 use yii\helpers\Html;
-use frontend\modules\walmart\controllers\WalmartproductController as bigcomwal;
+use frontend\modules\tophatter\controllers\tophatterproductController as bigcomwal;
 $updateurlimage='';
-$updateurlimage= yii\helpers\Url::toRoute(['walmartproduct/savevariantimage']);
+$updateurlimage= yii\helpers\Url::toRoute(['tophatterproduct/savevariantimage']);
 
 /* echo "<pre>";
 print_r($collection);
@@ -39,7 +39,7 @@ die; */
 							
 							//print_r($product);die("gf");
 							
-							//$product=WalmartproductController::actionAddcustomproduct($value['bigproduct_id']);
+							//$product=tophatterproductController::actionAddcustomproduct($value['bigproduct_id']);
 							
 							
 							$img=explode(',',$value['additional_images']);

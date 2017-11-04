@@ -8,10 +8,10 @@
 $succes_img = Yii::$app->request->baseUrl . '/frontend/images/batchupload/fam_bullet_success.gif';
 $error_img = Yii::$app->request->baseUrl . '/frontend/images/batchupload/error_msg_icon.gif';
 $loader_img = Yii::$app->request->baseUrl . '/frontend/images/batchupload/rule-ajax-loader.gif';
-$ipmort_url = Yii::$app->request->baseUrl . '/walmart/walmartproduct/index';
+$ipmort_url = Yii::$app->request->baseUrl . '/tophatter/tophatterproduct/index';
 
-$url = \yii\helpers\Url::toRoute(['/walmart/walmartproduct/shopifyproductsync']);
-$productUrl = \yii\helpers\Url::toRoute(['/walmart/walmartproduct/index']);
+$url = \yii\helpers\Url::toRoute(['/tophatter/tophatterproduct/shopifyproductsync']);
+$productUrl = \yii\helpers\Url::toRoute(['/tophatter/tophatterproduct/index']);
 
 ?>
 <style type="text/css">

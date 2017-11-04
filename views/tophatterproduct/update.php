@@ -5,12 +5,12 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\WalmartProduct */
 
-$this->title = 'Update Walmart Product: ' . ' ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Walmart Products', 'url' => ['index']];
+$this->title = 'Update Tophatter Product: ' . ' ' . $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Tophatter Products', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="walmart-product-update">
+<div class="tophatter-product-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

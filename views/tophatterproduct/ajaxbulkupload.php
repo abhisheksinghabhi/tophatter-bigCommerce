@@ -4,8 +4,8 @@ use yii\helpers\Html;
 	$error_img = yii::$app->request->baseUrl.'/frontend/images/batchupload/error_msg_icon.gif';
 	$loader_img = yii::$app->request->baseUrl.'/frontend/images/batchupload/rule-ajax-loader.gif';
 
-	$url = \frontend\modules\walmart\components\Data::getUrl('walmartproduct/startbatchupload');
-	$backUrl = \frontend\modules\walmart\components\Data::getUrl('walmartproduct/index');
+	$url = \frontend\modules\tophatter\components\Data::getUrl('tophatterproduct/startbatchupload');
+	$backUrl = \frontend\modules\tophatter\components\Data::getUrl('tophatterproduct/index');
 ?>
 <style type="text/css" >
    .shopify-api ul { list-style-type:none; padding:0; margin:0; }
