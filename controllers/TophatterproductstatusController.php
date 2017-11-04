@@ -1,13 +1,13 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use frontend\modules\walmart\components\BigcommerceClientHelper;
+use frontend\modules\tophatter\components\BigcommerceClientHelper;
 
-class WalmartproductstatusController extends WalmartmainController
+class TophatterproductstatusController extends TophattermainController
 {
 	public function actionGetproduct()
     {

@@ -1,17 +1,17 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
-use frontend\modules\walmart\models\WalmartProductVariants;
-use frontend\modules\walmart\models\WalmartProductVariantsSearch;
+use frontend\modules\tophatter\models\TophatterTaxCodes;
+use frontend\modules\tophatter\models\TophatterTaxCodesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * WalmartproductvariantsController implements the CRUD actions for WalmartProductVariants model.
+ * WalmarttaxcodesController implements the CRUD actions for WalmartTaxCodes model.
  */
-class WalmartproductvariantsController extends Controller
+class TophattertaxcodesController extends TophattermainController
 {
     public function behaviors()
     {
@@ -26,14 +26,17 @@ class WalmartproductvariantsController extends Controller
     }
 
     /**
-     * Lists all WalmartProductVariants models.
+     * Lists all WalmartTaxCodes models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new WalmartProductVariantsSearch();
+        if (Yii::$app->user->isGuest) {
+            return \Yii::$app->getResponse()->redirect(\Yii::$app->getUser()->loginUrl);
+        }
+        $searchModel = new TophatterTaxCodesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $dataProvider->pagination->pageSize=100;
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -41,7 +44,7 @@ class WalmartproductvariantsController extends Controller
     }
 
     /**
-     * Displays a single WalmartProductVariants model.
+     * Displays a single WalmartTaxCodes model.
      * @param integer $id
      * @return mixed
      */
@@ -53,13 +56,13 @@ class WalmartproductvariantsController extends Controller
     }
 
     /**
-     * Creates a new WalmartProductVariants model.
+     * Creates a new WalmartTaxCodes model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new WalmartProductVariants();
+        $model = new TophatterTaxCodes();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -71,7 +74,7 @@ class WalmartproductvariantsController extends Controller
     }
 
     /**
-     * Updates an existing WalmartProductVariants model.
+     * Updates an existing WalmartTaxCodes model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -90,7 +93,7 @@ class WalmartproductvariantsController extends Controller
     }
 
     /**
-     * Deletes an existing WalmartProductVariants model.
+     * Deletes an existing WalmartTaxCodes model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -103,15 +106,15 @@ class WalmartproductvariantsController extends Controller
     }
 
     /**
-     * Finds the WalmartProductVariants model based on its primary key value.
+     * Finds the WalmartTaxCodes model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return WalmartProductVariants the loaded model
+     * @return WalmartTaxCodes the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = WalmartProductVariants::findOne($id)) !== null) {
+        if (($model = TophatterTaxCodes::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

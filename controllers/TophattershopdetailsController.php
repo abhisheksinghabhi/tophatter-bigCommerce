@@ -1,9 +1,9 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
-use frontend\modules\walmart\models\WalmartShopDetails;
-use frontend\modules\walmart\models\WalmartShopDetailsSearch;
+use frontend\modules\tophatter\models\TophatterShopDetails;
+use frontend\modules\tophatter\models\TophatterShopDetailsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -11,7 +11,7 @@ use yii\filters\VerbFilter;
 /**
  * WalmartshopdetailsController implements the CRUD actions for WalmartShopDetails model.
  */
-class WalmartshopdetailsController extends Controller
+class TophattershopdetailsController extends Controller
 {
     public function behaviors()
     {
@@ -31,7 +31,7 @@ class WalmartshopdetailsController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new WalmartShopDetailsSearch();
+        $searchModel = new TophatterShopDetailsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -59,7 +59,7 @@ class WalmartshopdetailsController extends Controller
      */
     public function actionCreate()
     {
-        $model = new WalmartShopDetails();
+        $model = new TophatterShopDetails();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -111,7 +111,7 @@ class WalmartshopdetailsController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = WalmartShopDetails::findOne($id)) !== null) {
+        if (($model = TophatterShopDetails::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

@@ -1,11 +1,11 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use yii\web\Controller;
-use frontend\modules\walmart\models\WalmartRegistration;
+use frontend\modules\tophatter\models\TophatterRegistration;
 
-class WalmartRegisterController extends Controller
+class TophatterRegisterController extends Controller
 {
 	public function beforeAction($action)
     {
@@ -16,18 +16,18 @@ class WalmartRegisterController extends Controller
 	public function actionSave()
 	{
 
-		$model = new WalmartRegistration();
+		$model = new TophatterRegistration();
 		$post = Yii::$app->request->post();
 		//print_r($post);die("fdf");
 	    if ($post) 
 	    {
 		    $merchant_id = Yii::$app->user->identity->id;
-		    $post['WalmartRegistration']['shipping_source'] = json_encode($post['WalmartRegistration']['shipping_source']);
-		    $post['WalmartRegistration']['merchant_id'] = $merchant_id;
+		    $post['TophatterRegistration']['shipping_source'] = json_encode($post['TophatterRegistration']['shipping_source']);
+		    $post['TophatterRegistration']['merchant_id'] = $merchant_id;
 		    //var_dump($model->validate());die;
 		    try
 		    {
-			    $isExist = WalmartRegistration::find()->where(['merchant_id'=>$merchant_id])->one();
+			    $isExist = TophatterRegistration::find()->where(['merchant_id'=>$merchant_id])->one();
 		    	if(is_null($isExist))
 		    	{
 				    if ($model->load($post) && $model->validate()) {

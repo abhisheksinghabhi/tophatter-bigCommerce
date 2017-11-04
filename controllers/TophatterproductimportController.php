@@ -1,17 +1,17 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\BigcommerceClientHelper;
-use frontend\modules\walmart\components\Jetproductinfo;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\BigcommerceClientHelper;
+use frontend\modules\tophatter\components\Jetproductinfo;
 
-class WalmartproductimportController extends Controller
+class TophatterproductimportController extends Controller
 {
 
-    protected $bigcom, $walmartHelper;
+    protected $bigcom, $tophatterHelper;
     const MAX_CUSTOM_PRODUCT_IMPORT_PER_REQUEST = 50;   
     protected $connection;
 
@@ -30,7 +30,7 @@ class WalmartproductimportController extends Controller
     {
         Yii::$app->request->enableCsrfValidation = false;
         $merchant_id = Yii::$app->user->identity->id;
-        $shopDetails = Data::getWalmartShopDetails($merchant_id);
+        $shopDetails = Data::getTophatterShopDetails($merchant_id);
         $shop = Yii::$app->user->identity->username;
         $store_hash=Yii::$app->user->identity->store_hash;
         $token = isset($shopDetails['token'])?$shopDetails['token']:'';
@@ -38,7 +38,7 @@ class WalmartproductimportController extends Controller
         define("SHOP", $shop);
         define("TOKEN", $token);
         define("STOREHASH",$store_hash);
-        $this->bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,$token,STOREHASH);
+        $this->bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,$token,STOREHASH);
 
         return parent::beforeAction($action);
     }
@@ -250,7 +250,7 @@ class WalmartproductimportController extends Controller
         $allowedSelectValues = ['any', 'published'];
         if($merchantId && in_array($select, $allowedSelectValues))
         {
-            $shopDetails = Data::getWalmartShopDetails($merchantId);
+            $shopDetails = Data::getTophatterShopDetails($merchantId);
 
             $connection = Yii::$app->getDb();
             if(!defined('MERCHANT_ID'))
@@ -476,7 +476,7 @@ class WalmartproductimportController extends Controller
             $sameSkuArray=$session[$merchant_id.'batchsamesku'];
         }
         $limit = isset($_REQUEST['limit'])?$_REQUEST['limit']:250;
-        $shopDetails = Data::getWalmartShopDetails($merchant_id);
+        $shopDetails = Data::getTophatterShopDetails($merchant_id);
         try
         {
             $sc = "";

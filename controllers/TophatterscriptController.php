@@ -1,19 +1,19 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\models\WalmartProduct;
-use frontend\modules\walmart\components\Jetappdetails;
-use frontend\modules\walmart\components\Walmartapi;
-use frontend\modules\walmart\components\WalmartCategory;
-use frontend\modules\walmart\components\WalmartRepricing;
-use frontend\modules\walmart\components\BigcommerceClientHelper;
-use frontend\modules\walmart\components\Jetproductinfo;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\models\TophatterProduct;
+use frontend\modules\tophatter\components\Jetappdetails;
+use frontend\modules\tophatter\components\Tophatterapi;
+use frontend\modules\tophatter\components\TophatterCategory;
+use frontend\modules\tophatter\components\TophatterRepricing;
+use frontend\modules\tophatter\components\BigcommerceClientHelper;
+use frontend\modules\tophatter\components\Jetproductinfo;
 
-class WalmartscriptController extends WalmartmainController
+class TophatterscriptController extends TophattermainController
 {
 	const MAX_SHORT_DESCRIPTION = 1000;
 	const MAX_SHELF_DESCRIPTION = 1000;
@@ -33,13 +33,13 @@ class WalmartscriptController extends WalmartmainController
 			$merchant_id = MERCHANT_ID;
 
             try {
-            	$walmartApi = new Walmartapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
+            	$tophatterApi = new Tophatterapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
 
             	$errors = [];
 
             	foreach ($product_ids as $product_id) {
 
-            		$productData = WalmartRepricing::getProductData($product_id);
+            		$productData = TophatterRepricing::getProductData($product_id);
 
             		
             		if($productData && isset($productData['type']))
@@ -47,11 +47,11 @@ class WalmartscriptController extends WalmartmainController
             			if($productData['type'] == 'simple')
             			{
             				$deleteProductFlag = false;
-            				if($retire && $productData['status'] != WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED)
+            				if($retire && $productData['status'] != TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED)
             				{
             					$sku = $productData['sku'];
 	            				$feed_data = [];
-	            				$feed_data = $walmartApi->retireProduct($sku);
+	            				$feed_data = $tophatterApi->retireProduct($sku);
 
 			                    if(isset($feed_data['ItemRetireResponse']))
 			                    {
@@ -61,7 +61,7 @@ class WalmartscriptController extends WalmartmainController
 			                    {
 			                        if(isset($feed_data['errors']['error']['code']) && $feed_data['errors']['error']['code'] == "CONTENT_NOT_FOUND.GMP_ITEM_INGESTOR_API" && $feed_data['errors']['error']['field'] == "sku")
 			                        {
-			                            $errors[$sku][] = $sku.' : Product not Uploaded on Walmart.';
+			                            $errors[$sku][] = $sku.' : Product not Uploaded on Tophatter.';
 			                        }
 			                        else
 			                        {
@@ -82,7 +82,7 @@ class WalmartscriptController extends WalmartmainController
             			}
             			elseif($productData['type'] == 'variants')
             			{
-            				$productVariants = WalmartRepricing::getProductVariants($product_id);
+            				$productVariants = TophatterRepricing::getProductVariants($product_id);
             				if($productVariants)
             				{
 						if($retire)
@@ -92,10 +92,10 @@ class WalmartscriptController extends WalmartmainController
 	            					foreach ($productVariants as $variant) {
 	            						$sku = $variant['option_sku'];
 
-	            						if($variant['status']!=WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED)
+	            						if($variant['status']!=TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED)
 	            						{
 		            						$feed_data = [];
-		            						$feed_data = $walmartApi->retireProduct($sku);
+		            						$feed_data = $tophatterApi->retireProduct($sku);
 
 						    		   if(isset($feed_data['ItemRetireResponse']))
 						                    {
@@ -176,7 +176,7 @@ class WalmartscriptController extends WalmartmainController
     		{
 				
 	            if($this->bigcom)
-	                $this->bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+	                $this->bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
 	            
 	            $limit = 250;
 	            $import_option = Data::getConfigValue($merchant_id, 'import_product_option');
@@ -297,27 +297,27 @@ class WalmartscriptController extends WalmartmainController
     {
     	$merchant_id = '';
 
-    	$query = "SELECT `product_id` FROM `walmart_product`";
+    	$query = "SELECT `product_id` FROM `tophatter_product`";
 
     	if($merchant_id != '')
     		$query .=  " WHERE merchant_id=".$merchant_id;
 
-		$walmart_data  = Data::sqlRecords($query, "all", "select");
+		$tophatter_data  = Data::sqlRecords($query, "all", "select");
 
-		$walmart_skus = '';
-		if($walmart_data && is_array($walmart_data) && count($walmart_data))
+		$tophatter_skus = '';
+		if($tophatter_data && is_array($tophatter_data) && count($tophatter_data))
 		{
-			foreach ($walmart_data as $key=>$_walmart) {
-				$walmart_skus .= $_walmart['product_id'];
-				if(isset($walmart_data[$key+1]))
-					$walmart_skus .= ',';
+			foreach ($tophatter_data as $key=>$_tophatter) {
+				$tophatter_skus .= $_tophatter['product_id'];
+				if(isset($tophatter_data[$key+1]))
+					$tophatter_skus .= ',';
 			}
 		}
 
 		$query = "SELECT * FROM `jet_product`";
-		if($walmart_skus != '')
+		if($tophatter_skus != '')
 		{
-			$query .= " WHERE `id` NOT IN (".$walmart_skus.")";
+			$query .= " WHERE `id` NOT IN (".$tophatter_skus.")";
 
 			if($merchant_id != '')
     			$query .=  " AND merchant_id=".$merchant_id;
@@ -358,7 +358,7 @@ class WalmartscriptController extends WalmartmainController
 				echo "<br>---------------------********************----------------------<br>";
 			}
 
-			$query = "INSERT INTO `walmart_product`(`product_id`, `merchant_id`, `product_type`, `category`, `tax_code`, `short_description`, `self_description`, `status`) VALUES ".implode(',', $insert_data);
+			$query = "INSERT INTO `tophatter_product`(`product_id`, `merchant_id`, `product_type`, `category`, `tax_code`, `short_description`, `self_description`, `status`) VALUES ".implode(',', $insert_data);
 			Data::sqlRecords($query, null, "insert");
 		}
 		else
@@ -369,15 +369,15 @@ class WalmartscriptController extends WalmartmainController
 
 	public static function ImportVariants($product_id,$merchant_id)
 	{
-		$walmart_query = "SELECT `option_id` FROM `walmart_product_variants` WHERE `product_id`=".$product_id." AND `merchant_id`=".$merchant_id;
-		$walmart_product_variants = Data::sqlRecords($walmart_query, "all", "select");
+		$tophatter_query = "SELECT `option_id` FROM `tophatter_product_variants` WHERE `product_id`=".$product_id." AND `merchant_id`=".$merchant_id;
+		$tophatter_product_variants = Data::sqlRecords($tophatter_query, "all", "select");
 
 		$option_ids = '';
-		if($walmart_product_variants && is_array($walmart_product_variants))
+		if($tophatter_product_variants && is_array($tophatter_product_variants))
 		{
-			foreach ($walmart_product_variants as $key=>$product_variants) {
+			foreach ($tophatter_product_variants as $key=>$product_variants) {
 				$option_ids .= $product_variants['option_id'];
-				if(isset($walmart_product_variants[$key+1]))
+				if(isset($tophatter_product_variants[$key+1]))
 					$option_ids .= ',';
 			}
 		}
@@ -405,20 +405,20 @@ class WalmartscriptController extends WalmartmainController
 				echo "Inserted product variants id : ".$variant['option_id']."<br>";
 			}
 
-			$query = "INSERT INTO `walmart_product_variants`(`option_id`, `product_id`, `merchant_id`, `new_variant_option_1`, `new_variant_option_2`, `new_variant_option_3`, `status`) VALUES ".implode(',', $insert_data);
+			$query = "INSERT INTO `tophatter_product_variants`(`option_id`, `product_id`, `merchant_id`, `new_variant_option_1`, `new_variant_option_2`, `new_variant_option_3`, `status`) VALUES ".implode(',', $insert_data);
 			Data::sqlRecords($query, null, "insert");
 		}
 	}
 
 	public static function InsertProductType($product_type, $merchant_id)
 	{
-		$query = "SELECT * FROM `walmart_category_map` WHERE `merchant_id` = ".$merchant_id." AND `product_type` LIKE '".$product_type."' LIMIT 0,1";
+		$query = "SELECT * FROM `tophatter_category_map` WHERE `merchant_id` = ".$merchant_id." AND `product_type` LIKE '".$product_type."' LIMIT 0,1";
 
 		$data = Data::sqlRecords($query, "one", "select");
 
 		if(!$data)
 		{
-			$query = "INSERT INTO `walmart_category_map`(`merchant_id`, `product_type`) VALUES (".$merchant_id.",'".addslashes($product_type)."')";
+			$query = "INSERT INTO `tophatter_category_map`(`merchant_id`, `product_type`) VALUES (".$merchant_id.",'".addslashes($product_type)."')";
 			Data::sqlRecords($query, null, "insert");
 
 			echo "Inserted product type : ".$product_type."<br>";
@@ -439,7 +439,7 @@ class WalmartscriptController extends WalmartmainController
 	 */
 	public function actionCreatewebhooks()
 	{
-		$sc = new BigcommerceClientHelper(SHOP, TOKEN, WALMART_APP_KEY, WALMART_APP_SECRET);
+		$sc = new BigcommerceClientHelper(SHOP, TOKEN, TOPHATTER_APP_KEY, TOPHATTER_APP_SECRET);
 		Data::createWebhooks($sc);
 	}
 
@@ -456,7 +456,7 @@ class WalmartscriptController extends WalmartmainController
 	public function actionTest()
 	{
 		$category = 'Jewelry';
-		var_dump(WalmartCategory::getCategoryVariantAttributes($category));
+		var_dump(TophatterCategory::getCategoryVariantAttributes($category));
 	}
 
 }

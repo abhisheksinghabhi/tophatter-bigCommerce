@@ -1,13 +1,13 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use yii\web\Controller;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\WalmartRepricing;
-use frontend\modules\walmart\models\WalmartProduct;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\TophatterRepricing;
+use frontend\modules\tophatter\models\TophatterProduct;
 
-class WalmartRepriceController extends WalmartmainController
+class TophatterRepriceController extends TophattermainController
 {
     public function actionEdit()
     {
@@ -15,12 +15,12 @@ class WalmartRepriceController extends WalmartmainController
         $product_id = Yii::$app->request->get('id',false);
         if($product_id)
         {
-            $reprice = new WalmartRepricing();
+            $reprice = new TophatterRepricing();
 
             $productData = $reprice->getProductData($product_id);
             if(is_array($productData))
             {
-                if(isset($productData['status']) && $productData['status'] == WalmartProduct::PRODUCT_STATUS_UPLOADED)
+                if(isset($productData['status']) && $productData['status'] == TophatterProduct::PRODUCT_STATUS_UPLOADED)
                 {
                     /*if(isset($productData['upc']) && $productData['upc'] != '') {
                         $upc = $productData['upc'];
@@ -52,7 +52,7 @@ class WalmartRepriceController extends WalmartmainController
 
         if($error) {
             Yii::$app->session->setFlash('error','Can not do Repricing for this Product.');
-            return $this->redirect(['walmartproduct/index']);
+            return $this->redirect(['tophatterproduct/index']);
         }
     }
 
@@ -66,12 +66,12 @@ class WalmartRepriceController extends WalmartmainController
                 {
                     if($post['id'] != '')
                     {
-                        $query = "UPDATE `walmart_product_repricing` SET `upc`='{$post['upc']}',`min_price`='{$post['min_price']}',`max_price`='{$post['max_price']}',`best_price`='{$post['best_price']}',`walmart_itemid`='{$post['walmart_itemid']}' WHERE id={$post['id']}";
+                        $query = "UPDATE `tophatter_product_repricing` SET `upc`='{$post['upc']}',`min_price`='{$post['min_price']}',`max_price`='{$post['max_price']}',`best_price`='{$post['best_price']}',`tophatter_itemid`='{$post['tophatter_itemid']}' WHERE id={$post['id']}";
                         Data::sqlRecords($query,null,"update");
                     }
                     else
                     {
-                        $query = "INSERT INTO `walmart_product_repricing`(`merchant_id`, `product_id`, `option_id`, `upc`, `min_price`, `max_price`, `best_price`, `walmart_itemid`) VALUES ('{$merchant_id}', '{$post['product_id']}','{$post['option_id']}','{$post['upc']}','{$post['min_price']}','{$post['max_price']}','{$post['best_price']}','{$post['walmart_itemid']}')";
+                        $query = "INSERT INTO `tophatter_product_repricing`(`merchant_id`, `product_id`, `option_id`, `upc`, `min_price`, `max_price`, `best_price`, `tophatter_itemid`) VALUES ('{$merchant_id}', '{$post['product_id']}','{$post['option_id']}','{$post['upc']}','{$post['min_price']}','{$post['max_price']}','{$post['best_price']}','{$post['tophatter_itemid']}')";
                         Data::sqlRecords($query,null,"insert");
                     }
                 }
@@ -79,7 +79,7 @@ class WalmartRepriceController extends WalmartmainController
                 {
                     if($post['id'] != '')
                     {
-                        $query = "DELETE FROM `walmart_product_repricing` WHERE `id`={$post['id']}";
+                        $query = "DELETE FROM `tophatter_product_repricing` WHERE `id`={$post['id']}";
                         Data::sqlRecords($query,null,"update");
                     }
                 }
@@ -90,12 +90,12 @@ class WalmartRepriceController extends WalmartmainController
                     {
                         if($post['id'][$key] != '')
                         {
-                            $query = "UPDATE `walmart_product_repricing` SET `upc`='{$post['upc'][$key]}',`min_price`='{$post['min_price'][$key]}',`max_price`='{$post['max_price'][$key]}',`best_price`='{$post['best_price'][$key]}',`walmart_itemid`='{$post['walmart_itemid'][$key]}' WHERE id={$post['id'][$key]}";
+                            $query = "UPDATE `tophatter_product_repricing` SET `upc`='{$post['upc'][$key]}',`min_price`='{$post['min_price'][$key]}',`max_price`='{$post['max_price'][$key]}',`best_price`='{$post['best_price'][$key]}',`tophatter_itemid`='{$post['tophatter_itemid'][$key]}' WHERE id={$post['id'][$key]}";
                             Data::sqlRecords($query,null,"update");
                         }
                         else
                         {
-                            $query = "INSERT INTO `walmart_product_repricing`(`merchant_id`, `product_id`, `option_id`, `upc`, `min_price`, `max_price`, `best_price`, `walmart_itemid`) VALUES ('{$merchant_id}', '{$post['product_id']}','{$option_id}','{$post['upc'][$key]}','{$post['min_price'][$key]}','{$post['max_price'][$key]}','{$post['best_price'][$key]}','{$post['walmart_itemid'][$key]}')";
+                            $query = "INSERT INTO `tophatter_product_repricing`(`merchant_id`, `product_id`, `option_id`, `upc`, `min_price`, `max_price`, `best_price`, `tophatter_itemid`) VALUES ('{$merchant_id}', '{$post['product_id']}','{$option_id}','{$post['upc'][$key]}','{$post['min_price'][$key]}','{$post['max_price'][$key]}','{$post['best_price'][$key]}','{$post['tophatter_itemid'][$key]}')";
                             Data::sqlRecords($query,null,"insert");
                         }
                     }
@@ -103,7 +103,7 @@ class WalmartRepriceController extends WalmartmainController
                     {
                         if($post['id'] != '')
                         {
-                            $query = "DELETE FROM `walmart_product_repricing` WHERE `id`={$post['id']}";
+                            $query = "DELETE FROM `tophatter_product_repricing` WHERE `id`={$post['id']}";
                             Data::sqlRecords($query,null,"update");
                         }
                     }
@@ -111,14 +111,14 @@ class WalmartRepriceController extends WalmartmainController
             }
             Yii::$app->session->setFlash('success','Data Saved Successfully.');
             if(isset($post['product_id']))
-                return $this->redirect(['walmart-reprice/edit?id='.$post['product_id']]);
+                return $this->redirect(['tophatter-reprice/edit?id='.$post['product_id']]);
             else
-                return $this->redirect(['walmart-reprice/edit']);
+                return $this->redirect(['tophatter-reprice/edit']);
         }
         else
         {
             Yii::$app->session->setFlash('error','Data Not Saved.');
-            return $this->redirect(['walmart-reprice/edit']);
+            return $this->redirect(['tophatter-reprice/edit']);
         }
     }
 }

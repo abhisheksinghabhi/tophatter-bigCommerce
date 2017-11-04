@@ -1,23 +1,23 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use common\models\User;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\Jetapimerchant;
-use frontend\modules\walmart\components\Jetappdetails;
-use frontend\modules\walmart\components\Jetproductinfo;
-use frontend\modules\walmart\components\Sendmail;
-use frontend\modules\walmart\components\Generator;
-use frontend\modules\walmart\components\BigcommerceClientHelper;
-use frontend\modules\walmart\models\JetConfig;
-use frontend\modules\walmart\models\JetOrderImportError;
-use frontend\modules\walmart\models\WalmartShopDetails;
-use frontend\modules\walmart\models\WalmartExtensionDetail;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\Jetapimerchant;
+use frontend\modules\tophatter\components\Jetappdetails;
+use frontend\modules\tophatter\components\Jetproductinfo;
+use frontend\modules\tophatter\components\Sendmail;
+use frontend\modules\tophatter\components\Generator;
+use frontend\modules\tophatter\components\BigcommerceClientHelper;
+use frontend\modules\tophatter\models\JetConfig;
+use frontend\modules\tophatter\models\JetOrderImportError;
+use frontend\modules\tophatter\models\TophatterShopDetails;
+use frontend\modules\tophatter\models\TophatterExtensionDetail;
 use Yii;
 use yii\web\Controller;
-use frontend\modules\walmart\components\Walmartapi;
+use frontend\modules\tophatter\components\Tophatterapi;
 
-class WalmartWebhookController extends Controller
+class TophatterWebhookController extends Controller
 {
 	public function beforeAction($action)
 	{
@@ -77,7 +77,7 @@ class WalmartWebhookController extends Controller
 		$connection = Yii::$app->getDb();
 		if(isset($data['shopName']) && isset($data['data']['inventory']['product_id']))
 		{
-			$file_dir = \Yii::getAlias('@webroot').'/var/walmart/product/simple-inventory/'.$data['shopName'].'/'.date('d-m-Y');
+			$file_dir = \Yii::getAlias('@webroot').'/var/tophatter/product/simple-inventory/'.$data['shopName'].'/'.date('d-m-Y');
     		if (!file_exists($file_dir)){
     			mkdir($file_dir,0775, true);
     		} 	
@@ -103,12 +103,12 @@ class WalmartWebhookController extends Controller
     		$prodExist=array();
     		$prodExist=Data::sqlRecords("SELECT * FROM `jet_product` WHERE bigproduct_id='".$data['data']['inventory']['product_id']."'AND merchant_id='".$merchant_id."' LIMIT 0,1","one","select");
     		
-    		$prodExistonWalmart=Data::sqlRecords("SELECT * FROM `walmart_product` WHERE product_id='".$data['data']['inventory']['product_id']."'AND merchant_id='".$merchant_id."' LIMIT 0,1","one","select");
+    		$prodExistonTophatter=Data::sqlRecords("SELECT * FROM `tophatter_product` WHERE product_id='".$data['data']['inventory']['product_id']."'AND merchant_id='".$merchant_id."' LIMIT 0,1","one","select");
     		
-    		$productOnWalmart=false;
-    		if ($prodExistonWalmart['status']!='Not Uploaded')
+    		$productOnTophatter=false;
+    		if ($prodExistonTophatter['status']!='Not Uploaded')
     		{
-    			$productOnWalmart=true;
+    			$productOnTophatter=true;
     		}
     		
     		if($prodExist)
@@ -127,9 +127,9 @@ class WalmartWebhookController extends Controller
     			 
     			Data::sqlRecords($sql,null,'update');
     			 
-    			if ($productOnWalmart) {
+    			if ($productOnTophatter) {
     				
-    				$product=Data::sqlRecords('select jet.bigproduct_id,sku,type,qty,fulfillment_lag_time from `walmart_product` wal INNER JOIN `jet_product` jet ON jet.bigproduct_id=wal.product_id where wal.status!="Not Uploaded" and wal.merchant_id="'.$merchant_id.'" and jet.merchant_id="'.$merchant_id.'" and wal.product_id="'.$data['data']['inventory']['product_id'].'"',"all","select");
+    				$product=Data::sqlRecords('select jet.bigproduct_id,sku,type,qty,fulfillment_lag_time from `tophatter_product` wal INNER JOIN `jet_product` jet ON jet.bigproduct_id=wal.product_id where wal.status!="Not Uploaded" and wal.merchant_id="'.$merchant_id.'" and jet.merchant_id="'.$merchant_id.'" and wal.product_id="'.$data['data']['inventory']['product_id'].'"',"all","select");
                     		
     				$filenameOrig="";
     				$filenameOrig=$file_dir.'/'.$data['data']['inventory']['product_id'].'inventory1.log';
@@ -137,7 +137,7 @@ class WalmartWebhookController extends Controller
     				$fileOrig=fopen($filenameOrig,'w+');
     				fwrite($fileOrig,"\n".date('d-m-Y H:i:s')."\n".json_encode($product));
     				fclose($fileOrig);
-    				$walConfig = Data::sqlRecords("SELECT `consumer_id`,`secret_key`,`consumer_channel_type_id` FROM `walmart_configuration` WHERE merchant_id='".$merchant_id."'", 'one');
+    				$walConfig = Data::sqlRecords("SELECT `consumer_id`,`secret_key`,`consumer_channel_type_id` FROM `tophatter_configuration` WHERE merchant_id='".$merchant_id."'", 'one');
     				
     				if($walConfig)
     				{
@@ -153,8 +153,8 @@ class WalmartWebhookController extends Controller
     					
     					define("CONSUMER_CHANNEL_TYPE_ID",'7b2c8dab-c79c-4cee-97fb-0ac399e17ade');
     						
-    					$updateFeed = new Walmartapi($walConfig['consumer_id'], $walConfig['secret_key'], CONSUMER_CHANNEL_TYPE_ID);
-    					$feed_data = $updateFeed->updateInventoryOnWalmart($product,'product');
+    					$updateFeed = new Tophatterapi($walConfig['consumer_id'], $walConfig['secret_key'], CONSUMER_CHANNEL_TYPE_ID);
+    					$feed_data = $updateFeed->updateInventoryOnTophatter($product,'product');
     				}
     			}
     			unset($model);
@@ -189,7 +189,7 @@ class WalmartWebhookController extends Controller
 			Data::createLog('Update Inventory Data: '.json_encode($data),$logFIle,'a');
 			
 	        $config = Data::getConfiguration($merchant_id);
-	        $obj = new Walmartapi($config['consumer_id'],$config['secret_key'],'7b2c8dab-c79c-4cee-97fb-0ac399e17ade');
+	        $obj = new Tophatterapi($config['consumer_id'],$config['secret_key'],'7b2c8dab-c79c-4cee-97fb-0ac399e17ade');
 	        foreach ($data as $key => $value) {
 	        	$id = Data::getProductId($value['sku'],$merchant_id);
 	        	$fulfillment_lag_time = Data::getFulfillmentlagtime($id,$merchant_id);
@@ -198,7 +198,7 @@ class WalmartWebhookController extends Controller
 		      	$inventoryArray = [
 	            'wm:inventory' => [
 	                '_attribute' => [
-	                    'xmlns:wm' => "http://walmart.com/",
+	                    'xmlns:wm' => "http://tophatter.com/",
 	                ],
 	                '_value' => [
 	                ]
@@ -206,15 +206,15 @@ class WalmartWebhookController extends Controller
 	            ];
 		        $keys = 1;
 		        $this->prepareInventoryData($inventoryArray,$value);
-		        if (!file_exists(\Yii::getAlias('@webroot') . '/var/walmart/inventoryxml/' . $merchant_id . '/updateinventory')) {
-		            mkdir(\Yii::getAlias('@webroot') . '/var/walmart/inventoryxml/' . $merchant_id . '/updateinventory', 0775, true);
+		        if (!file_exists(\Yii::getAlias('@webroot') . '/var/tophatter/inventoryxml/' . $merchant_id . '/updateinventory')) {
+		            mkdir(\Yii::getAlias('@webroot') . '/var/tophatter/inventoryxml/' . $merchant_id . '/updateinventory', 0775, true);
 		        }
-		        $file = Yii::getAlias('@webroot') . '/var/walmart/inventoryxml/' . $merchant_id . '/updateinventory/MPProduct-' . time() . '.xml';
+		        $file = Yii::getAlias('@webroot') . '/var/tophatter/inventoryxml/' . $merchant_id . '/updateinventory/MPProduct-' . time() . '.xml';
 		        
 		        $xml = new Generator();
 		        $xml->arrayToXml($inventoryArray)->save($file);
 		        
-		        $response = $obj->postRequest(Walmartapi::GET_FEEDS_INVENTORY_SUB_URL, ['file' => $file]);
+		        $response = $obj->postRequest(Tophatterapi::GET_FEEDS_INVENTORY_SUB_URL, ['file' => $file]);
 		        
 		       /* $response = $obj->putRequest(Walmartapi::GET_FEEDS_INVENTORY_SUB_URL, ['file' => $file]);*/
 		        //$responseArray = Walmartapi::xmlToArray($response);
@@ -239,7 +239,7 @@ class WalmartWebhookController extends Controller
 	        $logFIle = 'product/priceupdate/'.$merchant_id.'/'.time();
 			Data::createLog('Update Price Data: '.json_encode($data),$logFIle,'a');
 	        $config = Data::getConfiguration($merchant_id);
-	        $obj = new Walmartapi($config['consumer_id'],$config['secret_key']);
+	        $obj = new Tophatterapi($config['consumer_id'],$config['secret_key']);
 	        foreach ($data as $key => $value) 
 	        {
                 //walmart product price
@@ -248,7 +248,7 @@ class WalmartWebhookController extends Controller
                 {
                 	if($type=='simple')
                 	{
-                		$price = Data::getWalmartPrice($value['product_id'], $merchant_id);
+                		$price = Data::getTophatterPrice($value['product_id'], $merchant_id);
 		                /*if (isset($price['product_price']) && !empty($price)) {
 		                    $value['price'] = WalmartRepricing::getProductPrice($price['product_price'], 'simple', $value['product_id'], $merchant_id);
 
@@ -259,7 +259,7 @@ class WalmartWebhookController extends Controller
                 	}
                 	else
                 	{
-                		$price = Data::getWalmartPrice($key, $merchant_id);
+                		$price = Data::getTophatterPrice($key, $merchant_id);
 		                /*if (isset($price['product_price']) && !empty($price)) {
 		                    $value['price'] = WalmartRepricing::getProductPrice($price['product_price'], 'simple', $key, $merchant_id);
 
@@ -272,7 +272,7 @@ class WalmartWebhookController extends Controller
 			        $priceArray = [
 			            'PriceFeed' => [
 			                '_attribute' => [
-			                    'xmlns:gmp' => "http://walmart.com/",
+			                    'xmlns:gmp' => "http://tophatter.com/",
 			                ],
 			                '_value' => [
 			                    0 => [
@@ -324,8 +324,8 @@ class WalmartWebhookController extends Controller
 			        $file = Yii::getAlias('@webroot') . '/var/product/xml/' . $merchant_id . '/updatePrice/MPProduct-' . time() . '.xml';
 			        $xml = new Generator();
 			        $xml->arrayToXml($inventoryArray)->save($file);
-			        $response = $obj->postRequest(Walmartapi::GET_FEEDS_PRICE_SUB_URL, ['file' => $file]);
-			        $responseArray = Walmartapi::xmlToArray($response,true);
+			        $response = $obj->postRequest(Tophatterapi::GET_FEEDS_PRICE_SUB_URL, ['file' => $file]);
+			        $responseArray = Tophatterapi::xmlToArray($response,true);
                 }
                 else{
                 	Data::createLog("Product type not set for product id '".$value['product_id']."' error wrong post");
@@ -364,7 +364,7 @@ class WalmartWebhookController extends Controller
 			$logFIle = 'product/delete/'.$data['merchant_id'].'/'.time();
 			Data::createLog('Requested Data: '.json_encode($data),$logFIle,'a');
 			$config = Data::getConfiguration($data['merchant_id']);
-	        $obj = new Walmartapi($config['consumer_id'],$config['secret_key']);
+	        $obj = new Tophatterapi($config['consumer_id'],$config['secret_key']);
 			if(isset($data['archiveSku']) && $data['archiveSku'])
 			{
 				foreach ($data['archiveSku'] as $key => $value) {
@@ -410,7 +410,7 @@ class WalmartWebhookController extends Controller
 	{
 		try
 		{
-			$appinstall= new BigcommerceClientHelper(WALMART_APP_KEY,"","");
+			$appinstall= new BigcommerceClientHelper(TOPHATTER_APP_KEY,"","");
 			$signedRequest = $_GET['signed_payload'];
 			$signedrequest = $appinstall->verifySignedRequest($signedRequest);
 
@@ -420,20 +420,20 @@ class WalmartWebhookController extends Controller
 
 			if($proresult) 
 			{
-				$walmartShopDetails = WalmartShopDetails::find()->where(['shop_url'=>$shop])->one();
+				$tophatterShopDetails = TophatterShopDetails::find()->where(['shop_url'=>$shop])->one();
 
-				if($walmartShopDetails)
+				if($tophatterShopDetails)
 				{
-					$shopUrl = $walmartShopDetails->shop_url;
-					$token = $walmartShopDetails->token;
+					$shopUrl = $tophatterShopDetails->shop_url;
+					$token = $tophatterShopDetails->token;
 
 					//$install_status = Data::isAppInstalled($shopUrl, $token);
 					//if(!$install_status) {
-						$email_id = $walmartShopDetails->email;
-						$walmartShopDetails->status = 0;
-						$walmartShopDetails->save(false);
+						$email_id = $tophatterShopDetails->email;
+						$tophatterShopDetails->status = 0;
+						$tophatterShopDetails->save(false);
 						//Sendmail::uninstallmail($email_id);
-						$extensionModel = WalmartExtensionDetail::find()->where(['merchant_id'=>$walmartShopDetails->merchant_id])->one();
+						$extensionModel = TophatterExtensionDetail::find()->where(['merchant_id'=>$tophatterShopDetails->merchant_id])->one();
 						if($extensionModel){
 							$extensionModel->app_status="uninstall";
 							$extensionModel->uninstall_date=date('Y-m-d H:i:s');

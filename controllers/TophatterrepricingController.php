@@ -1,19 +1,19 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\WalmartProduct;
-use frontend\modules\walmart\components\WalmartRepricing;
-use frontend\modules\walmart\models\WalmartProductRepricingSearch;
-use frontend\modules\walmart\models\WalmartProductRepricing;
-use frontend\modules\walmart\components\Walmartapi;
-use frontend\modules\walmart\components\Xml\Parser;
-use frontend\modules\walmart\components\Generator;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\TophatterProduct;
+use frontend\modules\tophatter\components\TophatterRepricing;
+use frontend\modules\tophatter\models\TophatterProductRepricingSearch;
+use frontend\modules\tophatter\models\TophatterProductRepricing;
+use frontend\modules\tophatter\components\Tophatterapi;
+use frontend\modules\tophatter\components\Xml\Parser;
+use frontend\modules\tophatter\components\Generator;
 
-class WalmartrepricingController extends WalmartmainController
+class TophatterrepricingController extends TophattermainController
 {
     const GET_FEEDS_PRICE_SUB_URL = 'v3/feeds?feedType=price';
     /**
@@ -52,7 +52,7 @@ class WalmartrepricingController extends WalmartmainController
     {
         $merchant_id = Yii::$app->user->identity->id;
 
-        $searchModel = new WalmartProductRepricingSearch();
+        $searchModel = new TophatterProductRepricingSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -72,7 +72,7 @@ class WalmartrepricingController extends WalmartmainController
             $merchant_id = Yii::$app->user->identity->id;
 
             foreach ($productIds as $key => $value) {
-                $query = "SELECT * from `walmart_product_repricing` WHERE merchant_id='".$merchant_id."' AND product_id='".$value."'";
+                $query = "SELECT * from `tophatter_product_repricing` WHERE merchant_id='".$merchant_id."' AND product_id='".$value."'";
                 $validate = Data::sqlRecords($query,'one','select');
                 $sku = Data::getProductSku($value);
                 if(empty($validate)){
@@ -80,8 +80,8 @@ class WalmartrepricingController extends WalmartmainController
                 }
             }
             if(isset($return_error['error'])){
-                Yii::$app->session->setFlash('error', "<div class='error_reprice'> These Product(s) ".json_encode($return_error['error'])." are not available for repricing Please sync these product(s) with walmart </div>");
-                return \Yii::$app->getResponse()->redirect(Data::getUrl('walmartrepricing/index'));
+                Yii::$app->session->setFlash('error', "<div class='error_reprice'> These Product(s) ".json_encode($return_error['error'])." are not available for repricing Please sync these product(s) with tophatter </div>");
+                return \Yii::$app->getResponse()->redirect(Data::getUrl('tophatterrepricing/index'));
             }
            // $WalmartRepricing = new WalmartRepricing(API_USER,API_PASSWORD);
             //$csvFilePath = $WalmartRepricing->downloadBuyBoxReport($merchant_id);
@@ -101,7 +101,7 @@ class WalmartrepricingController extends WalmartmainController
         {
             Yii::$app->session->setFlash('error','No Products Selected.');
         }
-        return \Yii::$app->getResponse()->redirect(Data::getUrl('walmartrepricing/index'));
+        return \Yii::$app->getResponse()->redirect(Data::getUrl('tophatterrepricing/index'));
     }
 
     
@@ -110,13 +110,13 @@ class WalmartrepricingController extends WalmartmainController
     {
         $merchant_id = Yii::$app->user->identity->id;
 
-        $WalmartRepricing = new WalmartRepricing(API_USER,API_PASSWORD);
-        $csvFilePath = $WalmartRepricing->downloadBuyBoxReport($merchant_id);
+        $TophatterRepricing = new TophatterRepricing(API_USER,API_PASSWORD);
+        $csvFilePath = $TophatterRepricing->downloadBuyBoxReport($merchant_id);
         if($csvFilePath)
         {
             if(file_exists($csvFilePath))
             {
-                $buyBoxCount = WalmartRepricing::getRowsInCsv($csvFilePath);
+                $buyBoxCount = TophatterRepricing::getRowsInCsv($csvFilePath);
                 if($buyBoxCount)
                 {
                     $size_of_request = self::$_size_of_request;
@@ -138,7 +138,7 @@ class WalmartrepricingController extends WalmartmainController
         {
             Yii::$app->session->setFlash('error','Buybox report not found.');
         }
-        return \Yii::$app->getResponse()->redirect(Data::getUrl('walmartrepricing/index'));
+        return \Yii::$app->getResponse()->redirect(Data::getUrl('tophatterrepricing/index'));
     }
 
     public function actionSavebuyboxdata()
@@ -164,7 +164,7 @@ class WalmartrepricingController extends WalmartmainController
 
 
                 if(!isset($session[$sessionKey])) {
-                    $allProductSku = WalmartProduct::getAllProductSku($merchant_id);
+                    $allProductSku = TophatterProduct::getAllProductSku($merchant_id);
                     $session->set($sessionKey, $allProductSku);
                 }
                 else {
@@ -175,7 +175,7 @@ class WalmartrepricingController extends WalmartmainController
                     $allProductSku1[]=$value['sku'];
                 }
                
-                $buyBoxData = WalmartRepricing::readBuyboxCsv($csvFilePath,$size_of_request,$index);
+                $buyBoxData = TophatterRepricing::readBuyboxCsv($csvFilePath,$size_of_request,$index);
 
                 foreach ($buyBoxData as $sku => $data) 
                 {
@@ -183,7 +183,7 @@ class WalmartrepricingController extends WalmartmainController
                     if(in_array($sku, $allProductSku1))
                     {
 
-                        $productIds = WalmartRepricing::getProductIdsBySku($sku,$merchant_id);
+                        $productIds = TophatterRepricing::getProductIdsBySku($sku,$merchant_id);
                         if($productIds)
                         {
                             $buybox = 0;
@@ -232,14 +232,14 @@ class WalmartrepricingController extends WalmartmainController
                             }
                             $best_prices = json_encode($best_prices);
 
-                            if(!$exist=WalmartRepricing::isExist($sku, $merchant_id))
+                            if(!$exist=TophatterRepricing::isExist($sku, $merchant_id))
                             {
-                                $insertQuery = "INSERT INTO `walmart_product_repricing`(`merchant_id`, `product_id`, `option_id`, `sku`, `your_price`, `buybox`, `best_prices`) VALUES ({$merchant_id}, {$productIds['product_id']}, {$productIds['variant_id']}, '{$sku}', '{$your_price}', '{$buybox}', '{$best_prices}')";
+                                $insertQuery = "INSERT INTO `tophatter_product_repricing`(`merchant_id`, `product_id`, `option_id`, `sku`, `your_price`, `buybox`, `best_prices`) VALUES ({$merchant_id}, {$productIds['product_id']}, {$productIds['variant_id']}, '{$sku}', '{$your_price}', '{$buybox}', '{$best_prices}')";
                                 Data::sqlRecords($insertQuery, null, "insert");
                             }
                             else
                             {
-                                $updateQuery = "UPDATE `walmart_product_repricing` SET `your_price`='{$your_price}',`buybox`='{$buybox}',`best_prices`='{$best_prices}' WHERE `id` = '{$exist['id']}'";
+                                $updateQuery = "UPDATE `tophatter_product_repricing` SET `your_price`='{$your_price}',`buybox`='{$buybox}',`best_prices`='{$best_prices}' WHERE `id` = '{$exist['id']}'";
                                 Data::sqlRecords($updateQuery, null, "update");
                             }
                             $successSku[$sku] = 'Successfully Synced.';
@@ -252,7 +252,7 @@ class WalmartrepricingController extends WalmartmainController
                     else
                     {
                         
-                        $errorSku[$sku] = 'Sku not found in our app (walmart itemid : '.$data['item_id'].').';
+                        $errorSku[$sku] = 'Sku not found in our app (tophatter itemid : '.$data['item_id'].').';
                     }
                 
                 }
@@ -328,11 +328,11 @@ class WalmartrepricingController extends WalmartmainController
                                 $return_error[$sku]='max_ price must be greater than 0.00 price ';
                                 continue;
                             }
-                            $updateQuery = "UPDATE `walmart_product_repricing` SET `min_price`='".$variant['min_price']."',`max_price`='".$variant['max_price']."',`repricing_status`='".$variant['enable_repricing']."' WHERE `merchant_id`='".$merchant_id."' AND `product_id`='".$value['product_id']."' AND `option_id`='".$variant['option_id']."'";
+                            $updateQuery = "UPDATE `tophatter_product_repricing` SET `min_price`='".$variant['min_price']."',`max_price`='".$variant['max_price']."',`repricing_status`='".$variant['enable_repricing']."' WHERE `merchant_id`='".$merchant_id."' AND `product_id`='".$value['product_id']."' AND `option_id`='".$variant['option_id']."'";
                             Data::sqlRecords($updateQuery,null,'update');
                         }
                         else{
-                            $deleteQuery = "Delete FROM `walmart_product_repricing`  WHERE `merchant_id`='".$merchant_id."' AND `product_id`='".$value['product_id']."' AND `option_id`='".$variant['option_id']."'";
+                            $deleteQuery = "Delete FROM `tophatter_product_repricing`  WHERE `merchant_id`='".$merchant_id."' AND `product_id`='".$value['product_id']."' AND `option_id`='".$variant['option_id']."'";
                             Data::sqlRecords($deleteQuery,null,'delete');
                         }
                     }
@@ -361,11 +361,11 @@ class WalmartrepricingController extends WalmartmainController
                                 $return_error[$sku]='max_ price must be greater than 0.00 price ';
                                 continue;
                             }
-                            $updateQuery = "UPDATE `walmart_product_repricing` SET `min_price`='".$value['min_price']."',`max_price`='".$value['max_price']."',`repricing_status`='".$value['enable_repricing']."' WHERE `merchant_id`='".$merchant_id."' AND `product_id`='".$value['product_id']."'";
+                            $updateQuery = "UPDATE `tophatter_product_repricing` SET `min_price`='".$value['min_price']."',`max_price`='".$value['max_price']."',`repricing_status`='".$value['enable_repricing']."' WHERE `merchant_id`='".$merchant_id."' AND `product_id`='".$value['product_id']."'";
                             Data::sqlRecords($updateQuery,null,'update');
                         }
                         else{
-                            $deleteQuery = "Delete FROM `walmart_product_repricing`  WHERE `merchant_id`='".$merchant_id."' AND `product_id`='".$value['product_id']."'";
+                            $deleteQuery = "Delete FROM `tophatter_product_repricing`  WHERE `merchant_id`='".$merchant_id."' AND `product_id`='".$value['product_id']."'";
                             Data::sqlRecords($deleteQuery,null,'delete');
                         }
                 }
@@ -399,7 +399,7 @@ class WalmartrepricingController extends WalmartmainController
                 $price_data = json_decode($value['your_price'],true);
                 $orignal_price = $price_data['price'];
                 $best_price_data = json_decode($value['best_prices'],true);
-                $price = WalmartRepricing::calculateBestPrice($orignal_price,$best_price_data[0]['buybox_item_price'],$minPrice,$maxPrice);
+                $price = TophatterRepricing::calculateBestPrice($orignal_price,$best_price_data[0]['buybox_item_price'],$minPrice,$maxPrice);
                 $priceArray= [
                     'Price' => [
                         'itemIdentifier' => [
@@ -458,7 +458,7 @@ class WalmartrepricingController extends WalmartmainController
             $priceData = [
                 'PriceFeed' => [
                     '_attribute' => [
-                        'xmlns:gmp' => "http://walmart.com/",
+                        'xmlns:gmp' => "http://tophatter.com/",
                     ],
                 ]
             ];
@@ -478,9 +478,9 @@ class WalmartrepricingController extends WalmartmainController
             $checkFeedStatus = Data::checkFeedStatus($merchant_id);
             $count = 0;
             if(isset($checkFeedStatus['notsave'])){
-                $insert = "INSERT INTO `walmart_cron_feed`(`merchant_id`, `last_feed_time`,`feed_count`) VALUES ('".$merchant_id."','".date("Y-m-d H:i:s")."','1')";
+                $insert = "INSERT INTO `tophatter_cron_feed`(`merchant_id`, `last_feed_time`,`feed_count`) VALUES ('".$merchant_id."','".date("Y-m-d H:i:s")."','1')";
                 Data::sqlRecords($insert,null,'insert');
-                $path = 'walmart/productpricing/pricefeed/' . date('d-m-Y') . '/' . $merchant_id . '/cron/repricing';
+                $path = 'tophatter/productpricing/pricefeed/' . date('d-m-Y') . '/' . $merchant_id . '/cron/repricing';
                 $dir = \Yii::getAlias('@webroot') . '/var/' . $path;
                 if (!file_exists($dir)) {
                     mkdir($dir, 0775, true);
@@ -488,16 +488,16 @@ class WalmartrepricingController extends WalmartmainController
                 $customGenerator = new Generator();
                 $file = $dir . '/MPProduct-' . time() . '.xml';
                 $customGenerator->arrayToXml($priceData)->save($file);
-                $obj = new Walmartapi($config['consumer_id'],$config['secret_key']);
+                $obj = new Tophatterapi($config['consumer_id'],$config['secret_key']);
                 $response = $obj->postRequest(self::GET_FEEDS_PRICE_SUB_URL, ['file' => $file]);
-                $responseArray = Walmartapi::xmlToArray($response);
+                $responseArray = Tophatterapi::xmlToArray($response);
             }
             if(isset($checkFeedStatus['success'])){
                 $data = Data::isSendPriceFeed($merchant_id);
                 $count= $data['feed_count']+1;
-                $update = "UPDATE `walmart_cron_feed` SET `last_feed_time`='".date("Y-m-d H:i:s")."',`feed_count`='".$count."' WHERE `merchant_id`='".$merchant_id."'";
+                $update = "UPDATE `tophatter_cron_feed` SET `last_feed_time`='".date("Y-m-d H:i:s")."',`feed_count`='".$count."' WHERE `merchant_id`='".$merchant_id."'";
                 Data::sqlRecords($update,null,'update');
-                $path = 'walmart/productpricing/pricefeed/' . date('d-m-Y') . '/' . $merchant_id . '/cron/repricing';
+                $path = 'tophatter/productpricing/pricefeed/' . date('d-m-Y') . '/' . $merchant_id . '/cron/repricing';
                 $dir = \Yii::getAlias('@webroot') . '/var/' . $path;
                 if (!file_exists($dir)) {
                     mkdir($dir, 0775, true);
@@ -505,15 +505,15 @@ class WalmartrepricingController extends WalmartmainController
                 $customGenerator = new Generator();
                 $file = $dir . '/MPProduct-' . time() . '.xml';
                 $customGenerator->arrayToXml($priceData)->save($file);
-                $obj = new Walmartapi($config['consumer_id'],$config['secret_key']);
+                $obj = new Tophatterapi($config['consumer_id'],$config['secret_key']);
                 $response = $obj->postRequest(self::GET_FEEDS_PRICE_SUB_URL, ['file' => $file]);
-                $responseArray = Walmartapi::xmlToArray($response);
+                $responseArray = Tophatterapi::xmlToArray($response);
             }
             if(isset($checkFeedStatus['limit_cross'])){
-                if(!file_exists(\Yii::getAlias('@webroot').'/var/walmart/productpricing/'.$merchant_id)){
-                     mkdir(\Yii::getAlias('@webroot').'/var/walmart/productpricing/'.$merchant_id,0775, true);
+                if(!file_exists(\Yii::getAlias('@webroot').'/var/tophatter/productpricing/'.$merchant_id)){
+                     mkdir(\Yii::getAlias('@webroot').'/var/tophatter/productpricing/'.$merchant_id,0775, true);
                 }
-                $base_path=\Yii::getAlias('@webroot').'/var/walmart/productpricing/'.$merchant_id.'/'.date("Y-m-d H:i:s").'.txt';
+                $base_path=\Yii::getAlias('@webroot').'/var/tophatter/productpricing/'.$merchant_id.'/'.date("Y-m-d H:i:s").'.txt';
                     $file = fopen($base_path,"a");
                     fwrite($file,json_encode($priceData));
                     fclose($file);

@@ -1,15 +1,15 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 use Yii;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\WalmartDataValidation;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\TophatterDataValidation;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 
 /**
  * JetproductController implements the CRUD actions for JetProduct model.
  */
-class WalmartvalidateController extends WalmartmainController
+class TophattervalidateController extends TophattermainController
 {
     public function behaviors()
     {
@@ -40,10 +40,10 @@ class WalmartvalidateController extends WalmartmainController
             $count = [];
             $total = 0;
             $merchant_id = Yii::$app->user->identity->id;
-            $result = WalmartDataValidation::validateData([], $merchant_id);
+            $result = TophatterDataValidation::validateData([], $merchant_id);
            
             $query = "";
-            $query = "SELECT COUNT(*) as `count` from `jet_product` as `main` INNER JOIN `walmart_product` as `wp` ON `main`.`bigproduct_id`=`wp`.`product_id` where `main`.`merchant_id`= {$merchant_id}";
+            $query = "SELECT COUNT(*) as `count` from `jet_product` as `main` INNER JOIN `tophatter_product` as `wp` ON `main`.`bigproduct_id`=`wp`.`product_id` where `main`.`merchant_id`= {$merchant_id}";
             //$count = $connection->createCommand($query)->queryOne();
             $count = Data::sqlRecords($query, 'all');
             $total = is_array($count) && isset($count[0]["count"])?$count[0]["count"]:0;
@@ -56,7 +56,7 @@ class WalmartvalidateController extends WalmartmainController
                 Yii::$app->session->setFlash('success',"No product(s) available to validate.");
             }
          }
-        return $this->redirect(['walmartproduct/index']);
+        return $this->redirect(['tophatterproduct/index']);
     }
     
 }
