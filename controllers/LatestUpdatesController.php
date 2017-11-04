@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use common\models\LatestUpdates;

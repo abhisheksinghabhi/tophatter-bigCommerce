@@ -5,9 +5,9 @@
  * Date: 13/4/17
  * Time: 1:54 PM
  */
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\helpers\Html;
@@ -16,15 +16,15 @@ use yii\helpers\Html;
 /**
  * Walmart report detail Controller
  */
-class ReportController extends WalmartmainController
+class ReportController extends TophattermainController
 {
 
     public function actionIndex()
     {
 
-        $inventory_data = Data::sqlRecords("SELECT * FROM (SELECT * FROM (SELECT * FROM (SELECT `product_id` ,`product_title` FROM `walmart_product` WHERE `merchant_id`= '".MERCHANT_ID."') as `wp` INNER JOIN (SELECT title,sku,type,id,qty FROM `jet_product` WHERE `merchant_id`='".MERCHANT_ID."' ) as `jp` ON `wp`.`product_id`=`jp`.`id`) as `walmart_main` ) as `walmart_table` LEFT JOIN (SELECT * FROM (SELECT * FROM (SELECT `option_id` as `walmart_option_id` FROM `walmart_product_variants` WHERE `merchant_id`= '".MERCHANT_ID."') as `wpv` INNER JOIN (SELECT `option_id`,`option_qty`,`option_sku`,`product_id` FROM `jet_product_variants` WHERE `merchant_id`='".MERCHANT_ID."' ) as `jpv` ON `wpv`.`walmart_option_id`=`jpv`.`option_id`) as `jet_main` ) as `jet_table` ON `walmart_table`.`product_id`=`jet_table`.`product_id`", 'all');
+        $inventory_data = Data::sqlRecords("SELECT * FROM (SELECT * FROM (SELECT * FROM (SELECT `product_id` ,`product_title` FROM `tophatter_product` WHERE `merchant_id`= '".MERCHANT_ID."') as `wp` INNER JOIN (SELECT title,sku,type,id,qty FROM `jet_product` WHERE `merchant_id`='".MERCHANT_ID."' ) as `jp` ON `wp`.`product_id`=`jp`.`id`) as `tophatter_main` ) as `tophatter_table` LEFT JOIN (SELECT * FROM (SELECT * FROM (SELECT `option_id` as `tophatter_option_id` FROM `tophatter_product_variants` WHERE `merchant_id`= '".MERCHANT_ID."') as `wpv` INNER JOIN (SELECT `option_id`,`option_qty`,`option_sku`,`product_id` FROM `jet_product_variants` WHERE `merchant_id`='".MERCHANT_ID."' ) as `jpv` ON `wpv`.`tophatter_option_id`=`jpv`.`option_id`) as `jet_main` ) as `jet_table` ON `tophatter_table`.`product_id`=`jet_table`.`product_id`", 'all');
 
-        $header = ['PRODUCT ID', 'PRODUCT TITLE', 'PRODUCT TITLE ON WALMART', 'SKU', 'TYPE', 'ID', 'QTY', 'WALMART OPTION ID', 'OPTION ID', 'VARIANT QTY', 'VARIANT SKU'];
+        $header = ['PRODUCT ID', 'PRODUCT TITLE', 'PRODUCT TITLE ON TOPHATTER', 'SKU', 'TYPE', 'ID', 'QTY', 'TOPHATTER OPTION ID', 'OPTION ID', 'VARIANT QTY', 'VARIANT SKU'];
 
         $items = array();
         foreach ($inventory_data as $row) {
@@ -94,7 +94,7 @@ class ReportController extends WalmartmainController
         }
 
 //        print_r("SELECT `sku`,`created_at`, COUNT(`purchase_order_id`) as `counter`,SUM(order_total) as revenue FROM `walmart_order_details` {$where} group by sku order by counter desc ");die;
-        $order = Data::sqlRecords("SELECT `sku`,`created_at`, COUNT(`purchase_order_id`) as `counter`,SUM(order_total) as revenue FROM `walmart_order_details` {$where} group by sku order by counter desc ",'all');
+        $order = Data::sqlRecords("SELECT `sku`,`created_at`, COUNT(`purchase_order_id`) as `counter`,SUM(order_total) as revenue FROM `tophatter_order_details` {$where} group by sku order by counter desc ",'all');
         $header = ['SKU', 'CREATED AT', 'QUANTITY', 'REVENUE'];
 
         $order_data = array();

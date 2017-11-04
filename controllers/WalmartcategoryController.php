@@ -1,9 +1,9 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
-use frontend\modules\walmart\models\WalmartCategory;
-use frontend\modules\walmart\models\WalmartCategorySearch;
+use frontend\modules\tophatter\models\TophatterCategory;
+use frontend\modules\tophatter\models\TophatterCategorySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -11,7 +11,7 @@ use yii\filters\VerbFilter;
 /**
  * WalmartcategoryController implements the CRUD actions for WalmartCategory model.
  */
-class WalmartcategoryController extends Controller
+class TophattercategoryController extends Controller
 {
     public function behaviors()
     {
@@ -31,7 +31,7 @@ class WalmartcategoryController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new WalmartCategorySearch();
+        $searchModel = new TophatterCategorySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -59,7 +59,7 @@ class WalmartcategoryController extends Controller
      */
     public function actionCreate()
     {
-        $model = new WalmartCategory();
+        $model = new TophatterCategory();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -111,7 +111,7 @@ class WalmartcategoryController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = WalmartCategory::findOne($id)) !== null) {
+        if (($model = TophatterCategory::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

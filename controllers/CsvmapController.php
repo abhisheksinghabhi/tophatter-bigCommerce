@@ -1,21 +1,21 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
-use frontend\modules\walmart\components\AttributeMap;
+use frontend\modules\tophatter\components\AttributeMap;
 use Yii;
 use yii\base\Exception;
 use yii\web\Response;
 use yii\web\UploadedFile;
-use frontend\modules\walmart\models\JetProduct;
-use frontend\modules\walmart\models\JetProductVariants;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\Walmartapi;
-use frontend\modules\walmart\components\Jetproductinfo;
-use frontend\modules\walmart\components\WalmartProduct;
+use frontend\modules\tophatter\models\JetProduct;
+use frontend\modules\tophatter\models\JetProductVariants;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\Tophatterapi;
+use frontend\modules\tophatter\components\Jetproductinfo;
+use frontend\modules\tophatter\components\TophatterProduct;
 
-class CsvmapController extends WalmartmainController
+class CsvmapController extends TophattermainController
 {
-    protected $walmartHelper;
+    protected $tophatterHelper;
 
     const DEFAULT_VALUE = 'Please_Fill';
 
@@ -52,13 +52,13 @@ class CsvmapController extends WalmartmainController
         $model = JetProduct::find()->select('id,sku,type')->where(['merchant_id' => $merchant_id])->all();
         foreach ($model as $value) {
 
-            $product_category = Data::sqlRecords("SELECT `category`,`common_attributes` FROM `walmart_product` WHERE `merchant_id`='" . $merchant_id . "' AND `product_id`='" . $value->id . "'", 'one');
+            $product_category = Data::sqlRecords("SELECT `category`,`common_attributes` FROM `tophatter_product` WHERE `merchant_id`='" . $merchant_id . "' AND `product_id`='" . $value->id . "'", 'one');
 
             if (empty($product_category['category'])) {
                 continue;
             }
 
-            $attribute_mapping = Data::sqlRecords("SELECT `attributes` FROM `walmart_category` WHERE `category_id` = '" . $product_category['category'] . "'", 'one');
+            $attribute_mapping = Data::sqlRecords("SELECT `attributes` FROM `tophatter_category` WHERE `category_id` = '" . $product_category['category'] . "'", 'one');
 
             if (empty($attribute_mapping['attributes'])) {
                 continue;
@@ -192,9 +192,9 @@ class CsvmapController extends WalmartmainController
                 }
 
                 if (count($selectedProducts)) {
-                    $walmartConfig = Data::sqlRecords("SELECT `consumer_id`,`secret_key` FROM `walmart_configuration` WHERE merchant_id='" . $merchant_id . "'", 'one');
-                    if ($walmartConfig) {
-                        $this->walmartHelper = new WalmartProduct($walmartConfig['consumer_id'], $walmartConfig['secret_key']);
+                    $tophatterConfig = Data::sqlRecords("SELECT `consumer_id`,`secret_key` FROM `tophatter_configuration` WHERE merchant_id='" . $merchant_id . "'", 'one');
+                    if ($tophatterConfig) {
+                        $this->tophatterHelper = new TophatterProduct($tophatterConfig['consumer_id'], $tophatterConfig['secret_key']);
 
                         /*$priceUploadCountPerRequest = 1000;
                         $selectedProducts = array_chunk($selectedProducts, $priceUploadCountPerRequest);*/
@@ -211,7 +211,7 @@ class CsvmapController extends WalmartmainController
 
 
                     } else {
-                        Yii::$app->session->setFlash('warning', "Please enter walmartapi...");
+                        Yii::$app->session->setFlash('warning', "Please enter tophatterapi...");
                     }
 
                     if (count($import_errors)) {
@@ -239,7 +239,7 @@ class CsvmapController extends WalmartmainController
         $valid_product = [];
         $invalid_product = [];
         $when_attribute = '';
-        $walmart_attribute ='';
+        $tophatter_attribute ='';
         $sid = [];
         $vid = [];
         $errors =[];
@@ -268,7 +268,7 @@ class CsvmapController extends WalmartmainController
                         if($product['type'] == 'simple'){
                             $sid[] = $product['id'];
 
-                            $walmart_attribute .= " WHEN " . $product['id'] . " THEN " . "'" . $attribute_value . "'";
+                            $tophatter_attribute .= " WHEN " . $product['id'] . " THEN " . "'" . $attribute_value . "'";
 
                             $simple_ids = implode(',', $sid);
 
@@ -300,10 +300,10 @@ class CsvmapController extends WalmartmainController
 
             if(isset($simple_ids) && !empty($simple_ids)){
                 try {
-                    if(!empty($walmart_attribute)){
-                        $query1 = "UPDATE `walmart_product` SET 
-                                `walmart_attributes` = CASE `product_id` 
-                                   " . $walmart_attribute . "
+                    if(!empty($tophatter_attribute)){
+                        $query1 = "UPDATE `tophatter_product` SET 
+                                `tophatter_attributes` = CASE `product_id` 
+                                   " . $tophatter_attribute . "
                                 END
                                 WHERE product_id IN (" . $simple_ids . ")";
 
@@ -321,7 +321,7 @@ class CsvmapController extends WalmartmainController
                 try {
 
                     if(!empty($when_attribute)){
-                        $query = "UPDATE `walmart_product` SET 
+                        $query = "UPDATE `tophatter_product` SET 
                                     `common_attributes` = CASE `product_id` 
                                    " . $when_attribute . "
                                 END

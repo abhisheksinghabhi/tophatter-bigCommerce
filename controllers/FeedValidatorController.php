@@ -1,9 +1,9 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use yii\web\Controller;
-use frontend\modules\walmart\components\XmlValidator;
+use frontend\modules\tophatter\components\XmlValidator;
 
 class FeedValidatorController extends Controller
 {
@@ -23,8 +23,8 @@ class FeedValidatorController extends Controller
         if (isset($post['xmldata'])) {
             $xmldata = $post['xmldata'];
 
-            $xmlPath = Yii::getAlias('@webroot') . '/frontend/modules/walmart/components/Xml/Feed.xml';
-            $xsdPath = Yii::getAlias('@webroot') . '/frontend/modules/walmart/components/Xml/walmart_xsd/MPItemFeed.xsd';
+            $xmlPath = Yii::getAlias('@webroot') . '/frontend/modules/tophatter/components/Xml/Feed.xml';
+            $xsdPath = Yii::getAlias('@webroot') . '/frontend/modules/tophatter/components/Xml/tophatter_xsd/MPItemFeed.xsd';
 
             self::createXmlFile($xmldata, $xmlPath);
 

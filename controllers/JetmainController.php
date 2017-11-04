@@ -1,11 +1,11 @@
 <?php 
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use frontend\modules\walmart\components\Jetappdetails;
+use frontend\modules\tophatter\components\Jetappdetails;
 
 class JetmainController extends Controller
 {
@@ -37,7 +37,7 @@ class JetmainController extends Controller
     		    define("TOKEN",Yii::$app->user->identity->auth_key);
     		    $jetConfig=[];
     		    $queryObj="";
-    		    $queryObj = $connection->createCommand("SELECT `consumer_channel_type_id`,`api_user`,`api_password`,`merchant_email` FROM `walmart_configuration` WHERE merchant_id='".MERCHANT_ID."'");
+    		    $queryObj = $connection->createCommand("SELECT `consumer_channel_type_id`,`api_user`,`api_password`,`merchant_email` FROM `tophatter_configuration` WHERE merchant_id='".MERCHANT_ID."'");
     		    $jetConfig = $queryObj->queryOne();
     		    if($jetConfig)
     		    {

@@ -1,18 +1,18 @@
 <?php 
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use yii\web\Controller;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\Installation;
-use frontend\modules\walmart\components\AttributeMap;
-use frontend\modules\walmart\components\Jetproductinfo;
-use frontend\modules\walmart\models\WalmartInstallation;
-use frontend\modules\walmart\models\WalmartAttributeMap;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\Installation;
+use frontend\modules\tophatter\components\AttributeMap;
+use frontend\modules\tophatter\components\Jetproductinfo;
+use frontend\modules\tophatter\models\TophatterInstallation;
+use frontend\modules\tophatter\models\TophatterAttributeMap;
 
-class WalmartInstallController extends WalmartmainController
+class TophatterInstallController extends TophattermainController
 {
-	protected $bigcom, $walmartHelper;
+	protected $bigcom, $tophatterHelper;
 	public function beforeAction($action)
     {
     	$this->enableCsrfValidation = false;
@@ -79,9 +79,9 @@ class WalmartInstallController extends WalmartmainController
 		{
 			try
 			{
-				$model = WalmartInstallation::find()->where(['merchant_id'=>MERCHANT_ID])->one();
+				$model = TophatterInstallation::find()->where(['merchant_id'=>MERCHANT_ID])->one();
 		        if(is_null($model)) {
-		            $model = new WalmartInstallation();
+		            $model = new TophatterInstallation();
 		            $model->merchant_id = MERCHANT_ID;
 		        }
 		        
@@ -161,25 +161,25 @@ class WalmartInstallController extends WalmartmainController
 					if($category_id == "Other")
 					    $category_id = $value[0];
 
-		            $query1 = 'UPDATE `walmart_category_map` SET  category_id="'.trim($category_id).'",category_path="'.trim($category_path).'", tax_code="'.$taxcode.'" where merchant_id="'.$merchant_id.'" and product_type="'.$key.'"';
+		            $query1 = 'UPDATE `tophatter_category_map` SET  category_id="'.trim($category_id).'",category_path="'.trim($category_path).'", tax_code="'.$taxcode.'" where merchant_id="'.$merchant_id.'" and product_type="'.$key.'"';
 		            $model = Data::sqlRecords($query1, null, 'update');
 		            
-		            $query2 = 'UPDATE `walmart_product` SET  category="'.trim($category_id).'" where merchant_id="'.$merchant_id.'" and product_type="'.$key.'"';
+		            $query2 = 'UPDATE `tophatter_product` SET  category="'.trim($category_id).'" where merchant_id="'.$merchant_id.'" and product_type="'.$key.'"';
 		            $product = Data::sqlRecords($query2, null, 'update');
     			}
     			else
     			{
                     $taxcode = isset($value['taxcode'])?$value['taxcode']:'';
-                    $query1 = 'UPDATE `walmart_category_map` SET  category_id="",category_path="",tax_code="'.$taxcode.'" where merchant_id="'.$merchant_id.'" and product_type="'.$key.'"';
+                    $query1 = 'UPDATE `tophatter_category_map` SET  category_id="",category_path="",tax_code="'.$taxcode.'" where merchant_id="'.$merchant_id.'" and product_type="'.$key.'"';
                     $model = Data::sqlRecords($query1, null, 'update');
                     
-                    $query2 = 'UPDATE `walmart_product` SET  category="" where merchant_id="'.$merchant_id.'" and product_type="'.$key.'"';
+                    $query2 = 'UPDATE `tophatter_product` SET  category="" where merchant_id="'.$merchant_id.'" and product_type="'.$key.'"';
                     $product = Data::sqlRecords($query2, null, 'update');
   				    continue;
  			    }
     		}
             unset($data);
-    		return json_encode(['success'=>true, "message"=>"Walmart Categories are mapped successfully with Product Type"]);
+    		return json_encode(['success'=>true, "message"=>"Tophatter Categories are mapped successfully with Product Type"]);
     	}
     	else
     	{
@@ -194,40 +194,40 @@ class WalmartInstallController extends WalmartmainController
     	}
 
     	$data = Yii::$app->request->post();
-        if($data && isset($data['walmart']))
+        if($data && isset($data['tophatter']))
         {
             $merchant_id = MERCHANT_ID;
             $insert_value = [];
-            foreach($data['walmart'] as $key => $value)
+            foreach($data['tophatter'] as $key => $value)
             {
                 $shopifyProductType = addslashes($key);
-                foreach ($value as $walmart_attr => $value) {
-                    $walmartAttrCode = $walmart_attr;
+                foreach ($value as $tophatter_attr => $value) {
+                    $tophatterAttrCode = $tophatter_attr;
                     $attrValueType = '';
                     $attrValue = '';
                     if(is_array($value)) {
                         if(count($value) > 1) {
                             unset($value['text']);
-                            $attrValueType = WalmartAttributeMap::VALUE_TYPE_SHOPIFY;
+                            $attrValueType = TophatterAttributeMap::VALUE_TYPE_SHOPIFY;
                             $attrValue = implode(',', $value);
                         } elseif(count($value) == 1) {
                             if(isset($value['text'])) {
-                                $attrValueType = WalmartAttributeMap::VALUE_TYPE_TEXT;
+                                $attrValueType = TophatterAttributeMap::VALUE_TYPE_TEXT;
                                 $attrValue = $value['text'];
                             } else {
-                                $attrValueType = WalmartAttributeMap::VALUE_TYPE_SHOPIFY;
+                                $attrValueType = TophatterAttributeMap::VALUE_TYPE_SHOPIFY;
                                 $attrValue = reset($value);
                             }
                         }
                     }
                     elseif ($value != '') {
-                        $attrValueType = WalmartAttributeMap::VALUE_TYPE_WALMART;
+                        $attrValueType = TophatterAttributeMap::VALUE_TYPE_TOPHATTER;
                         $attrValue = $value;
                     }
 
                     if($attrValueType != '' && $attrValue != '')
                     {
-                        $insert_value[] = "(".$merchant_id.",'".$shopifyProductType."','".addslashes($walmartAttrCode)."','".addslashes($attrValueType)."','".addslashes($attrValue)."')";
+                        $insert_value[] = "(".$merchant_id.",'".$shopifyProductType."','".addslashes($tophatterAttrCode)."','".addslashes($attrValueType)."','".addslashes($attrValue)."')";
                     }
                 }
             }
@@ -235,10 +235,10 @@ class WalmartInstallController extends WalmartmainController
                 //remove attr map from session
                 AttributeMap::unsetAttrMapSession(MERCHANT_ID);
 
-                $delete = "DELETE FROM `walmart_attribute_map` WHERE `merchant_id`=".$merchant_id;
+                $delete = "DELETE FROM `tophatter_attribute_map` WHERE `merchant_id`=".$merchant_id;
                 Data::sqlRecords($delete, null, 'delete');
 
-                $query = "INSERT INTO `walmart_attribute_map`(`merchant_id`, `shopify_product_type`, `walmart_attribute_code`, `attribute_value_type`, `attribute_value`) VALUES ".implode(',', $insert_value);
+                $query = "INSERT INTO `tophatter_attribute_map`(`merchant_id`, `shopify_product_type`, `tophatter_attribute_code`, `attribute_value_type`, `attribute_value`) VALUES ".implode(',', $insert_value);
                 Data::sqlRecords($query, null, 'insert');
 
                 return json_encode(['success'=>true, 'message'=>"Attributes Have been Mapped Successfully!!"]);

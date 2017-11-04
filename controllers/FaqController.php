@@ -1,7 +1,7 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 use yii\helpers\Url;
 use Yii;
 use yii\filters\VerbFilter;
@@ -9,7 +9,7 @@ use yii\web\NotFoundHttpException;
 /**
  * FaqController
  */
-class FaqController extends WalmartmainController
+class FaqController extends TophattermainController
 {
     public function behaviors()
     {
@@ -30,7 +30,7 @@ class FaqController extends WalmartmainController
 
         try{
             $resultdata=array();
-            $query="SELECT * FROM `walmart_faq` ";        
+            $query="SELECT * FROM `tophatter_faq` ";        
             $resultdata = Data::sqlRecords($query,"all","select");
             
             return $this->render('index', [

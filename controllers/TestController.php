@@ -1,8 +1,8 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 use Yii;
 use yii\web\Controller;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 
 class TestController extends Controller
 {

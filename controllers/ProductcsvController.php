@@ -1,20 +1,20 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use yii\web\Response;
 use yii\web\UploadedFile;
-use frontend\modules\walmart\models\JetProduct;
-use frontend\modules\walmart\models\JetProductVariants;
-use frontend\modules\walmart\models\WalmartProduct as WalmartProductModel;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\Walmartapi;
-use frontend\modules\walmart\components\Jetproductinfo;
-use frontend\modules\walmart\components\WalmartProduct;
+use frontend\modules\tophatter\models\JetProduct;
+use frontend\modules\tophatter\models\JetProductVariants;
+use frontend\modules\tophatter\models\TophatterProduct as TophatterProductModel;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\Tophatterapi;
+use frontend\modules\tophatter\components\Jetproductinfo;
+use frontend\modules\tophatter\components\TophatterProduct;
 
-class ProductcsvController extends WalmartmainController
+class ProductcsvController extends TophattermainController
 {
-    protected $walmartHelper;
+    protected $tophatterHelper;
 
     const PRICE = 'Price';
     const QTY = 'Qty';
@@ -72,7 +72,7 @@ class ProductcsvController extends WalmartmainController
             if ($value->sku == "") {
                 continue;
             }
-            $product_price = Data::sqlRecords("SELECT `product_price`,`product_title` FROM `walmart_product` WHERE `merchant_id`='" . $merchant_id . "' AND `product_id`='" . $value->id . "'", 'one');
+            $product_price = Data::sqlRecords("SELECT `product_price`,`product_title` FROM `tophatter_product` WHERE `merchant_id`='" . $merchant_id . "' AND `product_id`='" . $value->id . "'", 'one');
 
             if ($value->type == "simple") {
                 $productdata[$i]['id'] = $value->id;
@@ -118,7 +118,7 @@ class ProductcsvController extends WalmartmainController
                             $productdata[$i][$action] = $val['option_unique_id'];
                         }
 
-                        $product_info = Data::sqlRecords("SELECT `option_prices` FROM `walmart_product_variants` WHERE `option_id` = '" . $val['option_id'] . "' AND `merchant_id`='" . $merchant_id . "'", 'one');
+                        $product_info = Data::sqlRecords("SELECT `option_prices` FROM `tophatter_product_variants` WHERE `option_id` = '" . $val['option_id'] . "' AND `merchant_id`='" . $merchant_id . "'", 'one');
 
                         if ($action == 'price' && (!empty($product_info['option_prices']) && $product_info['option_prices'] > 0)) {
                             $productdata[$i][$action] = $product_info['option_prices'];
@@ -203,16 +203,16 @@ class ProductcsvController extends WalmartmainController
                 $allpublishedSku = WalmartProduct::getAllProductSku($merchant_id, $status);*/
 
 
-                $status = WalmartProductModel::PRODUCT_STATUS_UPLOADED;
-                $stage = WalmartProductModel::PRODUCT_STATUS_STAGE;
-                $unpublished = WalmartProductModel::PRODUCT_STATUS_UNPUBLISHED;
-                $allpublishedSku = WalmartProduct::getAllProductSku($merchant_id, $status);
+                $status = TophatterProductModel::PRODUCT_STATUS_UPLOADED;
+                $stage = TophatterProductModel::PRODUCT_STATUS_STAGE;
+                $unpublished = TophatterProductModel::PRODUCT_STATUS_UNPUBLISHED;
+                $allpublishedSku = TophatterProduct::getAllProductSku($merchant_id, $status);
 
                 // print_r($allpublishedSku);die;
                 if($action=='qty' || $action=='price'){
 
-                    $allstageSku = WalmartProduct::getAllProductSku($merchant_id, $stage);
-                    $allunpublishedSku = WalmartProduct::getAllProductSku($merchant_id, $unpublished);
+                    $allstageSku = TophatterProduct::getAllProductSku($merchant_id, $stage);
+                    $allunpublishedSku = TophatterProduct::getAllProductSku($merchant_id, $unpublished);
                     $allpublishedSku = array_merge($allpublishedSku,$allunpublishedSku,$allstageSku);
                 }
 
@@ -248,7 +248,7 @@ class ProductcsvController extends WalmartmainController
                         }
 
                         if (!in_array($pro_sku, $allpublishedSku)) {
-                            $import_errors[$row] = 'Row ' . $row . ' : ' . 'Sku => "' . $pro_sku . '" is invalid/not published on walmart.';
+                            $import_errors[$row] = 'Row ' . $row . ' : ' . 'Sku => "' . $pro_sku . '" is invalid/not published on tophatter.';
                             continue;
                         }
                     }
@@ -266,9 +266,9 @@ class ProductcsvController extends WalmartmainController
                 }
 
                 if (count($selectedProducts)) {
-                    $walmartConfig = Data::sqlRecords("SELECT `consumer_id`,`secret_key` FROM `walmart_configuration` WHERE merchant_id='" . $merchant_id . "'", 'one');
-                    if ($walmartConfig) {
-                        $this->walmartHelper = new WalmartProduct($walmartConfig['consumer_id'], $walmartConfig['secret_key']);
+                    $tophatterConfig = Data::sqlRecords("SELECT `consumer_id`,`secret_key` FROM `tophatter_configuration` WHERE merchant_id='" . $merchant_id . "'", 'one');
+                    if ($tophatterConfig) {
+                        $this->tophatterHelper = new TophatterProduct($tophatterConfig['consumer_id'], $tophatterConfig['secret_key']);
 
                         /*$priceUploadCountPerRequest = 1000;
                         $selectedProducts = array_chunk($selectedProducts, $priceUploadCountPerRequest);*/
@@ -303,7 +303,7 @@ class ProductcsvController extends WalmartmainController
                         }
 
                     } else {
-                        Yii::$app->session->setFlash('warning', "Please enter walmartapi...");
+                        Yii::$app->session->setFlash('warning', "Please enter tophatterapi...");
                     }
 
                     if (count($import_errors)) {
@@ -313,7 +313,7 @@ class ProductcsvController extends WalmartmainController
                     if (count($import_errors)) {
                         Yii::$app->session->setFlash('error', implode('<br>', $import_errors));
                     } else {
-                        Yii::$app->session->setFlash('error', "None of your product(s) are published in Walmart from csv....");
+                        Yii::$app->session->setFlash('error', "None of your product(s) are published in Tophatter from csv....");
                     }
                 }
             } else {
@@ -328,11 +328,11 @@ class ProductcsvController extends WalmartmainController
     public function actionPriceupdate()
     {
         $products = Yii::$app->request->post();
-        $walmartConfig = Data::sqlRecords("SELECT `consumer_id`,`secret_key` FROM `walmart_configuration` WHERE merchant_id='" . MERCHANT_ID . "'", 'one');
-        if ($walmartConfig) {
-            $this->walmartHelper = new WalmartProduct($walmartConfig['consumer_id'], $walmartConfig['secret_key']);
+        $tophatterConfig = Data::sqlRecords("SELECT `consumer_id`,`secret_key` FROM `tophatter_configuration` WHERE merchant_id='" . MERCHANT_ID . "'", 'one');
+        if ($tophatterConfig) {
+            $this->tophatterHelper = new TophatterProduct($tophatterConfig['consumer_id'], $tophatterConfig['secret_key']);
 
-            $response = $this->walmartHelper->updatePriceviaCsv($products['products']);
+            $response = $this->tophatterHelper->updatePriceviaCsv($products['products']);
             $response['action'] = 'Price';
 
             if (isset($response['errors'])) {
@@ -364,11 +364,11 @@ class ProductcsvController extends WalmartmainController
     {
         $products = Yii::$app->request->post();
         $returnarr=[];
-        $walmartConfig = Data::sqlRecords("SELECT `consumer_id`,`secret_key` FROM `walmart_configuration` WHERE merchant_id='" . MERCHANT_ID . "'", 'one');
-        if ($walmartConfig) {
-            $this->walmartHelper = new WalmartProduct($walmartConfig['consumer_id'], $walmartConfig['secret_key']);
+        $tophatterConfig = Data::sqlRecords("SELECT `consumer_id`,`secret_key` FROM `tophatter_configuration` WHERE merchant_id='" . MERCHANT_ID . "'", 'one');
+        if ($tophatterConfig) {
+            $this->tophatterHelper = new TophatterProduct($tophatterConfig['consumer_id'], $tophatterConfig['secret_key']);
 
-            $response = $this->walmartHelper->updateInventoryViaCsv($products['products']);
+            $response = $this->tophatterHelper->updateInventoryViaCsv($products['products']);
             if (isset($response['errors'])) {
                 if (isset($response['errors']['error'])) {
                     /*Yii::$app->session->setFlash('warning', $response['errors']['error']['code']);*/

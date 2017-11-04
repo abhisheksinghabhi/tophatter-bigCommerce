@@ -1,13 +1,13 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
-use frontend\modules\walmart\models\WalmartCategoryMap;
-use frontend\modules\walmart\models\WalmartCategory;
-use frontend\modules\walmart\components\Jetcategorytree;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\models\TophatterCategoryMap;
+use frontend\modules\tophatter\models\TophatterCategory;
+use frontend\modules\tophatter\components\Jetcategorytree;
+use frontend\modules\tophatter\components\Data;
 
-class CategorymapController extends WalmartmainController
+class CategorymapController extends TophattermainController
 {
     public function actionIndex()
     {
@@ -16,14 +16,14 @@ class CategorymapController extends WalmartmainController
         } else {
             $merchant_id = MERCHANT_ID;
             $blank = '';
-            $model = WalmartCategoryMap::find()->where(['merchant_id' => $merchant_id])->andWhere(['!=', 'product_type', $blank])->all();
+            $model = TophatterCategoryMap::find()->where(['merchant_id' => $merchant_id])->andWhere(['!=', 'product_type', $blank])->all();
 //            $data = WalmartCategory::find()->select('id,category_id,title,parent_id,level')->all();
             $category_tree = array();
             $category_detail = array();
-            $rootCategory = \frontend\modules\walmart\components\WalmartCategory::getrootcategory();
+            $rootCategory = \frontend\modules\tophatter\components\TophatterCategory::getrootcategory();
 //            list($category_tree, $category_detail) = Jetcategorytree::createCategoryTreeArray($data);
 
-            list($category_tree, $category_detail) = \frontend\modules\walmart\components\WalmartCategory::getcategorytree();
+            list($category_tree, $category_detail) = \frontend\modules\tophatter\components\TophatterCategory::getcategorytree();
 //        print_r($category_tree);
 //        print_r($category_detail);
 //        die;
@@ -71,30 +71,30 @@ class CategorymapController extends WalmartmainController
                     if($category_id=="Other")
                         $category_id=$value[0];
                     $model="";
-                    $sql='UPDATE `walmart_category_map` SET  category_id="'.trim($category_id).'",category_path="'.trim($category_path).'", tax_code="'.$taxcode.'" where merchant_id="'.$merchant_id.'" and product_type="'.addslashes($key).'"';
+                    $sql='UPDATE `tophatter_category_map` SET  category_id="'.trim($category_id).'",category_path="'.trim($category_path).'", tax_code="'.$taxcode.'" where merchant_id="'.$merchant_id.'" and product_type="'.addslashes($key).'"';
                     $model = $connection->createCommand($sql)->execute();
                     $product="";
                     //$sql='UPDATE `walmart_product` SET  category="'.trim($category_id).'" where merchant_id="'.$merchant_id.'" and product_type="'.$key.'"';
                     $parent_category = $value[0];
                    // echo  $parent_category;die;
-                    $sql="UPDATE `walmart_product` `wp` INNER JOIN (SELECT * FROM `jet_product` where `merchant_id`='".$merchant_id."') as `jp` ON `jp`.`bigproduct_id` = `wp`.`product_id` SET  `wp`.`category`='".trim($category_id)."', `wp`.`parent_category`='".$parent_category."'  where `wp`.`merchant_id`='".$merchant_id."' AND `jp`.`product_type`='".addslashes($key)."'";
+                    $sql="UPDATE `tophatter_product` `wp` INNER JOIN (SELECT * FROM `jet_product` where `merchant_id`='".$merchant_id."') as `jp` ON `jp`.`bigproduct_id` = `wp`.`product_id` SET  `wp`.`category`='".trim($category_id)."', `wp`.`parent_category`='".$parent_category."'  where `wp`.`merchant_id`='".$merchant_id."' AND `jp`.`product_type`='".addslashes($key)."'";
                     $product = $connection->createCommand($sql)->execute();
                 }
                 else{
                     $model="";
-                    $sql='UPDATE `walmart_category_map` SET  category_id="",category_path="",tax_code="'.$taxcode.'" where merchant_id="'.$merchant_id.'" and product_type="'.addslashes($key).'"';
+                    $sql='UPDATE `tophatter_category_map` SET  category_id="",category_path="",tax_code="'.$taxcode.'" where merchant_id="'.$merchant_id.'" and product_type="'.addslashes($key).'"';
 
                     $model = $connection->createCommand($sql)->execute();
                     $product = "";
                     //$sql='UPDATE `walmart_product` SET  category="" where merchant_id="'.$merchant_id.'" and product_type="'.$key.'"';
-                    $sql="UPDATE `walmart_product` `wp` INNER JOIN (SELECT * FROM `jet_product` where `merchant_id`='".$merchant_id."') as `jp` ON `jp`.`bigproduct_id` = `wp`.`product_id` SET  `wp`.`category`='', `wp`.`parent_category`='' where `wp`.`merchant_id`='".$merchant_id."' AND `jp`.`product_type`='".addslashes($key)."'";
+                    $sql="UPDATE `tophatter_product` `wp` INNER JOIN (SELECT * FROM `jet_product` where `merchant_id`='".$merchant_id."') as `jp` ON `jp`.`bigproduct_id` = `wp`.`product_id` SET  `wp`.`category`='', `wp`.`parent_category`='' where `wp`.`merchant_id`='".$merchant_id."' AND `jp`.`product_type`='".addslashes($key)."'";
 
                     $product = $connection->createCommand($sql)->execute();
                     continue;
                 }
             }
             unset($data);
-            Yii::$app->session->setFlash('success', "Walmart Categories are mapped successfully with Product Type");
+            Yii::$app->session->setFlash('success', "Tophatter Categories are mapped successfully with Product Type");
         }
         unset($connection);
         return $this->redirect(['index']);
@@ -147,33 +147,33 @@ class CategorymapController extends WalmartmainController
     public function actionGetattrvalues()
     {
         $connection = Yii::$app->getDb();
-        $path = file_get_contents('/opt/lampp/htdocs/walmart_attributes_simple_type.json');
+        $path = file_get_contents('/opt/lampp/htdocs/tophatter_attributes_simple_type.json');
         $categoryAttr = [];
         $categoryAttr = json_decode($path, true);
         //var_dump($categoryAttr);die;
         $categoryModel = [];
-        $categoryModel = $connection->createCommand('select category_id,attributes,walmart_attributes from walmart_category where 1')->queryAll();
+        $categoryModel = $connection->createCommand('select category_id,attributes,tophatter_attributes from tophatter_category where 1')->queryAll();
         $dataValues = [];
         foreach ($categoryModel as $val) {
             $attr = [];
             $attr = json_decode($val['attributes'], true);
             $notreqattr = [];
-            $notreqattr = explode(',', $val['walmart_attributes']);
+            $notreqattr = explode(',', $val['tophatter_attributes']);
             if (is_array($notreqattr) && count($notreqattr) > 0) {
                 $attrVal = [];
                 foreach ($notreqattr as $v2) {
                     $value = '';
                     foreach ($categoryAttr as $key => $value) {
                         $arrAttr = explode('/', $key);
-                        if ($arrAttr[0] == $v2 && $value['walmart_attribute_enum']) {
-                            $attrVal[] = [$arrAttr[0] => $value['walmart_attribute_enum']];
+                        if ($arrAttr[0] == $v2 && $value['tophatter_attribute_enum']) {
+                            $attrVal[] = [$arrAttr[0] => $value['tophatter_attribute_enum']];
                             break;
                         }
                     }
                 }
                 if (count($attrVal) > 0) {
                     echo $val['category_id'] . '----' . json_encode($attrVal) . "<br>";
-                    $connection->createCommand('update `walmart_category` set `walmart_attribute_values`="' . addslashes(json_encode($attrVal)) . '" where category_id="' . $val['category_id'] . '"')->execute();
+                    $connection->createCommand('update `tophatter_category` set `tophatter_attribute_values`="' . addslashes(json_encode($attrVal)) . '" where category_id="' . $val['category_id'] . '"')->execute();
                     unset($attrVal);
                 }
             }
@@ -187,8 +187,8 @@ class CategorymapController extends WalmartmainController
                             $value = '';
                             foreach ($categoryAttr as $key => $value) {
                                 $arrAttr = explode('/', $key);
-                                if ($arrAttr[0] == $k && $value['walmart_attribute_enum']) {
-                                    $attrVal[] = [$arrAttr[0] => $value['walmart_attribute_enum']];
+                                if ($arrAttr[0] == $k && $value['tophatter_attribute_enum']) {
+                                    $attrVal[] = [$arrAttr[0] => $value['tophatter_attribute_enum']];
                                     //$connection->createCommand('update `walmart_category` set `attribute_values`="'.$value['walmart_attribute_enum'].'"')->execute();
                                     //$attrVal[$arrAttr[0]]=$value['walmart_attribute_enum'];
                                     //echo $val['category_id']."<br>";
@@ -201,8 +201,8 @@ class CategorymapController extends WalmartmainController
                     } else {
                         foreach ($categoryAttr as $key => $value) {
                             $arrAttr = explode('/', $key);
-                            if ($arrAttr[0] == $v1 && $value['walmart_attribute_enum']) {
-                                $attrVal[] = [$arrAttr[0] => $value['walmart_attribute_enum']];
+                            if ($arrAttr[0] == $v1 && $value['tophatter_attribute_enum']) {
+                                $attrVal[] = [$arrAttr[0] => $value['tophatter_attribute_enum']];
                                 //$connection->createCommand('update `walmart_category` set `attribute_values`="'.$value['walmart_attribute_enum'].'"')->execute();
                                 //$attrVal[$arrAttr[0]]=$value['walmart_attribute_enum'];
                                 //echo $val['category_id']."<br>";
@@ -223,19 +223,19 @@ class CategorymapController extends WalmartmainController
         $attrVal = [];
         foreach ($categoryAttr as $key => $value) {
             $arrAttr = explode('/', $key);
-            if (in_array($arrAttr[0], $dataValues) && $value['walmart_attribute_enum']) {
-                $attrVal[$arrAttr[0]] = $value['walmart_attribute_enum'];
+            if (in_array($arrAttr[0], $dataValues) && $value['tophatter_attribute_enum']) {
+                $attrVal[$arrAttr[0]] = $value['tophatter_attribute_enum'];
             }
         }
     }
 
-    public function actionCreatewalmartcategory()
+    public function actionCreatetophattercategory()
     {
-        $str = file_get_contents(\Yii::getAlias('@webroot') . '/var/WalmartCategories.2.json');
+        $str = file_get_contents(\Yii::getAlias('@webroot') . '/var/TophatterCategories.2.json');
         $catData = json_decode($str, true);
         //var_dump($catData);die;
         foreach ($catData as $key1 => $val1) {
-            $model = new WalmartCategory();
+            $model = new TophatterCategory();
             $attr = array();
             $cal = array();
             $model->id = $key1;
@@ -244,7 +244,7 @@ class CategorymapController extends WalmartmainController
             $model->parent_id = $val1['parent_cat_id'];
             $model->level = $val1['level'];
 
-            $cal = explode(',', $val1['walmart_required_attributes']);
+            $cal = explode(',', $val1['tophatter_required_attributes']);
             $i = 0;
             if (count($cal) > 11) {
                 for ($i = 12; $i < count($cal); $i++) {
@@ -272,18 +272,18 @@ class CategorymapController extends WalmartmainController
             } else {
                 $model->attributes = '';
             }
-            $model->walmart_attributes = $val1['walmart_attributes'];
+            $model->tophatter_attributes = $val1['tophatter_attributes'];
             $model->save(FALSE);
         }
     }
 
-    public function actionUpdatewalmartcategory()
+    public function actionUpdatetophattercategory()
     {
-        $str = file_get_contents(\Yii::getAlias('@webroot') . '/var/walmart_categoryold.json');
+        $str = file_get_contents(\Yii::getAlias('@webroot') . '/var/tophatter_categoryold.json');
         $catValueData = json_decode($str, true);
         if (is_array($catValueData) && count($catValueData) > 0) {
             foreach ($catValueData as $value) {
-                $query = "update `walmart_category` set attribute_values='" . addslashes($value['attribute_values']) . "',walmart_attribute_values='" . addslashes($value['walmart_attribute_values']) . "' where category_id='" . $value['category_id'] . "'";
+                $query = "update `tophatter_category` set attribute_values='" . addslashes($value['attribute_values']) . "',tophatter_attribute_values='" . addslashes($value['tophatter_attribute_values']) . "' where category_id='" . $value['category_id'] . "'";
                 Data::sqlRecords($query, null, 'update');
             }
         }
