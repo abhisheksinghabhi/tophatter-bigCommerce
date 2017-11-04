@@ -1,7 +1,7 @@
 <?php
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\AttributeMap;
-use frontend\modules\walmart\components\WalmartPromoStatus;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\AttributeMap;
+use frontend\modules\tophatter\components\TophatterPromoStatus;
 
 $dropdown_option_arr = array();
 $id = $model->category;
@@ -9,7 +9,7 @@ $product_type = $model->jet_product->type;
 $product_id = $model->product_id;
 $sku = $model->jet_product->sku;
 $merchant_id = $model->merchant_id;
-$viewVariants = \yii\helpers\Url::toRoute(['walmartproduct/getwalmartdata']);
+$viewVariants = \yii\helpers\Url::toRoute(['tophatterproduct/gettophatterdata']);
 $option_status = ['PUBLISHED', 'UNPUBLISHED', 'STAGE'];
 
 ?>
@@ -89,9 +89,9 @@ if (is_array($attributes) && count($attributes) > 0) {
         $shopifyattribues = array();
         //$shopifyattribues = json_decode($model->jet_product->attr_ids, true) ?: [];
         $shopifyattribues = json_decode(stripslashes($model->jet_product->bigcom_attr), true) ?: [];
-        $walmart_attributes_arr = array();
-        if ($model->walmart_attributes != "") {
-            $walmart_attributes_arr = json_decode($model->walmart_attributes, true);
+        $tophatter_attributes_arr = array();
+        if ($model->tophatter_attributes != "") {
+            $tophatter_attributes_arr = json_decode($model->tophatter_attributes, true);
         }
         ?>
         <script type="text/javascript">
@@ -207,7 +207,7 @@ if (is_array($attributes) && count($attributes) > 0) {
                         return true;
                     }
                 }
-                var errorMsg = "Please map atleast one variant option with Walmart Attribute.";
+                var errorMsg = "Please map atleast one variant option with Tophatter Attribute.";
                 j$('.v_error_msg').html(errorMsg);
                 alert(errorMsg);
                 j$('.v_error_msg').show();
@@ -241,13 +241,13 @@ if (is_array($attributes) && count($attributes) > 0) {
             }
 
             function addRemoveRequiredAttributes() {
-                //array of required attributes on walmart
+                //array of required attributes on tophatter
                 var requiredAttr = [];
                 <?php foreach ($required as $req_attr) { ?>
                 requiredAttr.push("<?= $req_attr?>");
                 <?php } ?>
 
-                //array of selected or mapped walmart attributes with shopify option
+                //array of selected or mapped tophatter attributes with shopify option
                 var selectedVariantAttr = [];
                 j$('.variant_attributes_selector').each(function () {
                     selectedVariantAttr.push(j$(this).find(":selected").val());
@@ -259,7 +259,7 @@ if (is_array($attributes) && count($attributes) > 0) {
                 //array of unit type attribute values
                 var unitAttrValues = [];
 
-                //array of variant walmart attributes
+                //array of variant tophatter attributes
                 var variantAttr = [];
                 <?php foreach ($dropdown_option_arr as $option_arr) {
                 if(isset($option_arr['select']) && count($option_arr['select'])):
@@ -374,11 +374,11 @@ if (is_array($attributes) && count($attributes) > 0) {
                 if (!$flag && isset($required) && !empty($required)) {
                 foreach ($required as $common_key){
 
-                $mapped_walmart_attr = Data::sqlRecords("SELECT * FROM `walmart_attribute_map` WHERE `merchant_id` = '" . $merchant_id . "' AND `walmart_attribute_code`='" . $common_key . "' AND `shopify_product_type` ='" . addslashes($shopify_product_type) . "'", 'one');
+                $mapped_tophatter_attr = Data::sqlRecords("SELECT * FROM `tophatter_attribute_map` WHERE `merchant_id` = '" . $merchant_id . "' AND `tophatter_attribute_code`='" . $common_key . "' AND `shopify_product_type` ='" . addslashes($shopify_product_type) . "'", 'one');
                 $name = str_replace(AttributeMap::ATTRIBUTE_PATH_SEPERATOR, '_', $common_key);
 
                 ?>
-                commonAttrValues.push({"<?= $name?>": "<?= $mapped_walmart_attr['attribute_value']?>"});
+                commonAttrValues.push({"<?= $name?>": "<?= $mapped_tophatter_attr['attribute_value']?>"});
                 <?php }
                 }
                 // end by shivam
@@ -422,17 +422,17 @@ if (is_array($attributes) && count($attributes) > 0) {
                 <th>
                     <center>Images</center>
                 </th>
-                <th class="walmart_price">
+                <th class="tophatter_price">
                     <center>Price</center>
                 </th>
-                <th class="walmart_inventory">
+                <th class="tophatter_inventory">
                     <center>Inventory</center>
                 </th>
                 <th colspan="2">
                     <center>Barcode</center>
                 </th>
                 <th colspan="3">
-                    <center>Map Walmart Attributes</center>
+                    <center>Map Tophatter Attributes</center>
                 </th>
 
             </tr>
@@ -469,16 +469,16 @@ if (is_array($attributes) && count($attributes) > 0) {
 
                 foreach ($shopifyattribues as $key => $val) {
                     $bool = false;
-                    if ($walmart_attributes_arr && count($walmart_attributes_arr) > 0) {
-                        $bool = array_key_exists($val, $walmart_attributes_arr);
+                    if ($tophatter_attributes_arr && count($tophatter_attributes_arr) > 0) {
+                        $bool = array_key_exists($val, $tophatter_attributes_arr);
                     }
                     $attr_value = "";
                     if ($bool) {
-                        $attr_value = $walmart_attributes_arr[$val][0];
+                        $attr_value = $tophatter_attributes_arr[$val][0];
                     } else {
-                        $walmart_attribute_code = Data::getWamartattributecode($merchant_id, $val, $shopify_product_type);
+                        $tophatter_attribute_code = Data::getWamartattributecode($merchant_id, $val, $shopify_product_type);
 
-                        $attr_value = $walmart_attribute_code['walmart_attribute_code'];
+                        $attr_value = $tophatter_attribute_code['tophatter_attribute_code'];
                     }
                     if (Yii::$app->getRequest()->getQueryParam('clearattr') == 1) {
                         $attr_value = "";
@@ -490,12 +490,12 @@ if (is_array($attributes) && count($attributes) > 0) {
                     <td>
                         <div>
                             <b>
-                                <center>Walmart attribute(s)</center>
+                                <center>Tophatter attribute(s)</center>
                             </b>
                         </div>
                         <select class="variant_attributes_selector jet_attributes_selector form-control"
                                 id="sel_<?= $key ?>" name="jet_attributes[<?= $key ?>][jet_attr_id]">
-                            <option value="">Select a Walmart Attribute...</option>
+                            <option value="">Select a Tophatter Attribute...</option>
                             <?php if (is_array($dropdown_option_arr) && count($dropdown_option_arr) > 0) {
                                 foreach ($dropdown_option_arr as $p_ar) {
                                     
@@ -566,7 +566,7 @@ if (is_array($attributes) && count($attributes) > 0) {
                             j$("#sel_<?=$key?>").change(function () {
                                 if (!checksame()) {
                                     j$('.v_success_msg').hide();
-                                    var errorMsg = "Please don't choose same Walmart Attibute for multiple option(s).";
+                                    var errorMsg = "Please don't choose same Tophatter Attibute for multiple option(s).";
                                     j$('.v_error_msg').html(errorMsg);
                                     alert(errorMsg);
                                     j$('.v_error_msg').show();
@@ -616,7 +616,7 @@ if (is_array($attributes) && count($attributes) > 0) {
                 ?>
             </tr>
             <?php
-            $query = "SELECT option_sku,option_image,barcode_type,jetvar.option_id,option_qty,option_price,option_unique_id,variant_option1,variant_option2,variant_option3,walvar.new_variant_option_1,walvar.new_variant_option_2,walvar.new_variant_option_3,`walvar`.`status`,`walvar`.`option_prices`,jetvar.product_id as product_id FROM `walmart_product_variants` AS walvar INNER JOIN `jet_product_variants` AS jetvar ON walvar.option_id = jetvar.option_id WHERE jetvar.product_id='" . $product_id . "' and jetvar.merchant_id='".$merchant_id."' order by jetvar.option_sku='" . $sku . "' desc, jetvar.option_id asc";
+            $query = "SELECT option_sku,option_image,barcode_type,jetvar.option_id,option_qty,option_price,option_unique_id,variant_option1,variant_option2,variant_option3,walvar.new_variant_option_1,walvar.new_variant_option_2,walvar.new_variant_option_3,`walvar`.`status`,`walvar`.`option_prices`,jetvar.product_id as product_id FROM `tophatter_product_variants` AS walvar INNER JOIN `jet_product_variants` AS jetvar ON walvar.option_id = jetvar.option_id WHERE jetvar.product_id='" . $product_id . "' and jetvar.merchant_id='".$merchant_id."' order by jetvar.option_sku='" . $sku . "' desc, jetvar.option_id asc";
 
             $productOptions = Data::sqlRecords($query, "all", "select");
 
@@ -664,13 +664,13 @@ if (is_array($attributes) && count($attributes) > 0) {
 
                             <div>
                                 <div class="pull-left">
-                                    <!--<input class="form-control walmart-price" type="text"
-                                           id="walmart_product_price<?/*= $value['option_id']; */ ?>"
-                                           name="jet_varients_opt[<?/*= $value['option_id'] */ ?>][walmart_product_price]"
+                                    <!--<input class="form-control tophatter-price" type="text"
+                                           id="tophatter_product_price<?/*= $value['option_id']; */ ?>"
+                                           name="jet_varients_opt[<?/*= $value['option_id'] */ ?>][tophatter_product_price]"
                                            value="<?/*= (float)$value['option_price']; */ ?>">-->
-                                    <input class="form-control walmart-price" type="text"
-                                           id="walmart_product_price<?= $value['option_id']; ?>"
-                                           name="jet_varients_opt[<?= $value['option_id'] ?>][walmart_product_price]"
+                                    <input class="form-control tophatter-price" type="text"
+                                           id="tophatter_product_price<?= $value['option_id']; ?>"
+                                           name="jet_varients_opt[<?= $value['option_id'] ?>][tophatter_product_price]"
                                            value="<?php if (isset($value['option_prices']) && !empty($value['option_prices'])) {
                                                echo $value['option_prices'];
                                            } else {
@@ -678,8 +678,8 @@ if (is_array($attributes) && count($attributes) > 0) {
                                            } ?>">
                                 </div>
                                 <div class="pull-left">
-                                    <button class="toggle_editor walmart-price-button" type="button"
-                                            onClick="walmartPrice(this,event);" title="Upload On Walmart"
+                                    <button class="toggle_editor tophatter-price-button" type="button"
+                                            onClick="tophatterPrice(this,event);" title="Upload On Tophatter"
                                             product-id="<?= $model->product_id ?>" product-type="<?= 'variants' ?>"
                                             option-id="<?= $value['option_id'] ?>" sku="<?= $value['option_sku'] ?>"
                                             option-price="<?= (float)$value['option_price']; ?>">Update
@@ -692,7 +692,7 @@ if (is_array($attributes) && count($attributes) > 0) {
                             <a href="javascript:void(0);" onclick="priceEdit(this)" class="variant-price"
                                product-id="<?= $value['product_id'] ?>" option-id="<?= $value['option_id'] ?>"
                                sku="<?= $value['option_sku'] ?>" option-price="<?= $value['option_price'] ?>">
-                                <?php if (WalmartPromoStatus::promotionRulesExist($value['option_sku'], $merchant_id)) { ?>
+                                <?php if (TophatterPromoStatus::promotionRulesExist($value['option_sku'], $merchant_id)) { ?>
                                     Edit Promotional Price
                                 <?php } else { ?>
                                     Add Promotional Price
@@ -704,15 +704,15 @@ if (is_array($attributes) && count($attributes) > 0) {
                             ?>
                             <div>
                                 <div class="pull-left">
-                                    <input class="form-control walmart-inventory" type="text"
-                                           id="walmart_product_inventory<?= $value['option_id']; ?>"
-                                           name="jet_varients_opt[<?= $value['option_id'] ?>][walmart_product_inventory]"
+                                    <input class="form-control tophatter-inventory" type="text"
+                                           id="tophatter_product_inventory<?= $value['option_id']; ?>"
+                                           name="jet_varients_opt[<?= $value['option_id'] ?>][tophatter_product_inventory]"
                                            value="<?php
                                            echo $value['option_qty'];;
                                            ?>">
-                                    <!--<input class="form-control walmart-inventory" type="text"
-                                           id="walmart_product_inventory<?/*= $value['option_id']; */ ?>"
-                                           name="jet_varients_opt[<?/*= $value['option_id'] */ ?>][walmart_product_inventory]"
+                                    <!--<input class="form-control tophatter-inventory" type="text"
+                                           id="tophatter_product_inventory<?/*= $value['option_id']; */ ?>"
+                                           name="jet_varients_opt[<?/*= $value['option_id'] */ ?>][tophatter_product_inventory]"
                                            value="<?php /*if(isset($value['option_quantity']) && !empty($value['option_quantity'])){
                                                echo $value['option_quantity']; ;
                                            }else{
@@ -720,8 +720,8 @@ if (is_array($attributes) && count($attributes) > 0) {
                                            }  */ ?>">-->
                                 </div>
                                 <div class="pull-left">
-                                    <button class="toggle_editor walmart-inventory-button" type="button"
-                                            onClick="walmartInventorymodal(this);" title="Upload On Walmart"
+                                    <button class="toggle_editor tophatter-inventory-button" type="button"
+                                            onClick="tophatterInventorymodal(this);" title="Upload On Tophatter"
                                             product-id="<?= $model->product_id ?>" product-type="<?= 'variants' ?>"
                                             option-id="<?= $value['option_id'] ?>" sku="<?= $value['option_sku'] ?>"
                                             option-inventory="<?= (float)$value['option_qty'] ?>"
@@ -797,7 +797,7 @@ if (is_array($attributes) && count($attributes) > 0) {
     <?php
 }
 ?>
-    <div id="view_walmart_product" style="display:none">
+    <div id="view_tophatter_product" style="display:none">
     </div>
 
     <script>
@@ -818,15 +818,15 @@ if (is_array($attributes) && count($attributes) > 0) {
                 .done(function (msg) {
                     //console.log(msg);
                     $('#LoadingMSG').hide();
-                    $('#view_walmart_product').html(msg);
+                    $('#view_tophatter_product').html(msg);
 
                     $('body').attr('data-promo', 'show');
                     $('#edit-modal-close').click();
-                    $("#edit_walmart_product #myModal").on('hidden.bs.modal', function () {
+                    $("#edit_tophatter_product #myModal").on('hidden.bs.modal', function () {
                         if ($('body').attr('data-promo') == 'show') {
-                            $('#view_walmart_product').css("display", "block");
+                            $('#view_tophatter_product').css("display", "block");
 
-                            $('#view_walmart_product #myModal').modal('show');
+                            $('#view_tophatter_product #myModal').modal('show');
                             $('body').removeAttr('data-promo');
                         }
                     });
@@ -840,14 +840,14 @@ if (is_array($attributes) && count($attributes) > 0) {
 
 <?php
 /*$merchant_id=MERCHANT_ID;
-$urlWalmartPromotions= \yii\helpers\Url::toRoute(['walmartproduct/promotions']);
+$urltophatterPromotions= \yii\helpers\Url::toRoute(['tophatterproduct/promotions']);
 ?>
 <script type="text/javascript">
     var csrfToken = $('meta[name="csrf-token"]').attr("content");
     function priceEdit(element){
         j$('#edit-modal-close').click();
 
-        var url='<?= $urlWalmartPromotions; ?>';
+        var url='<?= $urltophatterPromotions; ?>';
         var merchant_id='<?= $merchant_id;?>';
         //j$('#LoadingMSG').show();
         j$.ajax({
@@ -859,7 +859,7 @@ $urlWalmartPromotions= \yii\helpers\Url::toRoute(['walmartproduct/promotions']);
             //console.log(msg);
            j$('#LoadingMSG').hide();
            j$('#price-edit').html(msg);
-           //j$('#edit_walmart_product').css("display","block");
+           //j$('#edit_tophatter_product').css("display","block");
            $('#price-edit #price-edit-modal').modal({
               // keyboard: false,
                //backdrop: 'static'

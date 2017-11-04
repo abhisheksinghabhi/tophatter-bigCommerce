@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\WalmartProduct */
+/* @var $model frontend\models\TophatterProduct */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="walmart-product-form">
+<div class="tophatter-product-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
@@ -16,7 +16,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'merchant_id')->textInput() ?>
 
-    <?= $form->field($model, 'walmart_attributes')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'tophatter_attributes')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'category')->textInput(['maxlength' => true]) ?>
 

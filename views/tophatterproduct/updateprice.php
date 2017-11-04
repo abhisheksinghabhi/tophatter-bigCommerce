@@ -1,13 +1,13 @@
 <?php 
 use yii\helpers\Html;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 
 $succes_img = yii::$app->request->baseUrl.'/frontend/images/batchupload/fam_bullet_success.gif';
 $error_img = yii::$app->request->baseUrl.'/frontend/images/batchupload/error_msg_icon.gif';
 $loader_img = yii::$app->request->baseUrl.'/frontend/images/batchupload/rule-ajax-loader.gif';
 
-$uploadPriceUrl = Data::getUrl('walmartproduct/pricepost');
-$backUrl = Data::getUrl('walmartproduct/index');
+$uploadPriceUrl = Data::getUrl('tophatterproduct/pricepost');
+$backUrl = Data::getUrl('tophatterproduct/index');
 ?>
 <style type="text/css" >
    .shopify-api ul { list-style-type:none; padding:0; margin:0; }

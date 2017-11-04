@@ -3,9 +3,9 @@ use yii\helpers\Html;
 	$succes_img = yii::$app->request->baseUrl.'/frontend/images/batchupload/fam_bullet_success.gif';
 	$error_img = yii::$app->request->baseUrl.'/frontend/images/batchupload/error_msg_icon.gif';
 	$loader_img = yii::$app->request->baseUrl.'/frontend/images/batchupload/rule-ajax-loader.gif';
-	$ipmort_url=\yii\helpers\Url::toRoute(['walmartproduct/index']);
-	$url=\yii\helpers\Url::toRoute(['walmartproduct/bulkproductstatus']);
-	$productUrl= \yii\helpers\Url::toRoute(['walmartproduct/index']);
+	$ipmort_url=\yii\helpers\Url::toRoute(['tophatterproduct/index']);
+	$url=\yii\helpers\Url::toRoute(['tophatterproduct/bulkproductstatus']);
+	$productUrl= \yii\helpers\Url::toRoute(['tophatterproduct/index']);
 ?>
 
 <style type="text/css" >

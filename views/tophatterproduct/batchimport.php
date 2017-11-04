@@ -3,13 +3,13 @@ use yii\helpers\Html;
 $succes_img = yii::$app->request->baseUrl.'/frontend/images/batchupload/fam_bullet_success.gif';
 $error_img = yii::$app->request->baseUrl.'/frontend/images/batchupload/error_msg_icon.gif';
 $loader_img = yii::$app->request->baseUrl.'/frontend/images/batchupload/rule-ajax-loader.gif';
-$ipmort_url=Yii::$app->request->baseUrl.'/walmart/walmartproduct/index';
+$ipmort_url=Yii::$app->request->baseUrl.'/tophatter/tophatterproduct/index';
 /*$merchant_id = Yii::$app->user->identity->id;
  if($merchant_id==14){
 $url=\yii\helpers\Url::toRoute(['jetproduct/startbatchupload1']);
 }else{*/
-$url=\yii\helpers\Url::toRoute(['walmartproduct/batchimportproduct']);
-$productUrl= \yii\helpers\Url::toRoute(['walmartproduct/index']);
+$url=\yii\helpers\Url::toRoute(['tophatterproduct/batchimportproduct']);
+$productUrl= \yii\helpers\Url::toRoute(['tophatterproduct/index']);
 //}
 ?>
 <style type="text/css" >

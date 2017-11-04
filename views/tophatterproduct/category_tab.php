@@ -1,6 +1,6 @@
 
 <?php
-use frontend\modules\walmart\components\AttributeMap;
+use frontend\modules\tophatter\components\AttributeMap;
 if($model->category)
 {
     $id=$model->category;
@@ -91,8 +91,8 @@ if($model->category)
                             $attr_value = $common_attr_values[$attr_code];
                         }else{
                             $shopify_product_type = $model->jet_product->product_type;
-                            $walmart_product_value = \frontend\modules\walmart\components\Data::getAttributevalue($merchant_id,$attr_code,$shopify_product_type);
-                            $attr_value = $walmart_product_value['attribute_value'];
+                            $tophatter_product_value = \frontend\modules\tophatter\components\Data::getAttributevalue($merchant_id,$attr_code,$shopify_product_type);
+                            $attr_value = $tophatter_product_value['attribute_value'];
                         }
                         //end by shivam
 
@@ -295,7 +295,7 @@ if($model->category)
             else
             {?>
                 <span class="text-validator" style="font-size:14px;background-position: 0 4px;">
-                No more attribute(s) are available for selected Walmart category.
+                No more attribute(s) are available for selected tophatter category.
                 </span>
             <?php
             }   

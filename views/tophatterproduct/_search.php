@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\WalmartProductSearch */
+/* @var $model frontend\models\TophatterProductSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="walmart-product-search">
+<div class="tophatter-product-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'merchant_id') ?>
 
-    <?= $form->field($model, 'walmart_attributes') ?>
+    <?= $form->field($model, 'tophatter_attributes') ?>
 
     <?= $form->field($model, 'category') ?>
 

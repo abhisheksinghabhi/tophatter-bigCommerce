@@ -2,17 +2,17 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 
 $this->title = 'Manage Products';
 $this->params['breadcrumbs'][] = $this->title;
 $merchant_id = MERCHANT_ID;
-$urlWalmart = \yii\helpers\Url::toRoute(['walmartproduct/getwalmartdata']);
-$urlWalmartEdit = \yii\helpers\Url::toRoute(['walmartproduct/editdata']);
-$urlWalmartError = \yii\helpers\Url::toRoute(['walmartproduct/errorwalmart']);
-$urlGetTax = \yii\helpers\Url::toRoute(['walmartproduct/gettaxcode']);
-$formPost = \yii\helpers\Url::toRoute(['walmartproduct/syncproductstore']);
-$saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantimage']);
+$urlTophatter = \yii\helpers\Url::toRoute(['tophatterproduct/gettophatterdata']);
+$urlTophatterEdit = \yii\helpers\Url::toRoute(['tophatterproduct/editdata']);
+$urlTophatterError = \yii\helpers\Url::toRoute(['tophatterproduct/errortophatter']);
+$urlGetTax = \yii\helpers\Url::toRoute(['tophatterproduct/gettaxcode']);
+$formPost = \yii\helpers\Url::toRoute(['tophatterproduct/syncproductstore']);
+$saveVariantImageUrl= yii\helpers\Url::toRoute(['tophatterproduct/changevariantimage']);
 ?>
     <style>
         /*.ced-survey {
@@ -110,20 +110,20 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
     </style>
     <div class="jet-product-index content-section ced-manageproduct">
         <div class="form new-section">
-            <?= Html::beginForm(['walmartproduct/ajax-bulk-upload'], 'post', ['id' => 'jet_bulk_product']);//Html::beginForm(['walmartproduct/bulk'],'post');   ?>
-            <div class="jet-pages-heading walmart-title">
+            <?= Html::beginForm(['tophatterproduct/ajax-bulk-upload'], 'post', ['id' => 'jet_bulk_product']);//Html::beginForm(['tophatterproduct/bulk'],'post');   ?>
+            <div class="jet-pages-heading tophatter-title">
                 <div class="title-need-help">
                     <h1 class="Jet_Products_style"><?= Html::encode($this->title) ?></h1>
                     <a class="help_jet"
-                       href="<?= Yii::$app->request->baseUrl ?>/walmart-marketplace/sell-on-walmart#sec5"
+                       href="<?= Yii::$app->request->baseUrl ?>/tophatter-marketplace/sell-on-tophatter#sec5"
                        target="_blank" title="Need Help"></a>
                 </div>
                 
 				<div class="product-upload-menu m-menu confirmbox">
 
-					<?= Html::a('Update Price', ['updateprice'], ['data-toggle' => 'tooltip', 'title' => 'Sync product(s) price on walmart.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK to Update Price']) ?>
-					<?= Html::a('Update Inventory', ['updateinventory'], ['data-toggle' => 'tooltip', 'title' => 'Sync product(s) inventory on walmart.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Update Inventory']) ?>
-					<?= Html::a('Get Product Status', ['productstatus/updateproductstatus'], ['data-toggle' => 'tooltip', 'title' => 'Get product(s) status from walmart.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Get Product Status']) ?>
+					<?= Html::a('Update Price', ['updateprice'], ['data-toggle' => 'tooltip', 'title' => 'Sync product(s) price on tophatter.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK to Update Price']) ?>
+					<?= Html::a('Update Inventory', ['updateinventory'], ['data-toggle' => 'tooltip', 'title' => 'Sync product(s) inventory on tophatter.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Update Inventory']) ?>
+					<?= Html::a('Get Product Status', ['productstatus/updateproductstatus'], ['data-toggle' => 'tooltip', 'title' => 'Get product(s) status from tophatter.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Get Product Status']) ?>
 
 					<button type="button" class="btn btn-primary noconfirmbox" id="sync_with_btn" data-toggle='tooltip'
 							title='Sync store product(s) information' onclick="cnfrmSync()">Sync Store Products
@@ -134,15 +134,15 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
 								onclick="addproduct()">Add Product
 						</button>
 						
-					<?= Html::a('Get Promo Price Status', ['getpromostatus'], ['data-toggle' => 'tooltip', 'title' => 'Get product(s) promo price status from walmart.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Get Prome price status']) ?>
-					<?/*<?= Html::a('Validate Product(s)', ['walmartvalidate/index'], ['target' => '_blank', 'data-toggle' => 'tooltip', 'title' => 'Validate Product(s) as per Walmart Requirements.', 'class' => 'btn btn-primary','btn btn-primary','data-confirm'=>'Click OK to Validate Product']) ?>*/?>
+					<?= Html::a('Get Promo Price Status', ['getpromostatus'], ['data-toggle' => 'tooltip', 'title' => 'Get product(s) promo price status from tophatter.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Get Prome price status']) ?>
+					<?/*<?= Html::a('Validate Product(s)', ['tophattervalidate/index'], ['target' => '_blank', 'data-toggle' => 'tooltip', 'title' => 'Validate Product(s) as per tophatter Requirements.', 'class' => 'btn btn-primary','btn btn-primary','data-confirm'=>'Click OK to Validate Product']) ?>*/?>
 				</div>
 
 				<div class="product-upload-menu confirmbox">
                     <button type="button" class="btn btn-primary noconfirmbox" id="sync_with_btn" data-step ='11' data-position = 'top' data-intro = 'Sync store product(s) information' data-toggle='tooltip' title='Sync store product(s) information'onclick="cnfrmSync()">Sync Product(s)</button>
-					<?= Html::a('Update Price', ['updateprice'], ['data-toggle' => 'tooltip', 'title' => 'Sync product(s) price on walmart.', 'data-step' => '8', 'data-position' => 'top', 'data-intro' => 'Sync product(s) price on walmart.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Update Price']) ?>
-					<?= Html::a('Update Inventory', ['updateinventory'], ['data-toggle' => 'tooltip', 'title' => 'Sync product(s) inventory on walmart.', 'data-step' => '9', 'data-position' => 'top', 'data-intro' => 'Sync product(s) inventory on walmart.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Update Inventory']) ?>
-					<?= Html::a('Get Product Status', ['productstatus/updateproductstatus'], ['data-toggle' => 'tooltip', 'title' => 'Get product(s) status from walmart.', 'data-step' => '10', 'data-position' => 'top', 'data-intro' => 'Get product(s) status from walmart.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Update Get Product Status']) ?>
+					<?= Html::a('Update Price', ['updateprice'], ['data-toggle' => 'tooltip', 'title' => 'Sync product(s) price on tophatter.', 'data-step' => '8', 'data-position' => 'top', 'data-intro' => 'Sync product(s) price on tophatter.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Update Price']) ?>
+					<?= Html::a('Update Inventory', ['updateinventory'], ['data-toggle' => 'tooltip', 'title' => 'Sync product(s) inventory on tophatter.', 'data-step' => '9', 'data-position' => 'top', 'data-intro' => 'Sync product(s) inventory on tophatter.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Update Inventory']) ?>
+					<?= Html::a('Get Product Status', ['productstatus/updateproductstatus'], ['data-toggle' => 'tooltip', 'title' => 'Get product(s) status from tophatter.', 'data-step' => '10', 'data-position' => 'top', 'data-intro' => 'Get product(s) status from tophatter.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Update Get Product Status']) ?>
 
 					<span class="pop_up" id="view_more_options" data-step='7' data-position='top' data-intro='View More'
 						  title="Click here to visit more options" style="cursor:pointer"> <i class="fa fa-bars viewmore"
@@ -160,9 +160,9 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
 						</button>
                         */?>
 
-						<?= Html::a('Get Promo Price Status', ['getpromostatus'], ['data-toggle' => 'tooltip', 'title' => 'Get product(s) promo price status from walmart.', 'data-step' => '12', 'data-position' => 'top', 'data-intro' => 'Get product(s) promo price status from walmart.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Update Promo Price Status']) ?>
+						<?= Html::a('Get Promo Price Status', ['getpromostatus'], ['data-toggle' => 'tooltip', 'title' => 'Get product(s) promo price status from tophatter.', 'data-step' => '12', 'data-position' => 'top', 'data-intro' => 'Get product(s) promo price status from tophatter.', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Update Promo Price Status']) ?>
                         <?/*
-						<?= Html::a('Validate Product(s)', ['walmartvalidate/index'], ['target' => '_blank', 'data-toggle' => 'tooltip', 'title' => 'Validate Product(s) as per Walmart Requirements.', 'data-step' => '13', 'data-position' => 'top', 'data-intro' => 'Click here to validate product catalog', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Validate Product']) ?>
+						<?= Html::a('Validate Product(s)', ['tophattervalidate/index'], ['target' => '_blank', 'data-toggle' => 'tooltip', 'title' => 'Validate Product(s) as per tophatter Requirements.', 'data-step' => '13', 'data-position' => 'top', 'data-intro' => 'Click here to validate product catalog', 'class' => 'btn btn-primary','data-confirm'=>'Click OK for Validate Product']) ?>
                         */?>
 						<div>
 						</div>
@@ -178,7 +178,7 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
     </span>
                 Don't see all of your products? Just click <a
                     href="<?= yii\helpers\Url::toRoute('categorymap/index'); ?>">here</a> to map all BigCommerce product
-                type(s) with walmart category.
+                type(s) with tophatter category.
                 <div class="list-page" style="float:right">
                     Show per page
                     <select onchange="selectPage(this)" class="form-control"
@@ -223,7 +223,7 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
                 'pageSizeOptions' => ['class' => 'form-control', 'style' => 'display: none;width:auto;margin-top:0px;'],
                 'maxButtonCount' => 5,
             ],
-            'summary' => '<div class="summary clearfix"><div class="col-lg-5 col-md-5 col-sm-5 col-xs-12"><span class="show-items">Showing <b>{begin}-{end}</b> of <b>{totalCount}</b> items.</span></div><div class="col-lg-7 col-md-7 col-sm-7 col-xs-12"><div class="bulk-action-wrapper">' . $bulkActionSelect . $bulkActionSubmit . '<a href="' . Yii::$app->request->getBaseUrl() . "/walmart/walmartproduct/index" . '" class="btn btn-primary reset-filter">Reset</a><span title="Need Help" class="help_jet white-bg" style="cursor:pointer;" id="instant-help"></span></div></div></div>',
+            'summary' => '<div class="summary clearfix"><div class="col-lg-5 col-md-5 col-sm-5 col-xs-12"><span class="show-items">Showing <b>{begin}-{end}</b> of <b>{totalCount}</b> items.</span></div><div class="col-lg-7 col-md-7 col-sm-7 col-xs-12"><div class="bulk-action-wrapper">' . $bulkActionSelect . $bulkActionSubmit . '<a href="' . Yii::$app->request->getBaseUrl() . "/tophatter/tophatterproduct/index" . '" class="btn btn-primary reset-filter">Reset</a><span title="Need Help" class="help_jet white-bg" style="cursor:pointer;" id="instant-help"></span></div></div></div>',
             'columns' => [
                 // ['class' => 'yii\grid\SerialColumn'],
                 //['class' => 'yii\grid\CheckboxColumn'],
@@ -414,7 +414,7 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
                         $html = '';
                         $html = Html::a(
                                 'Repricing',
-                                Data::getUrl('walmart-reprice/edit')."?id=".$data['product_id'],
+                                Data::getUrl('tophatter-reprice/edit')."?id=".$data['product_id'],
                                 []
                             );
                         if ($data['product_price']) {
@@ -441,7 +441,7 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
                             }
                             /*$html = Html::a(
                                     'Repricing', 
-                                    Data::getUrl('walmart-reprice/edit')."?id=".$data['product_id'],
+                                    Data::getUrl('tophatter-reprice/edit')."?id=".$data['product_id'],
                                     []
                                 );*/
                            // return '<span style="display:block;">'.$data['jet_product']['price'].'</span>'.$html;
@@ -489,9 +489,9 @@ $saveVariantImageUrl= yii\helpers\Url::toRoute(['walmartproduct/changevariantima
         <?= Html::endForm() ?>
         </div>
     </div>
-    <div id="view_walmart_product" style="display:none">
+    <div id="view_tophatter_product" style="display:none">
     </div>
-    <div id="edit_walmart_product" style="display:none">
+    <div id="edit_tophatter_product" style="display:none">
     </div>
     <div id="products_error" style="display:none">
     </div>
@@ -667,7 +667,7 @@ $sync_fields = [
         var skuAdded=0;
         var sku= $("#sku-added").val();
         
-        var url = "<?= Data::getUrl('walmartproduct/addproductbysku') ?>";
+        var url = "<?= Data::getUrl('tophatterproduct/addproductbysku') ?>";
 
         $('#sync1').modal('hide');
         j$('#LoadingMSG').show();
@@ -695,7 +695,7 @@ $sync_fields = [
             });
     }
     	function newcnfrmSync() {
-            var url = "<?= Data::getUrl('walmartproduct/addcustomproduct1ac') ?>";
+            var url = "<?= Data::getUrl('tophatterproduct/addcustomproduct1ac') ?>";
             var merchant_id = '<?= $merchant_id;?>';
             $('#loadingmessage').modal('show');
             j$.ajax({
@@ -765,7 +765,7 @@ $sync_fields = [
         var csrfToken = $('meta[name="csrf-token"]').attr("content");
         
         function clickView(id) {
-            var url = '<?= $urlWalmart ?>';
+            var url = '<?= $urlTophatter ?>';
             var merchant_id = '<?= $merchant_id;?>';
             j$('#LoadingMSG').show();
             j$.ajax({
@@ -776,15 +776,15 @@ $sync_fields = [
                 .done(function (msg) {
                     console.log(msg);
                     j$('#LoadingMSG').hide();
-                    j$('#view_walmart_product').html(msg);
-                    j$('#view_walmart_product').css("display", "block");
-                    $('#view_walmart_product #myModal').modal('show');
+                    j$('#view_tophatter_product').html(msg);
+                    j$('#view_tophatter_product').css("display", "block");
+                    $('#view_tophatter_product #myModal').modal('show');
                     
                 });
         }
         
         function clickEdit(id) {
-            var url = '<?= $urlWalmartEdit; ?>';
+            var url = '<?= $urlTophatterEdit; ?>';
             var merchant_id = '<?= $merchant_id;?>';
             j$('#LoadingMSG').show();
             j$.ajax({
@@ -795,9 +795,9 @@ $sync_fields = [
                 .done(function (msg) {
                     //console.log(msg);
                     j$('#LoadingMSG').hide();
-                    j$('#edit_walmart_product').html(msg);
-                    j$('#edit_walmart_product').css("display", "block");
-                    $('#edit_walmart_product #myModal').modal({
+                    j$('#edit_tophatter_product').html(msg);
+                    j$('#edit_tophatter_product').css("display", "block");
+                    $('#edit_tophatter_product #myModal').modal({
                         keyboard: false,
                         backdrop: 'static'
                     })
@@ -829,12 +829,12 @@ $sync_fields = [
 
         function reloadEditModal() {
             $("#price-edit #price-edit-modal").on('hidden.bs.modal', function () {
-                $('#edit_walmart_product #myModal').modal('show');
+                $('#edit_tophatter_product #myModal').modal('show');
             });
         }
 
         function checkError(id) {
-            var url = '<?= $urlWalmartError ?>';
+            var url = '<?= $urlTophatterError ?>';
             var merchant_id = '<?= $merchant_id;?>';
             j$('#LoadingMSG').show();
             j$.ajax({
@@ -904,7 +904,7 @@ if (isset($get['tour'])) :
             });
 
             productQuicktour.start().oncomplete(function () {
-                window.location.href = '<?= Data::getUrl("walmartorderdetail/index?tour") ?>';
+                window.location.href = '<?= Data::getUrl("tophatterorderdetail/index?tour") ?>';
             });
         });
     </script>
@@ -935,7 +935,7 @@ if (isset($get['_upd'])) :
                 steps: [
                     {
                         element: '#product_validate',
-                        intro: 'Validate Product(s) as per Walmart Requirements.',
+                        intro: 'Validate Product(s) as per Tophatter Requirements.',
                         position: 'bottom'
                     },
                 ]
