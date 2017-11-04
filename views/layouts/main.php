@@ -50,39 +50,6 @@ if(Yii::$app->controller->action->id=='pricing') {
 }
 ?>
 
-<?php $this->beginBody() ?>
-    <!--<div class="trial-wrapper">
-        <div class="col-sm-9 plateform-switch-body no-padding"><div class="install-tophatter">
-            <div class="install-button">
-                <div>
-                    <!-- <h2 class="rw-sentence">
-                        <span>Try/Switch other integrations like</span>
-                        <div class="rw-words rw-words-1">
-                            <span>JET</span>
-                            <span>NEWEGG</span>
-                        </div>
-                        <i class="fa fa-chevron-down" id="show_apps_div" aria-hidden="true"></i> -->
-                        <!-- Code For Referral Start -->
-
-                        <!-- Code For Referral End -->
-                    <!-- </h2> -->
-                    <!--  <i class="alert-icon"></i>
-                    <p>Hurricane may effect disturbance in Product and Order Management for short Duration</p>
-                </div> -->
-                <!-- <div id="display_apps" style="display: none;">
-                    <div class="jet">
-                        <span class="jet-app">Jet app</span>
-                        <?= $jetpath ?>
-                    </div>
-                    <div class="newegg">
-                        <span class="newegg-app">Newegg app</span>
-                        <?= $eggpath ?>
-                    </div>
-                </div> -->
-            <!-- </div>
-        </div>
-    </div>
-     </div> -->
 		<div class="wrap ced-jet-navigation-mbl">
 
 		<?php if (!Yii::$app->user->isGuest) {
@@ -281,18 +248,7 @@ if(Yii::$app->controller->action->id=='pricing') {
 		 											<button class="btn-path"><?= $appurls['jet']['type'];?></button>
 		 										</a>
 		 									</div>
-		 									<div class="newegg">
-		 										<span class="newegg-app">Newegg app</span>
-		 										<a <?php if($appurls['newegg']['type']=="Install"){ echo "target='_blank' href=".$appurls['newegg']['url'];}else{echo "href=".$appurls['newegg']['url']."/".$newpath;}?>>
-		 											<button class="btn-path"><?= $appurls['newegg']['type'];?></button>
-		 										</a>
-		 									</div>
-		 									<div class="sears">
-		 										<span class="sears-app">Sears app</span>
-		 										<a <?php if($appurls['sears']['type']=="Install"){ echo "target='_blank' href=".$appurls['sears']['url'];}else{echo "href=".$appurls['sears']['url']."/".$newpath;}?>>
-		 											<button class="btn-path"><?= $appurls['sears']['type'];?></button>
-		 										</a>
-		 									</div>
+		 								
 		 								</div>
 		 							</div>
 		 						</div>

@@ -553,7 +553,7 @@ class Data extends component
             if($type)
                $installInfo['tophatter']['type']="Install"; 
         }
-        $neweggData=self::sqlRecords("SELECT `id` FROM `newegg_shop_details` WHERE merchant_id='".$merchant_id."' LIMIT 0,1","one","select");
+        /*$neweggData=self::sqlRecords("SELECT `id` FROM `newegg_shop_details` WHERE merchant_id='".$merchant_id."' LIMIT 0,1","one","select");
         if(isset($neweggData['id']))
         {
             $installData['newegg']=true;
@@ -580,7 +580,7 @@ class Data extends component
             $installInfo['sears']['url']='https://apps.bigcommerce.com/details/10315';
             if($type)
                 $installInfo['sears']['type']="Install";
-        }
+        }*/
         return $installInfo;
     }
     public function formatTime($date)

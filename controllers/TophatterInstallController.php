@@ -49,15 +49,16 @@ class TophatterInstallController extends TophattermainController
 		$brand='';
 
 		$category=$this->bigcom->call('GET', 'catalog/categories/tree');
+		//print_r($category);die("fgd");
    		Jetproductinfo::saveBigcomcategory($category,MERCHANT_ID);
    		Jetproductinfo::savebigcombrand(MERCHANT_ID,$this->bigcom);
 
 		$stepId = Yii::$app->request->post('step',false);
 		//echo $stepId;
+
 		if($stepId)
 		{
 			$stepInfo = Installation::getStepInfo($stepId);
-
 			if(!isset($stepInfo['error'])) {
 				$templateFile = $stepInfo['template'];
 				$html = $this->renderAjax($templateFile,[],true);

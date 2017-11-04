@@ -3123,7 +3123,7 @@ class Jetproductinfo extends component
     }
 
     public static function saveBigcomcategory($category,$merchant_id=""){
-
+//die("dklfjjdd");
 
         $connection = Yii::$app->getDb();
         if($category){

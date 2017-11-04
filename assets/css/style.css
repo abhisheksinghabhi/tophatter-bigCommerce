@@ -902,7 +902,7 @@ fieldset[disabled] .checkbox .active, fieldset[disabled] label.checkbox-inline, 
         margin-top: 50px;
     }
     .page-content.jet-install {
-        background-image: url("../images/blue-3.png");
+        background-image: url("../images/bg-image1.png");
         background-repeat: no-repeat;
         background-attachment: fixed;
         background-position: 100% top;

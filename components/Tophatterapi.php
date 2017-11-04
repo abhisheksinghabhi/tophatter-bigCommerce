@@ -1,25 +1,25 @@
 <?php
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 
 use Yii;
 use yii\base\Component;
-use frontend\modules\walmart\models\WalmartProduct;
-use frontend\modules\walmart\components\Signature;
-use frontend\modules\walmart\components\Generator;
-use frontend\modules\walmart\components\Xml\Parser;
-use frontend\modules\walmart\components\Jetproductinfo;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\models\WalmartAttributeMap;
+use frontend\modules\tophatter\models\TophatterProduct;
+use frontend\modules\tophatter\components\Signature;
+use frontend\modules\tophatter\components\Generator;
+use frontend\modules\tophatter\components\Xml\Parser;
+use frontend\modules\tophatter\components\Jetproductinfo;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\models\TophatterAttributeMap;
 use yii\base\Response;
-use frontend\modules\walmart\components\AttributeMap;
-use frontend\modules\walmart\components\WalmartCategory;
-use frontend\modules\walmart\components\WalmartProductValidate;
-use frontend\modules\walmart\components\WalmartRepricing;
-use frontend\modules\walmart\components\WalmartPromoStatus;
-use frontend\modules\walmart\models\WalmartExtensionDetail;
-use frontend\modules\walmart\components\WalmartProduct as WalmartProductComponent;
+use frontend\modules\tophatter\components\AttributeMap;
+use frontend\modules\tophatter\components\TophatterCategory;
+use frontend\modules\tophatter\components\TophatterProductValidate;
+use frontend\modules\tophatter\components\TophatterRepricing;
+use frontend\modules\tophatter\components\TophatterPromoStatus;
+use frontend\modules\tophatter\models\TophatterExtensionDetail;
+use frontend\modules\tophatter\components\TophatterProduct as TophatterProductComponent;
 
-class Walmartapi extends Component
+class Tophatterapi extends Component
 {
     const GET_ORDERS_SUB_URL = 'v3/orders';
     const GET_ORDERS_RELEASED_SUB_URL = 'v3/orders/released';
@@ -48,7 +48,7 @@ class Walmartapi extends Component
 
     public function __construct($apiConsumerId = "", $apiPrivateKey = "", $apiConsumerChannelId = "")
     {
-        $this->apiUrl = "https://marketplace.walmartapis.com/";
+        $this->apiUrl = "https://marketplace.tophatterapis.com/";
         $this->apiConsumerId = $apiConsumerId;
         $this->apiPrivateKey = $apiPrivateKey;
         //$this->apiConsumerChannelId = $apiConsumerChannelId;
@@ -69,7 +69,7 @@ class Walmartapi extends Component
         }
 
         $headers = [];
-        $headers[] = "WM_SVC.NAME: Walmart Marketplace";
+        $headers[] = "WM_SVC.NAME: Tophatter Marketplace";
         $headers[] = "WM_QOS.CORRELATION_ID: " . base64_encode(\phpseclib\Crypt\Random::string(16));
         $headers[] = "WM_SEC.TIMESTAMP: " . $this->apiSignature->timestamp;
         $headers[] = "WM_SEC.AUTH_SIGNATURE: " . $signature;
@@ -88,7 +88,7 @@ class Walmartapi extends Component
         }else{
             $headers[] = "WM_CONSUMER.CHANNEL.TYPE: " . $this->apiConsumerChannelId;
         }*/
-        $headers[] = "HOST: marketplace.walmartapis.com";
+        $headers[] = "HOST: marketplace.tophatterapis.com";
 
         $ch = curl_init($url);
         if ($body) {
@@ -114,7 +114,7 @@ class Walmartapi extends Component
     }
 
     /**
-     * Post Request on https://marketplace.walmartapis.com/
+     * Post Request on https://marketplace.tophatterapis.com/
      * @param string $url
      * @param string|[] $params
      * @return string
@@ -125,7 +125,7 @@ class Walmartapi extends Component
         $url = $this->apiUrl . $url;
 
         $headers = [];
-        $headers[] = "WM_SVC.NAME: Walmart Marketplace";
+        $headers[] = "WM_SVC.NAME: Tophatter Marketplace";
         $headers[] = "WM_QOS.CORRELATION_ID: " . base64_encode(\phpseclib\Crypt\Random::string(16));
         $headers[] = "WM_SEC.TIMESTAMP: " . $this->apiSignature->timestamp;
         $headers[] = "WM_SEC.AUTH_SIGNATURE: " . $signature;
@@ -138,7 +138,7 @@ class Walmartapi extends Component
         }else{
             $headers[] = "WM_CONSUMER.CHANNEL.TYPE: " . $this->apiConsumerChannelId;
         }*/
-        $headers[] = "HOST: marketplace.walmartapis.com";
+        $headers[] = "HOST: marketplace.tophatterapis.com";
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -168,7 +168,7 @@ class Walmartapi extends Component
         }
 
         $headers = [];
-        $headers[] = "WM_SVC.NAME: Walmart Marketplace";
+        $headers[] = "WM_SVC.NAME: Tophatter Marketplace";
         $headers[] = "WM_QOS.CORRELATION_ID: " . base64_encode(\phpseclib\Crypt\Random::string(16));
         $headers[] = "WM_SEC.TIMESTAMP: " . $this->apiSignature->timestamp;
         $headers[] = "WM_SEC.AUTH_SIGNATURE: " . $signature;
@@ -187,7 +187,7 @@ class Walmartapi extends Component
         }else{
             $headers[] = "WM_CONSUMER.CHANNEL.TYPE: " . $this->apiConsumerChannelId;
         }*/
-        $headers[] = "HOST: marketplace.walmartapis.com";
+        $headers[] = "HOST: marketplace.tophatterapis.com";
 
         //$url = 'https://192.168.0.58/fetchPutRequest.php';
         $ch = curl_init($url);
@@ -225,7 +225,7 @@ class Walmartapi extends Component
         $url = $this->apiUrl . $url;
 
         $headers = [];
-        $headers[] = "WM_SVC.NAME: Walmart Marketplace";
+        $headers[] = "WM_SVC.NAME: Tophatter Marketplace";
         $headers[] = "WM_QOS.CORRELATION_ID: " . base64_encode(\phpseclib\Crypt\Random::string(16));
         $headers[] = "WM_SEC.TIMESTAMP: " . $this->apiSignature->timestamp;
         $headers[] = "WM_SEC.AUTH_SIGNATURE: " . $signature;
@@ -237,7 +237,7 @@ class Walmartapi extends Component
         /*if (isset($params['headers']) && !empty($params['headers'])) {
             $headers[] = $params['headers'];
         }*/
-        $headers[] = "HOST: marketplace.walmartapis.com";
+        $headers[] = "HOST: marketplace.tophatterapis.com";
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -278,7 +278,7 @@ class Walmartapi extends Component
      * @param string|[] $params - date in yy-mm-dd
      * @param string $subUrl
      * @return string
-     * @link  https://developer.walmartapis.com/#get-all-orders
+     * @link  https://developer.tophatterapis.com/#get-all-orders
      */
     public function getOrders($params = ['createdStartDate' => '2016-01-01'], $subUrl = self::GET_ORDERS_SUB_URL, $test = false)
     {
@@ -336,7 +336,7 @@ class Walmartapi extends Component
      * @param string|[] $params
      * @param string $subUrl
      * @return string compressed csv file
-     * @link https://developer.walmartapis.com/#get-report
+     * @link https://developer.tophatterapis.com/#get-report
      */
     public function getReports($params = [], $subUrl = self::GET_REPORTS_SUB_URL)
     {
@@ -354,7 +354,7 @@ class Walmartapi extends Component
      * @param string $sku
      * @param string $subUrl
      * @return []
-     * @link https://developer.walmartapis.com/#get-an-item
+     * @link https://developer.tophatterapis.com/#get-an-item
      */
     public function getItem($sku, $returnField = null, $subUrl = self::GET_ITEMS_SUB_URL)
     {
@@ -375,7 +375,7 @@ class Walmartapi extends Component
      * @param string|[] $params
      * @param string $subUrl
      * @return string
-     * @link https://developer.walmartapis.com/#get-all-items
+     * @link https://developer.tophatterapis.com/#get-all-items
      */
     public function getItems($params = [], $subUrl = self::GET_ITEMS_SUB_URL)
     {
@@ -398,7 +398,7 @@ class Walmartapi extends Component
      * @param string $sku
      * @param string $subUrl
      * @return string
-     * @link https://developer.walmartapis.com/#get-inventory-for-an-item
+     * @link https://developer.tophatterapis.com/#get-inventory-for-an-item
      */
     public function getInventory($sku, $subUrl = self::GET_INVENTORY_SUB_URL)
     {
@@ -411,7 +411,7 @@ class Walmartapi extends Component
      * @param null $feedId
      * @param string $subUrl
      * @return string
-     * @link https://developer.walmartapis.com/#feeds
+     * @link https://developer.tophatterapis.com/#feeds
      */
     public function getFeeds($feedId = null, $subUrl = self::GET_FEEDS_SUB_URL)
     {
@@ -486,19 +486,19 @@ class Walmartapi extends Component
     }
 
     /**
-     * Create Product on Walmart
+     * Create Product on Tophatter
      * @param string|[] $ids
      * @return bool
      */
 
-    public function createProductOnWalmart($ids, $merchant_id, $returnPreparedData = false)
+    public function createProductOnTophatter($ids, $merchant_id, $returnPreparedData = false)
     {
         $timeStamp = (string)time();
 
         $productToUpload = [
             'MPItemFeed' => [
                 '_attribute' => [
-                    'xmlns' => 'http://walmart.com/'
+                    'xmlns' => 'http://tophatter.com/'
                 ],
                 '_value' => [
                     0 => [
@@ -520,7 +520,7 @@ class Walmartapi extends Component
 
             foreach ($ids as $id) 
             {
-                $query = 'SELECT `product_id`, `variant_id`, `title`, `sku`, `type`, `wal`.`product_type`, `wal`.`status`, `description`, `image`,`additional_images`, `qty`, `price`, `weight`,`bigcom_attr`, `brand`, `upc`, `walmart_attributes`, `category`, `wal`.`parent_category`, `tax_code`,`wal`.`product_title`, `wal`.`product_price`,`long_description`, `short_description`, `self_description`, `common_attributes`, `sku_override`, `product_id_override`, `wal`.`walmart_optional_attributes`, `wal`.`shipping_exceptions` FROM (SELECT * FROM `walmart_product` WHERE `merchant_id`="'.$merchant_id.'") as wal INNER JOIN (SELECT * FROM `jet_product` WHERE `merchant_id`="'.$merchant_id.'") as `jet` ON jet.bigproduct_id=wal.product_id WHERE wal.product_id="'.$id.'" LIMIT 1';
+                $query = 'SELECT `product_id`, `variant_id`, `title`, `sku`, `type`, `wal`.`product_type`, `wal`.`status`, `description`, `image`,`additional_images`, `qty`, `price`, `weight`,`bigcom_attr`, `brand`, `upc`, `tophatter_attributes`, `category`, `wal`.`parent_category`, `tax_code`,`wal`.`product_title`, `wal`.`product_price`,`long_description`, `short_description`, `self_description`, `common_attributes`, `sku_override`, `product_id_override`, `wal`.`tophatter_optional_attributes`, `wal`.`shipping_exceptions` FROM (SELECT * FROM `tophatter_product` WHERE `merchant_id`="'.$merchant_id.'") as wal INNER JOIN (SELECT * FROM `jet_product` WHERE `merchant_id`="'.$merchant_id.'") as `jet` ON jet.bigproduct_id=wal.product_id WHERE wal.product_id="'.$id.'" LIMIT 1';
 
                 $productArray = Data::sqlRecords($query, "one", "select");
 
@@ -569,7 +569,7 @@ class Walmartapi extends Component
 
                         $brand = addslashes($productArray['brand']);
 
-                        // walmart variant product title
+                        // tophatter variant product title
                         $title = $productArray['product_title']?trim(addslashes($productArray['product_title'])):trim(addslashes($productArray['title']));
                         
                         $title = str_replace('<![CDATA[', '', $title);
@@ -586,7 +586,7 @@ class Walmartapi extends Component
                         if ($productArray['type'] == "simple") 
                         {
                            
-                            $productArray['price'] = WalmartRepricing::getProductPrice($productArray['price'], $productArray['type'], $productArray['product_id'], $merchant_id);
+                            $productArray['price'] = TophatterRepricing::getProductPrice($productArray['price'], $productArray['type'], $productArray['product_id'], $merchant_id);
 
                             $type = Jetproductinfo::checkUpcType($productArray['upc']);
 
@@ -619,11 +619,11 @@ class Walmartapi extends Component
                                 continue;
                             } 
 
-                            $validate = WalmartProductValidate::validatev3ProductXml($MPItem);
+                            $validate = TophatterProductValidate::validatev3ProductXml($MPItem);
 
                             
                             if(!$validate['status']) {
-                                $message = "Rejected by Walmart because there was a glitch on walmart's end. Please contact us.";
+                                $message = "Rejected by Tophatter because there was a glitch on tophatter's end. Please contact us.";
                                 $uploadErrors[$productArray['sku']] = ["error"=>$message, "xml_validation_error"=>$validate['error']];
                                 continue;
                             }
@@ -640,7 +640,7 @@ class Walmartapi extends Component
                         else
                         {
                             $duplicateSkus = [];
-                            $query = 'SELECT jet.option_id,option_title,option_sku,wal.walmart_option_attributes,option_image,option_qty,option_price ,option_weight,option_unique_id,`wal`.`walmart_optional_attributes`, `jet`.`variant_option1`, `jet`.`variant_option2`, `jet`.`variant_option3`, `wal`.`status` FROM (SELECT * FROM `walmart_product_variants` WHERE `merchant_id`="' . $merchant_id . '") as wal INNER JOIN (SELECT * FROM `jet_product_variants` WHERE `merchant_id`="' . $merchant_id . '") as jet ON jet.option_id=wal.option_id WHERE wal.product_id="' . $id . '"';
+                            $query = 'SELECT jet.option_id,option_title,option_sku,wal.tophatter_option_attributes,option_image,option_qty,option_price ,option_weight,option_unique_id,`wal`.`tophatter_optional_attributes`, `jet`.`variant_option1`, `jet`.`variant_option2`, `jet`.`variant_option3`, `wal`.`status` FROM (SELECT * FROM `tophatter_product_variants` WHERE `merchant_id`="' . $merchant_id . '") as wal INNER JOIN (SELECT * FROM `jet_product_variants` WHERE `merchant_id`="' . $merchant_id . '") as jet ON jet.option_id=wal.option_id WHERE wal.product_id="' . $id . '"';
                             $productVarArray = Data::sqlRecords($query, "all", "select");
 
                             //print_r($productVarArray);die;
@@ -648,7 +648,7 @@ class Walmartapi extends Component
 
                             foreach ($productVarArray as $value) 
                             {
-                                $value['option_price'] = WalmartRepricing::getProductPrice($value['option_price'], $productArray['type'], $value['option_id'], $merchant_id);
+                                $value['option_price'] = TophatterRepricing::getProductPrice($value['option_price'], $productArray['type'], $value['option_id'], $merchant_id);
 
                                 if (in_array($value['option_sku'], $duplicateSkus)) {
                                     $uploadErrors[$productArray['sku']][$value['option_sku']] = "Variant Sku : '" . $value['option_sku'] . "' is duplicate.";
@@ -656,7 +656,7 @@ class Walmartapi extends Component
                                 } else
                                     $duplicateSkus[] = $value['option_sku'];
 
-                                if (strlen($value['option_sku']) > WalmartProductValidate::MAX_LENGTH_SKU) {
+                                if (strlen($value['option_sku']) > TophatterProductValidate::MAX_LENGTH_SKU) {
                                     $uploadErrors[$productArray['sku']][$value['option_sku']] = "Variant Sku : " . $value['option_sku'] . " must be fewer than 50 characters.";
                                     continue;
                                 }
@@ -667,8 +667,8 @@ class Walmartapi extends Component
                                 $optiontitle=$title.'-'.$value['option_title'];
 
                                 //echo $optiontitle;die;
-                                // walmart variant product title
-                                /*$title = Data::getWalmartTitle($productArray['product_id'], $merchant_id);
+                                // tophatter variant product title
+                                /*$title = Data::getTophatterTitle($productArray['product_id'], $merchant_id);
                                 print_r($title);die('fjfj');
                                 if (isset($title['product_title']) && !empty($title)) {
                                     $productArray['title'] = $title['product_title'];
@@ -711,9 +711,9 @@ class Walmartapi extends Component
                                     continue;
                                 }
 
-                                $validate = WalmartProductValidate::validatev3ProductXml($MPItem);
+                                $validate = TophatterProductValidate::validatev3ProductXml($MPItem);
                                 if(!$validate['status']) {
-                                    $message = "Rejected by Walmart because there was a glitch on walmart's end. Please contact us.";
+                                    $message = "Rejected by Tophatter because there was a glitch on tophatter's end. Please contact us.";
                                     $uploadErrors[$productArray['sku']][$value['option_sku']] = ["error"=>$message, "xml_validation_error"=>$validate['error']];
                                     continue;
                                 }
@@ -734,7 +734,7 @@ class Walmartapi extends Component
           
             
             /*print_r($productToUpload);
-            WalmartProductComponent::generateXml($productToUpload);
+            TophatterProductComponent::generateXml($productToUpload);
             die('end');*/
             //Since the value of $key is starting with 1.
             if ($key > 1) {
@@ -782,9 +782,9 @@ class Walmartapi extends Component
             return ['status' => false, 'error' => $error];
         }
 
-        $mpItem = WalmartProductComponent::getMPItemStructure();
+        $mpItem = TophatterProductComponent::getMPItemStructure();
 
-        if ($product['product_status'] == WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED) {
+        if ($product['product_status'] == TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED) {
             $processMode = 'CREATE';
         } else {
             //$processMode = 'PARTIAL_UPDATE';
@@ -794,7 +794,7 @@ class Walmartapi extends Component
 
         $mpItem['sku'] = $product['sku'];
         $mpItem['processMode'] = $processMode;
-        $mpItem['productIdentifiers'] = WalmartProductComponent::getProductIdentifiersValue([['identifier_type'=>$product['identifier_type'], 'identifier_value'=>$product['upc']]]);
+        $mpItem['productIdentifiers'] = TophatterProductComponent::getProductIdentifiersValue([['identifier_type'=>$product['identifier_type'], 'identifier_value'=>$product['upc']]]);
         $mpProduct = self::prepareMPProduct($merchant_id, $product, $productArray, $variantArray);
         if(isset($mpProduct['status']) && !$mpProduct['status']) {
             $error = isset($mpProduct['error']) ? $mpProduct['error'] : 'Required MpItem Attributes not filled.';
@@ -812,7 +812,7 @@ class Walmartapi extends Component
             $mpItem['MPOffer'] = $mpOffer;
         }
 
-        $validate = WalmartProductComponent::validateStructure($mpItem);
+        $validate = TophatterProductComponent::validateStructure($mpItem);
         if(!$validate['status']) {
             $error = isset($validate['error']) ? $validate['error'] : 'Required MpItem Attributes not filled.';
             return ['status' => false, 'error' => $error];
@@ -898,7 +898,7 @@ class Walmartapi extends Component
     public function prepareMPProduct($merchant_id, $product, $productArray, $variantArray)
     {
         //print_r($product);die;
-        $mpProduct = WalmartProductComponent::getMPProductStructure();
+        $mpProduct = TophatterProductComponent::getMPProductStructure();
 
         $additionalProductAttributes = [];
 
@@ -913,7 +913,7 @@ class Walmartapi extends Component
             $mpProduct['SkuUpdate'] = 'No';
         }
 
-        //$category = 'frontend\modules\walmart\components\Category\\'.$productArray['parent_category'];
+        //$category = 'frontend\modules\tophatter\components\Category\\'.$productArray['parent_category'];
         //$categoryObj = new $category($merchant_id, $product, $productArray);
         
         $categoryObj = new Category($merchant_id, $product, $productArray, $variantArray);
@@ -930,10 +930,10 @@ class Walmartapi extends Component
             $mpProduct['additionalProductAttributes'] = self::prepareAdditionalProductAttributes($additionalProductAttributes);
         }
 
-        $validate = WalmartProductComponent::validateStructure($mpProduct);
+        $validate = TophatterProductComponent::validateStructure($mpProduct);
 
         //print_r($mpProduct);
-        //WalmartProductComponent::generateXml($mpProduct); die('success');
+        //TophatterProductComponent::generateXml($mpProduct); die('success');
 
         if(!$validate['status']) {
             $error = isset($validate['error']) ? $validate['error'] : 'Required MpProduct Attributes not filled';
@@ -946,7 +946,7 @@ class Walmartapi extends Component
 
     public function prepareMPOffer($merchant_id, $product, $productArray, $variantArray)
     {
-        $mpOffer = WalmartProductComponent::getMPOfferStructure();
+        $mpOffer = TophatterProductComponent::getMPOfferStructure();
 
         $mpOffer['price'] = $product['price'];
 
@@ -975,7 +975,7 @@ class Walmartapi extends Component
         }
 
 
-        $validate = WalmartProductComponent::validateStructure($mpOffer);
+        $validate = TophatterProductComponent::validateStructure($mpOffer);
         if(!$validate['status']) {
             $error = isset($validate['error']) ? $validate['error'] : 'Required MpOffer Attributes not filled';
             return ['status' => false, 'error' => $error];
@@ -1114,18 +1114,18 @@ class Walmartapi extends Component
     {
         $errorArr = [];
 
-        if (strlen($product['sku']) > WalmartProductValidate::MAX_LENGTH_SKU) {
-            $errorArr[] = "SKU must be fewer than ".WalmartProductValidate::MAX_LENGTH_SKU." character(s).";
-        } elseif(strlen($product['sku']) < WalmartProductValidate::MIN_LENGTH_SKU) {
-            $errorArr[] = "SKU must be longer than ".WalmartProductValidate::MIN_LENGTH_SKU." character(s).";
+        if (strlen($product['sku']) > TophatterProductValidate::MAX_LENGTH_SKU) {
+            $errorArr[] = "SKU must be fewer than ".TophatterProductValidate::MAX_LENGTH_SKU." character(s).";
+        } elseif(strlen($product['sku']) < TophatterProductValidate::MIN_LENGTH_SKU) {
+            $errorArr[] = "SKU must be longer than ".TophatterProductValidate::MIN_LENGTH_SKU." character(s).";
         }
         
         //echo strlen($product['title']);die;
 
-        if (!$product['title'] && strlen($product['title']) > WalmartProductValidate::MAX_LENGTH_NAME) {
-            $errorArr[] = "Product title must be maximum of ".WalmartProductValidate::MAX_LENGTH_NAME." character(s) in length";
-        } elseif (!$product['title'] && strlen($product['title']) < WalmartProductValidate::MIN_LENGTH_NAME) {
-            $errorArr[] = "Product title must be minimum of ".WalmartProductValidate::MIN_LENGTH_NAME." character(s) in length";
+        if (!$product['title'] && strlen($product['title']) > TophatterProductValidate::MAX_LENGTH_NAME) {
+            $errorArr[] = "Product title must be maximum of ".TophatterProductValidate::MAX_LENGTH_NAME." character(s) in length";
+        } elseif (!$product['title'] && strlen($product['title']) < TophatterProductValidate::MIN_LENGTH_NAME) {
+            $errorArr[] = "Product title must be minimum of ".TophatterProductValidate::MIN_LENGTH_NAME." character(s) in length";
         }
 
         if (!$product['description']) {
@@ -1141,7 +1141,7 @@ class Walmartapi extends Component
         }
 
         if (!$product['category']) {
-            $errorArr[] = "Missing Walmart Category";
+            $errorArr[] = "Missing Tophatter Category";
         }
 
         /*$image = trim($product['image']);
@@ -1193,7 +1193,7 @@ class Walmartapi extends Component
                 $c_par_price = false;
             }
 
-            $query='select wal.option_id,option_sku,option_image,option_qty,option_price,option_unique_id,wal.status from `jet_product_variants` jet INNER JOIN `walmart_product_variants` wal ON jet.product_id=wal.product_id where jet.product_id="'.$product['product_id'].'" and jet.merchant_id="'.MERCHANT_ID.'" and wal.merchant_id="'.MERCHANT_ID.'"';
+            $query='select wal.option_id,option_sku,option_image,option_qty,option_price,option_unique_id,wal.status from `jet_product_variants` jet INNER JOIN `tophatter_product_variants` wal ON jet.product_id=wal.product_id where jet.product_id="'.$product['product_id'].'" and jet.merchant_id="'.MERCHANT_ID.'" and wal.merchant_id="'.MERCHANT_ID.'"';
             $productVarArray = Data::sqlRecords($query,"all","select");
 
             foreach ($productVarArray as $pro) 
@@ -1266,17 +1266,17 @@ class Walmartapi extends Component
     }
 
     /**
-     * Update Inventory On Walmart
+     * Update Inventory On Tophatter
      * @param string|[] $ids
      * @return bool
      */
-    public function updateInventoryOnWalmart($product = [], $datafrom = null, $merchant_id = false)
+    public function updateInventoryOnTophatter($product = [], $datafrom = null, $merchant_id = false)
     {
 
         $inventoryArray = [
             'InventoryFeed' => [
                 '_attribute' => [
-                    'xmlns' => "http://walmart.com/",
+                    'xmlns' => "http://tophatter.com/",
                 ],
                 '_value' => [
                     0 => ['InventoryHeader' => [
@@ -1405,11 +1405,11 @@ class Walmartapi extends Component
     }
 
     /**
-     * Update Price On Walmart
+     * Update Price On Tophatter
      * @param string|[] $ids
      * @return bool
      */
-    public function updatePriceOnWalmart($product = [], $datafrom = null)
+    public function updatePriceOnTophatter($product = [], $datafrom = null)
     {
         $repricing_array = [];
         $merchant_id = MERCHANT_ID;
@@ -1417,7 +1417,7 @@ class Walmartapi extends Component
         $priceArray = [
             'PriceFeed' => [
                 '_attribute' => [
-                    'xmlns:gmp' => "http://walmart.com/",
+                    'xmlns:gmp' => "http://tophatter.com/",
                 ],
                 '_value' => [
                     0 => [
@@ -1446,21 +1446,21 @@ class Walmartapi extends Component
                             $check = [];
                             $sku = Data::getProductSku($pro['option_id']);
                             $check['sku']=$sku;
-                            $isRepricingEnabled = WalmartRepricing::isRepricingEnabled($check);
+                            $isRepricingEnabled = TophatterRepricing::isRepricingEnabled($check);
                             if($isRepricingEnabled){
 
                                 $repricing_array[$sku]="Not Price updated due to repricing enable";
                                 continue;
                             }
                             $key += 1;
-                             //walmart product price
-                            $price = Data::getWalmartPrice($pro['option_id'], $merchant_id);
+                             //tophatter product price
+                            $price = Data::getTophatterPrice($pro['option_id'], $merchant_id);
 
                             if (isset($pro['prices']) && !empty($pro['prices'])) {
-                                $pro['price'] = WalmartRepricing::getProductPrice($pro['prices'], 'variants', $pro['option_id'], MERCHANT_ID);
+                                $pro['price'] = TophatterRepricing::getProductPrice($pro['prices'], 'variants', $pro['option_id'], MERCHANT_ID);
                             }
                             else{
-                                $pro['price'] = WalmartRepricing::getProductPrice($pro['price'], 'variants', $pro['option_id'], MERCHANT_ID);
+                                $pro['price'] = TophatterRepricing::getProductPrice($pro['price'], 'variants', $pro['option_id'], MERCHANT_ID);
                             }
                             $priceArray['PriceFeed']['_value'][$key] = [
                                 'Price' => [
@@ -1500,24 +1500,24 @@ class Walmartapi extends Component
                     } else {
                         $check = [];
                         $check['sku'] = $pro['sku'];
-                        $isRepricingEnabled = WalmartRepricing::isRepricingEnabled($check);
+                        $isRepricingEnabled = TophatterRepricing::isRepricingEnabled($check);
                         if($isRepricingEnabled){
                             $repricing_array[$pro['sku']]="Not Price updated due to repricing enable";
                             continue;
                         }
-                        //update custom price on walmart
+                        //update custom price on tophatter
                         /*$updatePrice = Data::getCustomPrice($pro['price'],$pro['merchant_id']);
                         if($updatePrice)
                             $pro['price']=$updatePrice;*/
-                        //walmart product price
-                        $price = Data::getWalmartPrice($pro['id'], MERCHANT_ID);
+                        //tophatter product price
+                        $price = Data::getTophatterPrice($pro['id'], MERCHANT_ID);
 
                         if (isset($price['product_price']) && !empty($price)) {
-                            $pro['price'] = WalmartRepricing::getProductPrice($price['product_price'], 'simple', $pro['id'], MERCHANT_ID);
+                            $pro['price'] = TophatterRepricing::getProductPrice($price['product_price'], 'simple', $pro['id'], MERCHANT_ID);
 
                         }
                         else{
-                            $pro['price'] = WalmartRepricing::getProductPrice($pro['price'], 'simple', $pro['id'], MERCHANT_ID);
+                            $pro['price'] = TophatterRepricing::getProductPrice($pro['price'], 'simple', $pro['id'], MERCHANT_ID);
                         }
                         $key += 1;
                         $priceArray['PriceFeed']['_value'][$key] = [
@@ -1677,8 +1677,8 @@ class Walmartapi extends Component
         $shipArray = [
             'ns2:orderShipment' => [
                 '_attribute' => [
-                    'xmlns:ns2' => "http://walmart.com/mp/v3/orders",
-                    'xmlns:ns3' => "http://walmart.com/",
+                    'xmlns:ns2' => "http://tophatter.com/mp/v3/orders",
+                    'xmlns:ns3' => "http://tophatter.com/",
                 ],
                 '_value' => [
                     'ns2:orderLines' => [
@@ -1760,7 +1760,7 @@ class Walmartapi extends Component
             return json_encode($data);
         } catch (\Exception $e) {
             //echo $e->getMessage();die;
-            /*$this->_logger->debug('Walmart : shipOrder : Response: '.$response);
+            /*$this->_logger->debug('Tophatter : shipOrder : Response: '.$response);
             return false;*/
             return ['errors' => [$e->getMessage()]];
         }
@@ -1772,15 +1772,15 @@ class Walmartapi extends Component
      * @param string $dataship
      * @param string $subUrl
      * @return string
-     * @link  https://developer.walmartapis.com/#cancelling-order-lines
+     * @link  https://developer.tophatterapis.com/#cancelling-order-lines
      */
     public function rejectOrder($purchaseOrderId, $dataship, $subUrl = self::GET_ORDERS_SUB_URL)
     {
         $cancelArray = [
             'ns2:orderCancellation' => [
                 '_attribute' => [
-                    'xmlns:ns2' => "http://walmart.com/mp/v3/orders",
-                    'xmlns:ns3' => "http://walmart.com/",
+                    'xmlns:ns2' => "http://tophatter.com/mp/v3/orders",
+                    'xmlns:ns3' => "http://tophatter.com/",
                 ],
                 '_value' => [
                     'ns2:orderLines' => []
@@ -1846,7 +1846,7 @@ class Walmartapi extends Component
      * @param string $orderData
      * @param string $subUrl
      * @return string
-     * @link  https://developer.walmartapis.com/#cancelling-order-lines
+     * @link  https://developer.tophatterapis.com/#cancelling-order-lines
      */
     public function refundOrder($purchaseOrderId, $orderData, $subUrl = self::GET_ORDERS_SUB_URL)
     {
@@ -1854,8 +1854,8 @@ class Walmartapi extends Component
         $refundData = [
             'ns2:orderRefund' => [
                 '_attribute' => [
-                    'xmlns:ns2' => "http://walmart.com/mp/v3/orders",
-                    'xmlns:ns3' => "http://walmart.com/",
+                    'xmlns:ns2' => "http://tophatter.com/mp/v3/orders",
+                    'xmlns:ns3' => "http://tophatter.com/",
                 ],
                 '_value' => [
                     'ns2:purchaseOrderId' => $purchaseOrderId,
@@ -2054,7 +2054,7 @@ class Walmartapi extends Component
     {
         if (is_array($response) && count($response) > 0 && isset($response['MPItemView'][0], $response['MPItemView'][0]['publishedStatus'])) {
             //update product status
-            $query = "update `walmart_product` set status='" . $response['MPItemView'][0]['publishedStatus'] . "' where product_id='" . $id . "'";
+            $query = "update `tophatter_product` set status='" . $response['MPItemView'][0]['publishedStatus'] . "' where product_id='" . $id . "'";
             Data::sqlRecords($query, null, "update");
         }
     }
@@ -2062,7 +2062,7 @@ class Walmartapi extends Component
     public static function deleteFeed($feedId)
     {
         if ($feedId) {
-            $query = "delete from `walmart_product_feed` where feedId='" . $feedId . "'";
+            $query = "delete from `tophatter_product_feed` where feedId='" . $feedId . "'";
             Data::sqlRecords($query, null, "delete");
         }
     }
@@ -2212,11 +2212,11 @@ class Walmartapi extends Component
     }
 
     /**
-     * Update Bulk Promotional Price On Walmart
+     * Update Bulk Promotional Price On Tophatter
      * @param string|[] $productIds (comma seperated string of Ids OR array of Ids)
      * @return bool
      */
-    public function updateBulkPromotionalPriceOnWalmart($productIds)
+    public function updateBulkPromotionalPriceOnTophatter($productIds)
     {
         $flag = false;
         $merchant_id = MERCHANT_ID;
@@ -2225,7 +2225,7 @@ class Walmartapi extends Component
             $productIds = implode(',', $productIds);
         }
 
-        $query = 'SELECT * FROM `walmart_promotional_price` WHERE `merchant_id`=' . $merchant_id . ' AND `product_id` IN (' . $productIds . ')';
+        $query = 'SELECT * FROM `tophatter_promotional_price` WHERE `merchant_id`=' . $merchant_id . ' AND `product_id` IN (' . $productIds . ')';
         $result = Data::sqlRecords($query, 'all');
 
         $promoData = [];
@@ -2238,7 +2238,7 @@ class Walmartapi extends Component
         $promoPriceArray = [
             'PriceFeed' => [
                 '_attribute' => [
-                    'xmlns' => "http://walmart.com/",
+                    'xmlns' => "http://tophatter.com/",
                 ],
                 '_value' => [
                     0 => [
@@ -2345,7 +2345,7 @@ class Walmartapi extends Component
             $responseArray = self::xmlToArray($response);
 
             if (isset($responseArray['FeedAcknowledgement']['feedId'])) {
-                $query = "UPDATE `walmart_promotional_price` SET `walmart_status`='{WalmartPromoStatus::PROMOTIONAL_PRICE_STATUS_PROCESSING}' WHERE `product_id` IN ($productIds)";
+                $query = "UPDATE `tophatter_promotional_price` SET `tophatter_status`='{TophatterPromoStatus::PROMOTIONAL_PRICE_STATUS_PROCESSING}' WHERE `product_id` IN ($productIds)";
                 Data::sqlRecords($query, null, 'update');
 
                 $result = ['success' => true, 'message' => 'Successfully Updated!!', 'feedId' => $responseArray['FeedAcknowledgement']['feedId']];
@@ -2360,11 +2360,11 @@ class Walmartapi extends Component
     }
 
     /**
-     * Update Promotional Price On Walmart
+     * Update Promotional Price On Tophatter
      * @param string|[] $productIds (comma seperated string of Ids OR array of Ids)
      * @return bool
      */
-    public function updatePromotionalPriceOnWalmart($productIds)
+    public function updatePromotionalPriceOnTophatter($productIds)
     {
         $merchant_id = MERCHANT_ID;
 
@@ -2372,7 +2372,7 @@ class Walmartapi extends Component
             $productIds = implode(',', $productIds);
         }
 
-        $query = 'SELECT * FROM `walmart_promotional_price` WHERE `merchant_id`=' . $merchant_id . ' AND `product_id` IN (' . $productIds . ')';
+        $query = 'SELECT * FROM `tophatter_promotional_price` WHERE `merchant_id`=' . $merchant_id . ' AND `product_id` IN (' . $productIds . ')';
         $result = Data::sqlRecords($query, 'all');
 
         if ($result) {
@@ -2389,7 +2389,7 @@ class Walmartapi extends Component
                 $promoPriceArray = [
                     'Price' => [
                         '_attribute' => [
-                            'xmlns:' => "http://walmart.com/",
+                            'xmlns:' => "http://tophatter.com/",
                         ],
                         '_value' => [
                             'itemIdentifier' => [
@@ -2476,12 +2476,12 @@ class Walmartapi extends Component
                 }
             }
         }
-        die('updatePromotionalPriceOnWalmart');//remove
+        die('updatePromotionalPriceOnTophatter');//remove
     }
 
     /*by shivam*/
 
-    public function updateWalmartprice($product = [])
+    public function updateTophatterprice($product = [])
     {
         /*$isEnablePutRequest=false;
         if(count($product)=='1'){
@@ -2491,7 +2491,7 @@ class Walmartapi extends Component
         $priceArray = [
             'PriceFeed' => [
                 '_attribute' => [
-                    'xmlns:gmp' => "http://walmart.com/",
+                    'xmlns:gmp' => "http://tophatter.com/",
                 ],
                 '_value' => [
                     0 => [
@@ -2556,7 +2556,7 @@ class Walmartapi extends Component
                     $response = $this->putRequest(self::GET_FEEDS_PRICE_SUB_URL, ['file' => $file]);
                     $responseArray = self::xmlToArray($response);
                     if (isset($responseArray['ItemPriceResponse']['message'])) {
-                           return ['success' => true, 'message' => 'Price Feeds is successfully submitted on walmart'];
+                           return ['success' => true, 'message' => 'Price Feeds is successfully submitted on tophatter'];
                         }
                    elseif (isset($responseArray['errors'])) {
                         if ($responseArray['errors']['error']['code'] == 'UNAUTHORIZED.GMP_GATEWAY_API') {
@@ -2578,7 +2578,7 @@ class Walmartapi extends Component
                     } else {
                         return ['errors' => 'something went wrong'];
                     }*/
-                    return ['success' => true, 'message' => 'Price Feeds is successfully submitted on walmart'];
+                    return ['success' => true, 'message' => 'Price Feeds is successfully submitted on tophatter'];
 
 
                 } elseif (isset($responseArray['errors'])) {
@@ -2592,7 +2592,7 @@ class Walmartapi extends Component
         }
     }
 
-   public function updateWalmartinventory($product = [])
+   public function updateTophatterinventory($product = [])
     {
   
         $isEnablePutRequest=false;
@@ -2605,7 +2605,7 @@ class Walmartapi extends Component
             $inventoryArray = [
             'wm:inventory' => [
                 '_attribute' => [
-                    'xmlns:wm' => "http://walmart.com/",
+                    'xmlns:wm' => "http://tophatter.com/",
                 ],
                 '_value' => [
                 ]
@@ -2616,7 +2616,7 @@ class Walmartapi extends Component
             $inventoryArray = [
             'InventoryFeed' => [
                 '_attribute' => [
-                    'xmlns' => "http://walmart.com/",
+                    'xmlns' => "http://tophatter.com/",
                 ],
                 '_value' => [
                     0 => ['InventoryHeader' => [
@@ -2631,7 +2631,7 @@ class Walmartapi extends Component
         $isInvFeed = 0;
         $key = 0;
         if (is_array($product) && count($product) > 0) {
-            //check product available on walmart
+            //check product available on tophatter
             $response = $this->getItem($product['sku']);
             if (is_array($response) && count($response)) {
                 self::saveStatus($product['id'], $response);
@@ -2668,7 +2668,7 @@ class Walmartapi extends Component
                 $response = $this->putRequest(self::GET_INVENTORY_SUB_URL.'?sku='.$product['sku'], ['data' => file_get_contents($file)]);
                 $responseArray = self::xmlToArray($response,true);
                 if (isset($responseArray['inventory']['sku'])) {
-                        return ['success' => true, 'message' => 'Inventory Feeds is successfully submitted on walmart'];
+                        return ['success' => true, 'message' => 'Inventory Feeds is successfully submitted on tophatter'];
                     }
                elseif (isset($responseArray['errors'])) {
                     return ['errors' => $responseArray['errors']];
@@ -2689,7 +2689,7 @@ class Walmartapi extends Component
                 } else {
                     return ['errors' => 'something went wrong'];
                 }*/
-                return ['success' => true, 'message' => 'Inventory Feeds is successfully submitted on walmart'];
+                return ['success' => true, 'message' => 'Inventory Feeds is successfully submitted on tophatter'];
 
 
             } elseif (isset($responseArray['errors'])) {
@@ -2702,11 +2702,11 @@ class Walmartapi extends Component
     /*end by shivam*/
 
     /**
-     * Update Price On Walmart
+     * Update Price On Tophatter
      * @param string|[] $ids
      * @return bool
      */
-    public function batchupdatePriceOnWalmart($product, $datafrom = null)
+    public function batchupdatePriceOnTophatter($product, $datafrom = null)
     {
        /* $isEnablePutRequest=false;
         if(count($product)=='1'){
@@ -2718,7 +2718,7 @@ class Walmartapi extends Component
             $priceArray = [
                 'PriceFeed' => [
                     '_attribute' => [
-                        'xmlns:gmp' => "http://walmart.com/",
+                        'xmlns:gmp' => "http://tophatter.com/",
                     ],
                     '_value' => [
                         0 => [
@@ -2732,7 +2732,7 @@ class Walmartapi extends Component
             $isPriceFeed = 0;
             $key = 0;
             foreach ($product as $id ) {
-                $query = Data::sqlRecords('select jet.id,COALESCE(jpv.option_sku,sku) as sku,type,COALESCE(wpv.option_prices,jpv.option_price,wal.product_price,jet.price) as price,jet.merchant_id,wpv.option_id from (SELECT * FROM `walmart_product` WHERE `merchant_id`="' . MERCHANT_ID . '" AND `product_id`="'.$id.'") as wal INNER JOIN (SELECT * FROM `jet_product` WHERE `merchant_id`="'.MERCHANT_ID.'" AND `id`="'.$id.'") as jet ON jet.id=wal.product_id LEFT JOIN (SELECT * FROM `walmart_product_variants` WHERE `merchant_id`="' . MERCHANT_ID . '"  AND `product_id`="'.$id.'") as wpv ON wpv.product_id=wal.product_id LEFT JOIN jet_product_variants as jpv ON wpv.option_id=jpv.option_id where (wal.status="'.WalmartProduct::PRODUCT_STATUS_UPLOADED.'" OR wal.status="'.WalmartProduct::PRODUCT_STATUS_UNPUBLISHED.'" OR wal.status="'.WalmartProduct::PRODUCT_STATUS_STAGE.'" OR wpv.status="'.WalmartProduct::PRODUCT_STATUS_UPLOADED.'" OR wpv.status="'.WalmartProduct::PRODUCT_STATUS_UNPUBLISHED.'" OR wpv.status="'.WalmartProduct::PRODUCT_STATUS_STAGE.'")and wal.merchant_id="' . MERCHANT_ID . '"', 'all');
+                $query = Data::sqlRecords('select jet.id,COALESCE(jpv.option_sku,sku) as sku,type,COALESCE(wpv.option_prices,jpv.option_price,wal.product_price,jet.price) as price,jet.merchant_id,wpv.option_id from (SELECT * FROM `tophatter_product` WHERE `merchant_id`="' . MERCHANT_ID . '" AND `product_id`="'.$id.'") as wal INNER JOIN (SELECT * FROM `jet_product` WHERE `merchant_id`="'.MERCHANT_ID.'" AND `id`="'.$id.'") as jet ON jet.id=wal.product_id LEFT JOIN (SELECT * FROM `tophatter_product_variants` WHERE `merchant_id`="' . MERCHANT_ID . '"  AND `product_id`="'.$id.'") as wpv ON wpv.product_id=wal.product_id LEFT JOIN jet_product_variants as jpv ON wpv.option_id=jpv.option_id where (wal.status="'.TophatterProduct::PRODUCT_STATUS_UPLOADED.'" OR wal.status="'.TophatterProduct::PRODUCT_STATUS_UNPUBLISHED.'" OR wal.status="'.TophatterProduct::PRODUCT_STATUS_STAGE.'" OR wpv.status="'.TophatterProduct::PRODUCT_STATUS_UPLOADED.'" OR wpv.status="'.TophatterProduct::PRODUCT_STATUS_UNPUBLISHED.'" OR wpv.status="'.TophatterProduct::PRODUCT_STATUS_STAGE.'")and wal.merchant_id="' . MERCHANT_ID . '"', 'all');
                 if(isset($query) && !empty($query)){
                     if (is_array($query) && count($query) > 0) {
                         foreach ($query as $querykey => $queryvalue) {
@@ -2741,21 +2741,21 @@ class Walmartapi extends Component
                                 $check = [];
                                 $sku = Data::getProductSku($queryvalue['option_id']);
                                 $check['sku']=$sku;
-                                $isRepricingEnabled = WalmartRepricing::isRepricingEnabled($check);
+                                $isRepricingEnabled = TophatterRepricing::isRepricingEnabled($check);
                                 if($isRepricingEnabled){
                                     $error[$sku]="Product Price Not Updated due to repricing enable";
                                     continue;
                                 }
                                 $key += 1;
-                                //walmart product price
+                                //tophatter product price
 
-                                $price = Data::getWalmartPrice($queryvalue['option_id'], MERCHANT_ID);
+                                $price = Data::getTophatterPrice($queryvalue['option_id'], MERCHANT_ID);
 
                                 if (isset($price['option_prices']) && !empty($price['option_prices'])) {
-                                    $queryvalue['price'] = WalmartRepricing::getProductPrice($price['option_prices'], 'variants', $queryvalue['option_id'], MERCHANT_ID);
+                                    $queryvalue['price'] = TophatterRepricing::getProductPrice($price['option_prices'], 'variants', $queryvalue['option_id'], MERCHANT_ID);
                                 }
                                 else{
-                                    $queryvalue['price'] = WalmartRepricing::getProductPrice($queryvalue['price'], 'variants', $queryvalue['option_id'], MERCHANT_ID);
+                                    $queryvalue['price'] = TophatterRepricing::getProductPrice($queryvalue['price'], 'variants', $queryvalue['option_id'], MERCHANT_ID);
                                 }
                                 $priceArray['PriceFeed']['_value'][$key] = [
                                     'Price' => [
@@ -2795,25 +2795,25 @@ class Walmartapi extends Component
                         } else {
                             $check = [];
                             $check['sku'] = $queryvalue['sku'];
-                            $isRepricingEnabled = WalmartRepricing::isRepricingEnabled($check);
+                            $isRepricingEnabled = TophatterRepricing::isRepricingEnabled($check);
                             if($isRepricingEnabled){
                                 $error[$pro['sku']]="Product Price Not Updated due to repricing enable";
                                 continue;
                             }
-                            //update custom price on walmart
+                            //update custom price on tophatter
                             /*$updatePrice = Data::getCustomPrice($pro['price'],$pro['merchant_id']);
                             if($updatePrice)
                                 $pro['price']=$updatePrice;*/
-                            /*$queryvalue['price'] = WalmartRepricing::getProductPrice($queryvalue['price'], 'simple', $queryvalue['id'], MERCHANT_ID);*/
-                             //walmart product price
-                            $price = Data::getWalmartPrice($queryvalue['id'], MERCHANT_ID);
+                            /*$queryvalue['price'] = TophatterRepricing::getProductPrice($queryvalue['price'], 'simple', $queryvalue['id'], MERCHANT_ID);*/
+                             //tophatter product price
+                            $price = Data::getTophatterPrice($queryvalue['id'], MERCHANT_ID);
 
                             if (isset($price['product_price']) && !empty($price['product_price'])) {
-                                $queryvalue['price'] = WalmartRepricing::getProductPrice($price['product_price'], 'simple', $queryvalue['id'], MERCHANT_ID);
+                                $queryvalue['price'] = TophatterRepricing::getProductPrice($price['product_price'], 'simple', $queryvalue['id'], MERCHANT_ID);
 
                             }
                             else{
-                                $queryvalue['price'] = WalmartRepricing::getProductPrice($queryvalue['price'], 'simple', $queryvalue['id'], MERCHANT_ID);
+                                $queryvalue['price'] = TophatterRepricing::getProductPrice($queryvalue['price'], 'simple', $queryvalue['id'], MERCHANT_ID);
                             }
                             $key += 1;
                             $priceArray['PriceFeed']['_value'][$key] = [
@@ -2857,7 +2857,7 @@ class Walmartapi extends Component
                 }
                 else{
                     $sku = Data::getProductSku($id);
-                    $error[$sku]="Product Not Found on Walmart"; 
+                    $error[$sku]="Product Not Found on Tophatter"; 
                 }
             }  
             if ($isPriceFeed > 0) {
@@ -2902,11 +2902,11 @@ class Walmartapi extends Component
 
 
     /**
-     * Update Inventory On Walmart
+     * Update Inventory On Tophatter
      * @param string|[] $product
      * @return array
      */
-    public function batchupdateInventoryOnWalmart($product, $datafrom = null)
+    public function batchupdateInventoryOnTophatter($product, $datafrom = null)
     {
         /*$isEnablePutRequest = false;
         if (count($product) == '1') {
@@ -2919,7 +2919,7 @@ class Walmartapi extends Component
         $inventoryArray = [
             'InventoryFeed' => [
                 '_attribute' => [
-                    'xmlns' => "http://walmart.com/",
+                    'xmlns' => "http://tophatter.com/",
                 ],
                 '_value' => [
                     0 => ['InventoryHeader' => [
@@ -2933,7 +2933,7 @@ class Walmartapi extends Component
         $isInvFeed = 0;
         $key = 0;
         foreach ($product as $id) {
-            $query = Data::sqlRecords('select jet.bigproduct_id,sku,type,qty,jet.merchant_id from (SELECT * FROM `walmart_product` WHERE `merchant_id`="' . MERCHANT_ID . '" AND `product_id`="' . $id . '") as wal INNER JOIN (SELECT * FROM `jet_product` WHERE `merchant_id`="' . MERCHANT_ID . '" AND `bigproduct_id`="' . $id . '") as jet ON jet.bigproduct_id=wal.product_id where (wal.status="' . WalmartProduct::PRODUCT_STATUS_UPLOADED . '" OR wal.status="' . WalmartProduct::PRODUCT_STATUS_UNPUBLISHED . '" OR wal.status="' . WalmartProduct::PRODUCT_STATUS_STAGE . '")and wal.merchant_id="' . MERCHANT_ID . '"', 'one');
+            $query = Data::sqlRecords('select jet.bigproduct_id,sku,type,qty,jet.merchant_id from (SELECT * FROM `tophatter_product` WHERE `merchant_id`="' . MERCHANT_ID . '" AND `product_id`="' . $id . '") as wal INNER JOIN (SELECT * FROM `jet_product` WHERE `merchant_id`="' . MERCHANT_ID . '" AND `bigproduct_id`="' . $id . '") as jet ON jet.bigproduct_id=wal.product_id where (wal.status="' . TophatterProduct::PRODUCT_STATUS_UPLOADED . '" OR wal.status="' . TophatterProduct::PRODUCT_STATUS_UNPUBLISHED . '" OR wal.status="' . TophatterProduct::PRODUCT_STATUS_STAGE . '")and wal.merchant_id="' . MERCHANT_ID . '"', 'one');
             if (isset($query) && !empty($query)) {
                 if (is_array($query) && count($query) > 0) {
                     $isInvFeed++;
@@ -2971,7 +2971,7 @@ class Walmartapi extends Component
 
             } else {
                 $sku = Data::getProductSku($id);
-                $error[$sku] = "Product Not Found on Walmart";
+                $error[$sku] = "Product Not Found on Tophatter";
             }
         }
         if ($isInvFeed > 0) {
@@ -3040,7 +3040,7 @@ class Walmartapi extends Component
         $url = $this->apiUrl . $url;
 
         $headers = [];
-        $headers[] = "WM_SVC.NAME: Walmart Marketplace";
+        $headers[] = "WM_SVC.NAME: Tophatter Marketplace";
         $headers[] = "WM_QOS.CORRELATION_ID: " . base64_encode(\phpseclib\Crypt\Random::string(16));
         $headers[] = "WM_SEC.TIMESTAMP: " . $this->apiSignature->timestamp;
         $headers[] = "WM_SEC.AUTH_SIGNATURE: " . $signature;
@@ -3051,11 +3051,11 @@ class Walmartapi extends Component
 
         $headers[] = "Accept: application/xml";
 
-        $headers[] = "HOST: marketplace.walmartapis.com";
+        $headers[] = "HOST: marketplace.tophatterapis.com";
 
-        //Working //$body = '<wm:inventory xmlns:wm="http://walmart.com/"><wm:sku>AKT60LE</wm:sku><wm:quantity><wm:unit>EACH</wm:unit><wm:amount>5</wm:amount></wm:quantity><wm:fulfillmentLagTime>1</wm:fulfillmentLagTime></wm:inventory>';
+        //Working //$body = '<wm:inventory xmlns:wm="http://tophatter.com/"><wm:sku>AKT60LE</wm:sku><wm:quantity><wm:unit>EACH</wm:unit><wm:amount>5</wm:amount></wm:quantity><wm:fulfillmentLagTime>1</wm:fulfillmentLagTime></wm:inventory>';
 
-        $body = '<?xml version="1.0" encoding="UTF-8"?><wm:inventory xmlns:wm="http://walmart.com/"><wm:sku>AKT60LE</wm:sku><wm:quantity><wm:unit>EACH</wm:unit><wm:amount>5</wm:amount></wm:quantity><wm:fulfillmentLagTime>1</wm:fulfillmentLagTime></wm:inventory>';
+        $body = '<?xml version="1.0" encoding="UTF-8"?><wm:inventory xmlns:wm="http://tophatter.com/"><wm:sku>AKT60LE</wm:sku><wm:quantity><wm:unit>EACH</wm:unit><wm:amount>5</wm:amount></wm:quantity><wm:fulfillmentLagTime>1</wm:fulfillmentLagTime></wm:inventory>';
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
@@ -3097,17 +3097,17 @@ class Walmartapi extends Component
 
 
     public function underTrial($merchant_id){
-        $trialdetail=WalmartExtensionDetail::find()->where(['merchant_id'=>$merchant_id])->one();
+        $trialdetail=TophatterExtensionDetail::find()->where(['merchant_id'=>$merchant_id])->one();
         $status=$trialdetail->status;
         $app_status=$trialdetail->app_status;
 
         if($status=='Not Purchase' && $app_status=='install' && $merchant_id!=345 && $merchant_id!=333 && $merchant_id!=294){
-            $totalproduct=WalmartProduct::find()->where(['merchant_id'=>$merchant_id])->all();
+            $totalproduct=TophatterProduct::find()->where(['merchant_id'=>$merchant_id])->all();
             $totalproduct=count($totalproduct);
 
 
             $percentproduct=$totalproduct*(10/100);
-            $trialdetail=WalmartProduct::find()->where(['merchant_id'=>$merchant_id])->andFilterWhere(['or',
+            $trialdetail=TophatterProduct::find()->where(['merchant_id'=>$merchant_id])->andFilterWhere(['or',
             ['like','status','PUBLISHED'],
             ['like','status','Items Processing']])->all();
 
@@ -3216,7 +3216,7 @@ class Walmartapi extends Component
                 $query='UPDATE `jet_product` SET price="'.$products['price'].'" where  bigproduct_id="'.$up_app['bigproduct_id'].'" and `merchant_id`="'.$merchant_id.'"';
                 $updateResult = $connection->createCommand($query)->execute();
                 
-                $query='UPDATE `walmart_product` SET product_price="'.$products['price'].'" where  product_id="'.$up_app['bigproduct_id'].'" and `merchant_id`="'.$merchant_id.'"';
+                $query='UPDATE `tophatter_product` SET product_price="'.$products['price'].'" where  product_id="'.$up_app['bigproduct_id'].'" and `merchant_id`="'.$merchant_id.'"';
                 $updateResult = $connection->createCommand($query)->execute();
                 
             }
