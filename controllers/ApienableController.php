@@ -1,14 +1,14 @@
 <?php 
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use yii\web\Controller;
-use frontend\modules\walmart\models\WalmartConfiguration;
-use frontend\modules\walmart\models\AppStatus;
-use frontend\modules\walmart\models\WalmartExtensionDetail;
-use frontend\modules\walmart\components\Walmartapi;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\Walmartappdetails;
+use frontend\modules\tophatter\models\TophatterConfiguration;
+use frontend\modules\tophatter\models\AppStatus;
+use frontend\modules\tophatter\models\TophatterExtensionDetail;
+use frontend\modules\tophatter\components\Tophatterapi;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\Tophatterappdetails;
 
 class ApienableController extends Controller
 {
@@ -42,7 +42,7 @@ class ApienableController extends Controller
 	public function actionSaveliveapi()
 	{
 		if (Yii::$app->user->isGuest) {
-			return "Please login to enable Walmart api(s)";
+			return "Please login to enable Tophatter api(s)";
 		}
 		else
 		{
@@ -55,20 +55,20 @@ class ApienableController extends Controller
 				return "Please enter valid api credentials";
 			}
 			
-			if(!Walmartappdetails::validateApiCredentials($consumer_id, $secret_key, $channel_type_id))
+			if(!Tophatterappdetails::validateApiCredentials($consumer_id, $secret_key, $channel_type_id))
 			{
 					return "Api credentials are invalid. Please enter valid api credentials.";
 			}
 
 			//Check if Details are already used by some other merchant
-			$data = Data::sqlRecords("SELECT `merchant_id` FROM `walmart_configuration` WHERE `consumer_id`='".$consumer_id."'", 'one');
+			$data = Data::sqlRecords("SELECT `merchant_id` FROM `tophatter_configuration` WHERE `consumer_id`='".$consumer_id."'", 'one');
 			if($data && isset($data['merchant_id']) && $data['merchant_id'] != $merchant_id) {
 				return "Api credentials are already in use.";
 	        }
 
-			$result = WalmartConfiguration::find()->where(['merchant_id'=>$merchant_id])->one();
+			$result = TophatterConfiguration::find()->where(['merchant_id'=>$merchant_id])->one();
 			if(is_null($result)) {
-				$model = new WalmartConfiguration();
+				$model = new TophatterConfiguration();
 				$model->merchant_id = $merchant_id;
 				$model->consumer_id = $consumer_id;
 				$model->secret_key = $secret_key;

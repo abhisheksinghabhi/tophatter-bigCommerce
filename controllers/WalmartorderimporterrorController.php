@@ -1,11 +1,11 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
-use frontend\modules\walmart\models\WalmartOrderImportError;
-use frontend\modules\walmart\models\WalmartOrderImportErrorSearch;
-use frontend\modules\walmart\controllers\WalmartcustomworkController;
-use frontend\modules\walmart\components\Walmartapi;
+use frontend\modules\tophatter\models\TophatterOrderImportError;
+use frontend\modules\tophatter\models\TophatterOrderImportErrorSearch;
+use frontend\modules\tophatter\controllers\TophattercustomworkController;
+use frontend\modules\tophatter\components\Tophatterapi;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -13,7 +13,7 @@ use yii\filters\VerbFilter;
 /**
  * WalmartorderimporterrorController implements the CRUD actions for WalmartOrderImportError model.
  */
-class WalmartorderimporterrorController extends WalmartmainController
+class TophatterorderimporterrorController extends TophattermainController
 {
     public function behaviors()
     {
@@ -33,7 +33,7 @@ class WalmartorderimporterrorController extends WalmartmainController
      */
     public function actionIndex()
     {
-        $searchModel = new WalmartOrderImportErrorSearch();
+        $searchModel = new TophatterOrderImportErrorSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -61,7 +61,7 @@ class WalmartorderimporterrorController extends WalmartmainController
      */
     public function actionCreate()
     {
-        $model = new WalmartOrderImportError();
+        $model = new TophatterOrderImportError();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -113,7 +113,7 @@ class WalmartorderimporterrorController extends WalmartmainController
      */
     protected function findModel($id)
     {
-        if (($model = WalmartOrderImportError::findOne($id)) !== null) {
+        if (($model = TophatterOrderImportError::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -127,7 +127,7 @@ class WalmartorderimporterrorController extends WalmartmainController
             return \Yii::$app->getResponse()->redirect(\Yii::$app->getUser()->loginUrl);
         }
         if($config){
-            $this->walmartHelper = new Walmartapi($config['consumer_id'],$config['secret_key'],$config['consumer_channel_type_id']);
+            $this->tophatterHelper = new Tophatterapi($config['consumer_id'],$config['secret_key'],$config['consumer_channel_type_id']);
         }
         $data = Yii::$app->request->queryParams;
 
@@ -158,7 +158,7 @@ class WalmartorderimporterrorController extends WalmartmainController
                 }
                 $handle = fopen($directory.'/cancel.log','a');
                 fwrite($handle,'Cancel SHIP DATA : '.print_r($dataShip,true).PHP_EOL.PHP_EOL);
-                $response = $this->walmartHelper->rejectOrder($data['pid'],$dataShip);
+                $response = $this->tophatterHelper->rejectOrder($data['pid'],$dataShip);
 
                 
                 if(isset($response['errors'])){
@@ -187,8 +187,8 @@ class WalmartorderimporterrorController extends WalmartmainController
      public function Getorderdetails($pid)
     {
         if($pid){
-            $this->walmartHelper = new Walmartapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
-            $orderdata = $this->walmartHelper->getOrder($pid);
+            $this->tophatterHelper = new Tophatterapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
+            $orderdata = $this->tophatterHelper->getOrder($pid);
             $shipdata = json_decode($orderdata,true);
             return $shipdata;
         }

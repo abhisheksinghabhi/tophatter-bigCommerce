@@ -1,20 +1,20 @@
 <?php
 
-namespace frontend\modules\walmart\controllers;
-use frontend\modules\walmart\models\WalmartConfig;
-use frontend\modules\walmart\models\WalmartConfiguration;
+namespace frontend\modules\tophatter\controllers;
+use frontend\modules\tophatter\models\TophatterConfig;
+use frontend\modules\tophatter\models\TophatterConfiguration;
 use Yii;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\controllers\WalmartmainController;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\controllers\TophattermainController;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
-use frontend\modules\walmart\components\Walmartapi;
-use frontend\modules\walmart\components\Walmartappdetails;
+use frontend\modules\tophatter\components\Tophatterapi;
+use frontend\modules\tophatter\components\Tophatterappdetails;
 
 /**
  * WalmartconfigurationController implements the CRUD actions for WalmartConfiguration model.
  */
-class WalmartconfigurationController extends WalmartmainController
+class TophatterconfigurationController extends TophattermainController
 {
     public function behaviors()
     {
@@ -50,7 +50,7 @@ class WalmartconfigurationController extends WalmartmainController
         {
             
             
-            $query="SELECT * FROM `walmart_email_template`";
+            $query="SELECT * FROM `tophatter_email_template`";
             $email = Data::sqlRecords($query,"all");
             
 
@@ -71,19 +71,19 @@ class WalmartconfigurationController extends WalmartmainController
             $skype_id = trim($_POST['skype_id']);
                         
             //Check if Credentials are valid
-            if(!Walmartappdetails::validateApiCredentials($consumer_id, $secret_key))
+            if(!Tophatterappdetails::validateApiCredentials($consumer_id, $secret_key))
             {
                 Yii::$app->session->setFlash('error', "Api credentials are invalid. Please enter valid api credentials");
                 return $this->render('index', ['clientData' => $postData]);
             }
             else
             {
-                $isConfigurationExist = Data::sqlRecords("SELECT `consumer_id` FROM  walmart_configuration WHERE `merchant_id`='".MERCHANT_ID."' ", "one", "select");
+                $isConfigurationExist = Data::sqlRecords("SELECT `consumer_id` FROM  tophatter_configuration WHERE `merchant_id`='".MERCHANT_ID."' ", "one", "select");
                 if (!empty($isConfigurationExist)){
-                    Data::sqlRecords("UPDATE `walmart_configuration` SET `consumer_id`='".$consumer_id."',`secret_key`='".$secret_key."',`skype_id`='".$skype_id."' where `merchant_id`='".MERCHANT_ID."'", null, "update");
+                    Data::sqlRecords("UPDATE `tophatter_configuration` SET `consumer_id`='".$consumer_id."',`secret_key`='".$secret_key."',`skype_id`='".$skype_id."' where `merchant_id`='".MERCHANT_ID."'", null, "update");
                 } else{                
                     //save api credentials
-                    Data::sqlRecords("INSERT INTO `walmart_configuration` (`merchant_id`, `consumer_id`,`secret_key`,`skype_id`) values(".MERCHANT_ID.",'".$consumer_id."','".$secret_key."','".$skype_id."') ", null, "insert");
+                    Data::sqlRecords("INSERT INTO `tophatter_configuration` (`merchant_id`, `consumer_id`,`secret_key`,`skype_id`) values(".MERCHANT_ID.",'".$consumer_id."','".$secret_key."','".$skype_id."') ", null, "insert");
                 }
             }
 
@@ -119,12 +119,12 @@ class WalmartconfigurationController extends WalmartmainController
             if(!empty($emailConfiguration)){
                  foreach ($emailConfiguration as $key => $value) 
                     {
-                       $emaildata=Data::sqlRecords("Select * from walmart_config where data='".$key."' and merchant_id='".MERCHANT_ID."'",null,"select");
+                       $emaildata=Data::sqlRecords("Select * from tophatter_config where data='".$key."' and merchant_id='".MERCHANT_ID."'",null,"select");
 
                        if($emaildata)
-                            Data::sqlRecords("UPDATE `walmart_config` SET `value`='".$value."' where `merchant_id`='".MERCHANT_ID."' AND `data`='".$key."'", null, "update");
+                            Data::sqlRecords("UPDATE `tophatter_config` SET `value`='".$value."' where `merchant_id`='".MERCHANT_ID."' AND `data`='".$key."'", null, "update");
                        else
-                            Data::sqlRecords("INSERT into `walmart_config` (`merchant_id`,`data`,`value`) values('".MERCHANT_ID."','".$key."','".$value."')", null, "insert");
+                            Data::sqlRecords("INSERT into `tophatter_config` (`merchant_id`,`data`,`value`) values('".MERCHANT_ID."','".$key."','".$value."')", null, "insert");
 
                     }
             }
@@ -140,27 +140,27 @@ class WalmartconfigurationController extends WalmartmainController
             }
             $clientData = $postData;
 
-             Data::sqlRecords("UPDATE `walmart_category_map` SET `tax_code`='".$productTax_code."' where `merchant_id`='".MERCHANT_ID."'", null, "update");
+             Data::sqlRecords("UPDATE `tophatter_category_map` SET `tax_code`='".$productTax_code."' where `merchant_id`='".MERCHANT_ID."'", null, "update");
 
             Yii::$app->session->setFlash('success','Walamrt Configurations has been Saved Successfully!');
         } 
         else 
         {
-            $walmart_configuration_data = Data::sqlRecords("SELECT `consumer_id`,`secret_key`,`consumer_channel_type_id`,`skype_id` FROM  walmart_configuration WHERE `merchant_id`='".MERCHANT_ID."' ","one");
-            $walmart_config_data = Data::sqlRecords("SELECT `data`,`value` FROM  walmart_config WHERE `merchant_id`='".MERCHANT_ID."' ","all","select");
+            $tophatter_configuration_data = Data::sqlRecords("SELECT `consumer_id`,`secret_key`,`consumer_channel_type_id`,`skype_id` FROM  tophatter_configuration WHERE `merchant_id`='".MERCHANT_ID."' ","one");
+            $tophatter_config_data = Data::sqlRecords("SELECT `data`,`value` FROM  tophatter_config WHERE `merchant_id`='".MERCHANT_ID."' ","all","select");
                             
-            $clientData['consumer_id']=$walmart_configuration_data['consumer_id'];
-            $clientData['secret_key']=$walmart_configuration_data['secret_key'];
-            $clientData['consumer_channel_type_id']=$walmart_configuration_data['consumer_channel_type_id'];
-            $clientData['skype_id']=$walmart_configuration_data['skype_id'];
+            $clientData['consumer_id']=$tophatter_configuration_data['consumer_id'];
+            $clientData['secret_key']=$tophatter_configuration_data['secret_key'];
+            $clientData['consumer_channel_type_id']=$tophatter_configuration_data['consumer_channel_type_id'];
+            $clientData['skype_id']=$tophatter_configuration_data['skype_id'];
             $clientData['first_address']=$first_address;
             $clientData['second_address']=$second_address;
             $clientData['city']=$city;
             $clientData['state']=$state;
             $clientData['zipcode']=$zipcode;
-            if (!empty($walmart_config_data))
+            if (!empty($tophatter_config_data))
             {
-                foreach ($walmart_config_data as $val)
+                foreach ($tophatter_config_data as $val)
                 {
 
                      $clientData[$val['data']] = $val['value'];
@@ -192,7 +192,7 @@ class WalmartconfigurationController extends WalmartmainController
      */
     public function actionCreate()
     {
-        $model = new WalmartConfiguration();
+        $model = new TophatterConfiguration();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -244,7 +244,7 @@ class WalmartconfigurationController extends WalmartmainController
      */
     protected function findModel($id)
     {
-        if (($model = WalmartConfiguration::findOne($id)) !== null) {
+        if (($model = TophatterConfiguration::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

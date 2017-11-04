@@ -1,31 +1,31 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 use Yii;
-use frontend\modules\walmart\models\WalmartExtensionDetail;
-use frontend\modules\walmart\models\WalmartShopDetails;
+use frontend\modules\tophatter\models\TophatterExtensionDetail;
+use frontend\modules\tophatter\models\TophatterShopDetails;
 use common\models\LoginForm;
 use common\models\User;
-use frontend\modules\walmart\models\AppStatus;
-use frontend\modules\walmart\components\Jetappdetails;
-use frontend\modules\walmart\components\Sendmail;
-use frontend\modules\walmart\components\Signature;
-use frontend\modules\walmart\components\Walmartapi;
-use frontend\modules\walmart\components\BigcommerceClientHelper;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\Walmartappdetails;
+use frontend\modules\tophatter\models\AppStatus;
+use frontend\modules\tophatter\components\Jetappdetails;
+use frontend\modules\tophatter\components\Sendmail;
+use frontend\modules\tophatter\components\Signature;
+use frontend\modules\tophatter\components\Tophatterapi;
+use frontend\modules\tophatter\components\BigcommerceClientHelper;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\Tophatterappdetails;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\Controller;
-use frontend\modules\walmart\models\WalmartConfiguration;
-use frontend\modules\walmart\components\Dashboard;
-use frontend\modules\walmart\components\Installation;
+use frontend\modules\tophatter\models\TophatterConfiguration;
+use frontend\modules\tophatter\components\Dashboard;
+use frontend\modules\tophatter\components\Installation;
 /**
  * Site controller
  */
 class SiteController extends Controller
 {
-    const MARKETPLACE = 'walmart';
+    const MARKETPLACE = 'tophatter';
     const STATUS = 'pending';
     const NO_OF_REQUEST = 1;
     const PENDING = 'pending';
@@ -71,36 +71,36 @@ class SiteController extends Controller
     public function actions()
     {
         $this->layout = 'main';
-        if (isset(Yii::$app->controller->module->module->requestedRoute) && Yii::$app->controller->module->module->requestedRoute =='walmart/site/guide') 
+        if (isset(Yii::$app->controller->module->module->requestedRoute) && Yii::$app->controller->module->module->requestedRoute =='tophatter/site/guide') 
         {
             Yii::$app->view->registerMetaTag([
               'name' => 'keywords',
-              'content' => 'start to sell on Walmart, how to sell on WalMart, sell in Walmart marketplace, sell BigCommerce products on Walmart marketplace, sell with Walmart, Walmart BigCommerce API integration'
+              'content' => 'start to sell on Tophatter, how to sell on Tophatter, sell in Tophatter marketplace, sell BigCommerce products on Tophatter marketplace, sell with Tophatter, Tophatter BigCommerce API integration'
               
             ],"keywords");
 
             Yii::$app->view->registerMetaTag([
               'name' => 'description',
-              'content' => 'Easily configure BigCommerce Walmart API Integration app and Sell products on Walmart marketplace with CedCommerce comprehensive user guide document. '
+              'content' => 'Easily configure BigCommerce Tophatter API Integration app and Sell products on Tophatter marketplace with CedCommerce comprehensive user guide document. '
               
             ],"description");
 
             Yii::$app->view->registerMetaTag([
               'name' => 'og:title',
-              'content' => 'How to sell on Walmart marketplace - Documentation'
+              'content' => 'How to sell on Tophatter marketplace - Documentation'
               
             ],"og:title");
         }
-        elseif (isset(Yii::$app->controller->module->module->requestedRoute) && Yii::$app->controller->module->module->requestedRoute =='walmart/site/pricing') 
+        elseif (isset(Yii::$app->controller->module->module->requestedRoute) && Yii::$app->controller->module->module->requestedRoute =='tophatter/site/pricing') 
         {
             Yii::$app->view->registerMetaTag([
             'name' => 'description',
-            'content' => 'Good, Better, Best Save more with Standard Business and Pro Plan of Cedcommerce BigCommerce Walmart Marketplace API Integration, Start selling on walmart.com'
+            'content' => 'Good, Better, Best Save more with Standard Business and Pro Plan of Cedcommerce BigCommerce Tophatter Marketplace API Integration, Start selling on tophatter.com'
                     
             ],"main_index"); //this will now replace the default one.
             Yii::$app->view->registerMetaTag([
               'name' => 'keywords',
-              'content' => 'BigCommerce Walmart Integration pricing listing, BigCommerce Walmart Integration, Walmart BigCommerce Integration,Walmart BigCommerce API Integration, Sell on Walmart Marketplace, sell your BigCommerce products on Walmart marketplace'
+              'content' => 'BigCommerce Tophatter Integration pricing listing, BigCommerce Tophatter Integration, Tophatter BigCommerce Integration,Tophatter BigCommerce API Integration, Sell on Tophatter Marketplace, sell your BigCommerce products on Tophatter marketplace'
               
             ],"keywords");
         }
@@ -108,25 +108,25 @@ class SiteController extends Controller
         {    
             Yii::$app->view->registerMetaTag([
               'name' => 'title',
-              'content' => 'Walmart BigCommerce API integration Pricing - CedCommerce'
+              'content' => 'Tophatter BigCommerce API integration Pricing - CedCommerce'
               
             ],"title");
 
             Yii::$app->view->registerMetaTag([
               'name' => 'keywords',
-              'content' => 'Walmart BigCommerce API Integration, sell BigCommerce products on Walmart marketplace, Walmart Marketplace API Integration, Sell on Walmart Marketplace'
+              'content' => 'Tophatter BigCommerce API Integration, sell BigCommerce products on Tophatter marketplace, Tophatter Marketplace API Integration, Sell on Tophatter Marketplace'
               
             ],"keywords");
 
             Yii::$app->view->registerMetaTag([
               'name' => 'description',
-              'content' => 'BigCommerce Walmart integration app, Connects your store with Walmart to upload products, manage inventory, order fulfillment, return and refund management .'
+              'content' => 'BigCommerce Tophatter integration app, Connects your store with Tophatter to upload products, manage inventory, order fulfillment, return and refund management .'
               
             ],"description");
 
             Yii::$app->view->registerMetaTag([
               'name' => 'og:title',
-              'content' => 'Sell BigCommerce Products on Walmart Marketplace - CedCommerce'
+              'content' => 'Sell BigCommerce Products on Tophatter Marketplace - CedCommerce'
               
             ],"og:title");
             Yii::$app->view->registerMetaTag([
@@ -136,17 +136,17 @@ class SiteController extends Controller
             ],"og:type");
             Yii::$app->view->registerMetaTag([
               'name' => 'og:image',
-              'content' => 'https://shopify.cedcommerce.com/walmart/images/walmart_shopify_large.jpg'
+              'content' => 'https://shopify.cedcommerce.com/tophatter/images/walmart_shopify_large.jpg'
               
             ],"og:image");
             Yii::$app->view->registerMetaTag([
               'name' => 'og:url',
-              'content' => 'https://shopify.cedcommerce.com/integration/walmart/'
+              'content' => 'https://shopify.cedcommerce.com/integration/tophatter/'
             ],"og:url");
 
             Yii::$app->view->registerMetaTag([
               'name' => 'og:description',
-              'content' => 'BigCommerce - Walmart.com integration app, connect your store with walmart to import products, manage inventory, order fulfillment, return and refund management with third party application.'
+              'content' => 'BigCommerce - tophatter.com integration app, connect your store with tophatter to import products, manage inventory, order fulfillment, return and refund management with third party application.'
             ],"og:description");
 
             Yii::$app->view->registerMetaTag([
@@ -156,22 +156,22 @@ class SiteController extends Controller
 
             Yii::$app->view->registerMetaTag([
               'name' => 'twitter:title',
-              'content' => 'BigCommerce - Walmart.com Integration | CedCommerce'
+              'content' => 'BigCommerce - tophatter.com Integration | CedCommerce'
             ],"twitter:title");
 
             Yii::$app->view->registerMetaTag([
               'name' => 'twitter:description',
-              'content' => 'BigCommerce - Walmart.com integration app, connect your store with walmart to import products, manage inventory, order fulfillment, return and refund management with third party application.'
+              'content' => 'BigCommerce - tophatter.com integration app, connect your store with tophatter to import products, manage inventory, order fulfillment, return and refund management with third party application.'
             ],"twitter:description");
 
             Yii::$app->view->registerMetaTag([
               'name' => 'twitter:image',
-              'content' => 'https://shopify.cedcommerce.com/walmart/images/walmart_shopify_large.jpg'
+              'content' => 'https://shopify.cedcommerce.com/tophatter/images/walmart_shopify_large.jpg'
             ],"twitter:image");
 
             Yii::$app->view->registerMetaTag([
               'name' => 'twitter:url',
-              'content' => 'https://bigcommerce.cedcommerce.com/integration/walmart/'
+              'content' => 'https://bigcommerce.cedcommerce.com/integration/tophatter/'
             ],"twitter:url");
 
         }
@@ -207,7 +207,7 @@ class SiteController extends Controller
     {
         $getRequest = Yii::$app->request->post();
         $merchant_id = Yii::$app->user->identity->id;
-        $client_record = Data::sqlRecords("SELECT * FROM `walmart_registration` WHERE `merchant_id`='".$merchant_id."'",'one');
+        $client_record = Data::sqlRecords("SELECT * FROM `tophatter_registration` WHERE `merchant_id`='".$merchant_id."'",'one');
         if(isset($client_record['email']) && !empty($client_record['email']) && isset($client_record['fname']) && !empty($client_record['fname'])  && isset($getRequest['description']) && !empty($getRequest['description']) && isset($getRequest['type']) && !empty($getRequest['type']) ){
             if(isset($client_record['lname']) && !empty($client_record['lname'])){
                  $name = $client_record['fname'].' '.$client_record['lname'];
@@ -236,7 +236,7 @@ class SiteController extends Controller
     public  function email($data)
     {
         $mer_email= 'feedback@cedcommerce.com';
-        $subject='Feedback for  Walmart App: '.$data['type'];
+        $subject='Feedback for  Tophatter App: '.$data['type'];
         $etx_mer="";
         $headers_mer = "MIME-Version: 1.0" . chr(10);
         $headers_mer .= "Content-type:text/html;charset=iso-8859-1" . chr(10);
@@ -257,7 +257,7 @@ class SiteController extends Controller
         }
         $merchant_id = Yii::$app->user->identity->id;
         $date = date("Y-m-d H:i:s", time());
-        $shop_detail = Data::getWalmartShopDetails($merchant_id);
+        $shop_detail = Data::getTophatterShopDetails($merchant_id);
         $preffered_time = $_POST['time'] . $_POST['format'];
 
         $call_record = Data::sqlRecords("SELECT * FROM `call_schedule` WHERE `merchant_id`= '".$merchant_id."' AND `marketplace`='".self::MARKETPLACE."' AND `number`= '".$number."'",'one');
@@ -287,12 +287,12 @@ class SiteController extends Controller
             $result="";
             $session ="";
             $session = Yii::$app->session;
-            $session->remove('walmart_installed');
-            $session->remove('walmart_appstatus');
-            $session->remove('walmart_configured');
-            $session->remove('walmart_validateapp');
-            $session->remove('walmart_dashboard');
-            $session->remove('walmart_extension');
+            $session->remove('tophatter_installed');
+            $session->remove('tophatter_appstatus');
+            $session->remove('tophatter_configured');
+            $session->remove('tophatter_validateapp');
+            $session->remove('tophatter_dashboard');
+            $session->remove('tophatter_extension');
             $session->close();
             $result=User::findOne($merchant_id);
             if($result){
@@ -319,7 +319,7 @@ class SiteController extends Controller
             if(!defined('MERCHANT_ID') || Yii::$app->user->identity->id != MERCHANT_ID)
             {
                 $merchant_id = Yii::$app->user->identity->id;
-                $shopDetails = Data::getWalmartShopDetails($merchant_id);
+                $shopDetails = Data::getTophatterShopDetails($merchant_id);
                 $token = isset($shopDetails['token'])?$shopDetails['token']:'';
                 $email = isset($shopDetails['email'])?$shopDetails['email']:'';
                 $currency= isset($shopDetails['currency'])?$shopDetails['currency']:'USD';
@@ -330,7 +330,7 @@ class SiteController extends Controller
                 define("CURRENCY", $currency);
                 define("EMAIL", $email);
                 
-                $bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+                $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
                 $response=Data::getBigcommerceShopDetails($bigcom);
 
 
@@ -338,12 +338,12 @@ class SiteController extends Controller
                 	$session->set('shop_details', $response);
                 }
 
-                $walmartConfig=[];
-                $walmartConfig = Data::sqlRecords("SELECT `consumer_id`,`secret_key`,`consumer_channel_type_id` FROM `walmart_configuration` WHERE merchant_id='".MERCHANT_ID."'", 'one');
-                if($walmartConfig) {
-                    define("CONSUMER_CHANNEL_TYPE_ID", $walmartConfig['consumer_channel_type_id']);
-                    define("API_USER", $walmartConfig['consumer_id']);
-                    define("API_PASSWORD", $walmartConfig['secret_key']);
+                $topghatterConfig=[];
+                $tophatterConfig = Data::sqlRecords("SELECT `consumer_id`,`secret_key`,`consumer_channel_type_id` FROM `tophatter_configuration` WHERE merchant_id='".MERCHANT_ID."'", 'one');
+                if($tophatterConfig) {
+                    define("CONSUMER_CHANNEL_TYPE_ID", $tophatterConfig['consumer_channel_type_id']);
+                    define("API_USER", $tophatterConfig['consumer_id']);
+                    define("API_PASSWORD", $tophatterConfig['secret_key']);
                 }
             }
 
@@ -356,17 +356,17 @@ class SiteController extends Controller
             $token = TOKEN;
             $storehash = STOREHASH;
 
-            $obj = new Walmartappdetails();
+            $obj = new Tophatterappdetails();
             if($obj->appstatus($username) == false)
             {
-                $this->redirect('https://www.bigcommerce.com/apps/walmart-marketplace-integration/');
+                $this->redirect('https://www.bigcommerce.com/apps/tophatter-marketplace-integration/');
             }         
 
 
             //check Configuration Pop-up condition.
             $ispopup = "";
             $flagConfig = true;
-            if(Walmartappdetails::isValidateapp($id)=="expire")
+            if(Tophatterappdetails::isValidateapp($id)=="expire")
             {
                 return $this->redirect(['paymentplan']);
             }
@@ -382,13 +382,13 @@ class SiteController extends Controller
                 if($installation['status'] == Installation::INSTALLATION_STATUS_PENDING) {
                     $step = $installation['step'];
                     //$this->redirect(Yii::$app->getUrlManager()->getBaseUrl().'/jet-install/index?step='.$step,302);
-                    $this->redirect(Data::getUrl('walmart-install/index'.$queryString));
+                    $this->redirect(Data::getUrl('tophatter-install/index'.$queryString));
                     return false;
                 }
             } else {
                 $step = Installation::getFirstStep();
                 //$this->redirect(Yii::$app->getUrlManager()->getBaseUrl().'/jet-install/index?step='.$step,302);
-                $this->redirect(Data::getUrl('walmart-install/index'.$queryString));
+                $this->redirect(Data::getUrl('tophatter-install/index'.$queryString));
                 return false;
             }
             //Code By Himanshu End
@@ -448,7 +448,7 @@ class SiteController extends Controller
                 $pageURL = rtrim($pageURL, "/");
                 //echo $pageURL;die;
             }
-            $bigcomClient = new BigcommerceClientHelper(WALMART_APP_KEY,"","");
+            $bigcomClient = new BigcommerceClientHelper(TOPHATTER_APP_KEY,"","");
             $url=parse_url($bigcomClient->getAuthorizeUrl($shop, $pageURL));
             if($url['host'])
             {
@@ -465,11 +465,11 @@ class SiteController extends Controller
         elseif(!empty($_GET["code"]))
         {
 
-            $bigcomClient = new BigcommerceClientHelper(WALMART_APP_KEY,"","");
+            $bigcomClient = new BigcommerceClientHelper(TOPHATTER_APP_KEY,"","");
             $tokenUrl = "https://login.bigcommerce.com/oauth2/token";
             $params = array(
-                    "client_id" => WALMART_APP_KEY,
-                    "client_secret" =>WALMART_APP_SECRET,
+                    "client_id" => TOPHATTER_APP_KEY,
+                    "client_secret" =>TOPHATTER_APP_SECRET,
                     "redirect_uri" => Yii::getAlias('@weburl')."/site/login",
                     "grant_type" => "authorization_code",
                     "code" => $_GET["code"],
@@ -487,7 +487,7 @@ class SiteController extends Controller
             if ($token != '')
             {
                 //echo $storehash."--<br>";
-                $bigcomClient = new BigcommerceClientHelper(WALMART_APP_KEY,$token,$storehash);
+                $bigcomClient = new BigcommerceClientHelper(TOPHATTER_APP_KEY,$token,$storehash);
                 $checkdetails = $bigcomClient->call1('GET','store');
                 //var_dump($checkdetails);die("cvbvbcvb");
                 $name = $checkdetails['name'];
@@ -527,30 +527,30 @@ class SiteController extends Controller
                 {
                     $merchant_id = $result['id'];
                 }
-                $walmartShopDetailModel = new WalmartShopDetails();
-                $walmartShopDetail = $walmartShopDetailModel->find()->where(['shop_url' => $shop])->one();
-                if(!$walmartShopDetail)
+                $tophatterShopDetailModel = new TophatterShopDetails();
+                $tophatterShopDetail = $tophatterShopDetailModel->find()->where(['shop_url' => $shop])->one();
+                if(!$tophatterShopDetail)
                 {
                     //save data in `walmart_shop_details` table
-                    $walmartShopDetailModel->merchant_id = $merchant_id;
-                    $walmartShopDetailModel->shop_url = $shop;
-                    $walmartShopDetailModel->shop_name = addslashes($name);
-                    $walmartShopDetailModel->email = $email;
-                    $walmartShopDetailModel->token = $token;
-                    $walmartShopDetailModel->currency = $currency;
-                    $walmartShopDetailModel->status = 1;
-                    $walmartShopDetailModel->save(false);
+                    $tophatterShopDetailModel->merchant_id = $merchant_id;
+                    $tophatterShopDetailModel->shop_url = $shop;
+                    $tophatterShopDetailModel->shop_name = addslashes($name);
+                    $tophatterShopDetailModel->email = $email;
+                    $tophatterShopDetailModel->token = $token;
+                    $tophatterShopDetailModel->currency = $currency;
+                    $tophatterShopDetailModel->status = 1;
+                    $tophatterShopDetailModel->save(false);
                 }
-                elseif($walmartShopDetail->token != $token || $walmartShopDetail->status == '0')
+                elseif($tophatterShopDetail->token != $token || $tophatterShopDetail->status == '0')
                 {
-                    $walmartShopDetail->status = 1;
-                    $walmartShopDetail->token = $token;
-                    $walmartShopDetail->save(false);
+                    $tophatterShopDetail->status = 1;
+                    $tophatterShopDetail->token = $token;
+                    $tophatterShopDetail->save(false);
                 }
 
-                $extensionDetail = WalmartExtensionDetail::find()->select('id')->where(['merchant_id' => $merchant_id])->one();
+                $extensionDetail = TophatterExtensionDetail::find()->select('id')->where(['merchant_id' => $merchant_id])->one();
                 if (is_null($extensionDetail)) {
-                    $extensionDetailModel = new WalmartExtensionDetail();
+                    $extensionDetailModel = new TophatterExtensionDetail();
                     $extensionDetailModel->merchant_id = $merchant_id;
                     $extensionDetailModel->install_date = date('Y-m-d H:i:s');
                     $extensionDetailModel->date = date('Y-m-d H:i:s');
@@ -568,7 +568,7 @@ class SiteController extends Controller
 
                 if(isset($result['id']) && !empty($result['id'])){
                     $merchant_id = $result['id'];
-                    $emailConfigCheck="SELECT * FROM `walmart_config` WHERE data LIKE'email/%' and `merchant_id`='".$merchant_id."'";
+                    $emailConfigCheck="SELECT * FROM `tophatter_config` WHERE data LIKE'email/%' and `merchant_id`='".$merchant_id."'";
                     $emailConfigCheckdata = Data::sqlRecords($emailConfigCheck,"all");
                     $query="SELECT * FROM `email_template`";
                     $email = Data::sqlRecords($query,"all");
@@ -628,7 +628,7 @@ class SiteController extends Controller
         }      
         elseif(!empty($_GET["signed_payload"]))
         {
-            $bigcomClient= new BigcommerceClientHelper(WALMART_APP_KEY,"","");
+            $bigcomClient= new BigcommerceClientHelper(TOPHATTER_APP_KEY,"","");
             $connection = Yii::$app->getDb();
             $signedRequest = $_GET['signed_payload'];
             $signedrequest = $bigcomClient->verifySignedRequest($signedRequest);
@@ -663,12 +663,12 @@ class SiteController extends Controller
         if(!isset($token) || !isset($shop)){
             $merchant_id=Yii::$app->user->identity->id;
             $shop=Yii::$app->user->identity->username;
-            $shopDetails = Data::getWalmartShopDetails($merchant_id);
+            $shopDetails = Data::getTophatterShopDetails($merchant_id);
             $token = isset($shopDetails['token'])?$shopDetails['token']:'';
             $connection = Yii::$app->getDb();
         }
         $isPayment=false;
-        $sc = new ShopifyClientHelper($shop, $token, WALMART_APP_KEY, WALMART_APP_SECRET);
+        $sc = new ShopifyClientHelper($shop, $token, TOPHATTER_APP_KEY, TOPHATTER_APP_SECRET);
 
         if(isset($_GET['charge_id']) && isset($_GET['plan']) && $_GET['plan']==1)
         {
@@ -682,19 +682,19 @@ class SiteController extends Controller
                 if(is_array($response) && count($response)>0)
                 {
                     $recurring="";
-                    $recurring=$connection->createCommand('select `id` from `walmart_recurring_payment` where id="'.$_GET['charge_id'].'"')->queryAll();
+                    $recurring=$connection->createCommand('select `id` from `tophatter_recurring_payment` where id="'.$_GET['charge_id'].'"')->queryAll();
                     if(!$recurring)
                     {
                         $created_at=date('Y-m-d H:i:s',strtotime($response['created_at']));
                         $updated_at=date('Y-m-d H:i:s',strtotime($response['updated_at']));
                         $response['timestamp']=date('d-m-Y H:i:s');
-                        $query="insert into `walmart_recurring_payment`
+                        $query="insert into `tophatter_recurring_payment`
                                 (id,merchant_id,billing_on,activated_on,status,recurring_data,plan_type)
                                 values('".$_GET['charge_id']."','".$merchant_id."','".$created_at."','".$updated_at."','".$response['status']."','".json_encode($response)."','".$response['name']."')";
                         $connection->createCommand($query)->execute();
                         //change data-time and status in walmart-extension-details
                         $expire_date=date('Y-m-d H:i:s',strtotime('+3 months', strtotime($updated_at)));
-                        $query="UPDATE walmart_extension_detail SET date='".$updated_at."',expire_date='".$expire_date."' ,status='Purchased' where merchant_id='".$merchant_id."'";
+                        $query="UPDATE tophatter_extension_detail SET date='".$updated_at."',expire_date='".$expire_date."' ,status='Purchased' where merchant_id='".$merchant_id."'";
                         $connection->createCommand($query)->execute();
                     }
                     Yii::$app->session->setFlash('success',"Thank you for choosing ".$response['name']);
@@ -717,19 +717,19 @@ class SiteController extends Controller
                 if(is_array($response) && count($response)>0)
                 {
                     $recurring="";
-                    $recurring=$connection->createCommand('select `id` from `walmart_recurring_payment` where id="'.$_GET['charge_id'].'"')->queryAll();
+                    $recurring=$connection->createCommand('select `id` from `tophatter_recurring_payment` where id="'.$_GET['charge_id'].'"')->queryAll();
                     if(!$recurring)
                     {
                         $created_at=date('Y-m-d H:i:s',strtotime($response['created_at']));
                         $updated_at=date('Y-m-d H:i:s',strtotime($response['updated_at']));
                         $response['timestamp']=date('d-m-Y H:i:s');
-                        $query="insert into `walmart_recurring_payment`
+                        $query="insert into `tophatter_recurring_payment`
                                 (id,merchant_id,billing_on,activated_on,status,recurring_data,plan_type)
                                 values('".$_GET['charge_id']."','".$merchant_id."','".$created_at."','".$updated_at."','".$response['status']."','".json_encode($response)."','".$response['name']."')";
                         $connection->createCommand($query)->execute();
                         //change data-time and status in walmart-extension-details
                         $expire_date=date('Y-m-d H:i:s',strtotime('+6 months', strtotime($updated_at)));
-                        $query="UPDATE walmart_extension_detail SET date='".$updated_at."',expire_date='".$expire_date."' ,status='Purchased' where merchant_id='".$merchant_id."'";
+                        $query="UPDATE tophatter_extension_detail SET date='".$updated_at."',expire_date='".$expire_date."' ,status='Purchased' where merchant_id='".$merchant_id."'";
                         $connection->createCommand($query)->execute();
                     }
                     Yii::$app->session->setFlash('success',"Thank you for choosing ".$response['name']);
@@ -755,19 +755,19 @@ class SiteController extends Controller
                     //echo $expire_date=date('Y-m-d H:i:s',strtotime('+1 year', strtotime(date('Y-m-d H:i:s',strtotime($response['updated_at'])))));
                     //die("XCvcv");
 
-                    $recurring=$connection->createCommand('select `id` from `walmart_recurring_payment` where id="'.$_GET['charge_id'].'"')->queryAll();
+                    $recurring=$connection->createCommand('select `id` from `tophatter_recurring_payment` where id="'.$_GET['charge_id'].'"')->queryAll();
                     if(!$recurring)
                     {
                         $created_at=date('Y-m-d H:i:s',strtotime($response['created_at']));
                         $updated_at=date('Y-m-d H:i:s',strtotime($response['updated_at']));
                         $response['timestamp']=date('d-m-Y H:i:s');
-                        $query="insert into `walmart_recurring_payment`
+                        $query="insert into `tophatter_recurring_payment`
                                 (id,merchant_id,billing_on,activated_on,status,recurring_data,plan_type)
                                 values('".$_GET['charge_id']."','".$merchant_id."','".$created_at."','".$updated_at."','".$response['status']."','".json_encode($response)."','".$response['name']."')";
                         $connection->createCommand($query)->execute();
                         //change data-time and status in jet-extension-details
                         $expire_date=date('Y-m-d H:i:s',strtotime('+1 year', strtotime($updated_at)));
-                        $query="UPDATE walmart_extension_detail SET date='".$updated_at."',expire_date='".$expire_date."' ,status='Purchased' where merchant_id='".$merchant_id."'";
+                        $query="UPDATE tophatter_extension_detail SET date='".$updated_at."',expire_date='".$expire_date."' ,status='Purchased' where merchant_id='".$merchant_id."'";
                         $connection->createCommand($query)->execute();
                     }
                     Yii::$app->session->setFlash('success',"Thank you for choosing ".$response['name']);
@@ -804,7 +804,7 @@ class SiteController extends Controller
     }
     public function goHome()
     {
-        $url = \yii\helpers\Url::toRoute(['/walmart/site/index']);
+        $url = \yii\helpers\Url::toRoute(['/tophatter/site/index']);
         return $this->redirect($url);
     }
     

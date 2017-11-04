@@ -1,11 +1,11 @@
 <?php 
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 
 use Yii;
 use yii\base\Component;
-use frontend\modules\walmart\components\BigcommerceClientHelper;
+use frontend\modules\tophatter\components\BigcommerceClientHelper;
 use yii\helpers\Url;
-use frontend\modules\walmart\models\WalmartExtensionDetail;
+use frontend\modules\tophatter\models\TophatterExtensionDetail;
 
 class Data extends component
 {
@@ -33,18 +33,18 @@ class Data extends component
         return $response;
     }
 
-    public static function getWalmartShopDetails($merchant_id)
+    public static function getTophatterShopDetails($merchant_id)
     {      
         $shopDetails = array();
         if(is_numeric($merchant_id)) {
-            $shopDetails = self::sqlRecords("SELECT `token`,`currency`,`walmart_shop`.`email`,`walmart_shop`.`shop_name`,`shop_url`,`store_hash` FROM `user` LEFT JOIN `walmart_shop_details` as `walmart_shop` ON `user`.`id`= `walmart_shop`.`merchant_id` WHERE `user`.`id`=".$merchant_id." LIMIT 0,1", 'one');
+            $shopDetails = self::sqlRecords("SELECT `token`,`currency`,`tophatter_shop`.`email`,`tophatter_shop`.`shop_name`,`shop_url`,`store_hash` FROM `user` LEFT JOIN `tophatter_shop_details` as `tophatter_shop` ON `user`.`id`= `tophatter_shop`.`merchant_id` WHERE `user`.`id`=".$merchant_id." LIMIT 0,1", 'one');
         }
         return $shopDetails;
     }
 
     public static function getUrl($path)
     {
-        $url = Url::toRoute(['/walmart/'.$path]);
+        $url = Url::toRoute(['/tophatter/'.$path]);
         return $url;
     }
 
@@ -77,7 +77,7 @@ class Data extends component
             {
                 $url=Yii::$app->getUrlManager()->createAbsoluteUrl('bigcommercewebhook/'.$val_url, 'https');
                 if($val_url=="isinstall")
-                    $url=Yii::getAlias("@weburl")."/walmart-webhook/".$val_url;
+                    $url=Yii::getAlias("@weburl")."/tophatter-webhook/".$val_url;
                 //$url="https://a81da6e1.ngrok.io/bigcommercewebhook/".$val_url;
                 $continueFlag = false;
                 if (is_array($response) || is_object($response))
@@ -147,15 +147,15 @@ class Data extends component
 
     public static function saveConfigValue($merchant_id, $field_name, $field_value)
     {
-        $query = "SELECT `data`,`value` FROM  `walmart_config` WHERE `merchant_id`='".$merchant_id."' AND `data`='".$field_name."'";
+        $query = "SELECT `data`,`value` FROM  `tophatter_config` WHERE `merchant_id`='".$merchant_id."' AND `data`='".$field_name."'";
         if (empty(self::sqlRecords($query,"one"))) {
-            self::sqlRecords("INSERT INTO `walmart_config` (`data`,`value`,`merchant_id`) values('".$field_name."','".$field_value."','".$merchant_id."')", null, "insert");
+            self::sqlRecords("INSERT INTO `tophatter_config` (`data`,`value`,`merchant_id`) values('".$field_name."','".$field_value."','".$merchant_id."')", null, "insert");
         } else {
-            self::sqlRecords("UPDATE `walmart_config` SET `value`='".$field_value."' where `merchant_id`='".$merchant_id."' AND `data`='".$field_name."'", null, "update");
+            self::sqlRecords("UPDATE `tophatter_config` SET `value`='".$field_value."' where `merchant_id`='".$merchant_id."' AND `data`='".$field_name."'", null, "update");
         }
     }
 
-    public static function importWalmartProduct($merchant_id)
+    public static function importTophatterProduct($merchant_id)
     {
         $productColl=[];
         $query="select bigproduct_id,product_type,type,title,description from jet_product where merchant_id='".$merchant_id."'";
@@ -163,8 +163,8 @@ class Data extends component
        
         if(is_array($productColl) && count($productColl)>0)
         {
-            $queryProduct="INSERT INTO `walmart_product` (`product_id`,`merchant_id`,`product_type`,`status`,`self_description`,`short_description`)VALUES";
-            $queryVariant="INSERT INTO `walmart_product_variants` (`product_id`,`merchant_id`,`option_id`)VALUES";
+            $queryProduct="INSERT INTO `tophatter_product` (`product_id`,`merchant_id`,`product_type`,`status`,`self_description`,`short_description`)VALUES";
+            $queryVariant="INSERT INTO `tophatter_product_variants` (`product_id`,`merchant_id`,`option_id`)VALUES";
             foreach ($productColl as $value) 
             {
                 $queryProduct.="('".$value['bigproduct_id']."','".$merchant_id."','".addslashes($value['product_type'])."','Not Uploaded','".addslashes($value['title'])."','".addslashes($value['description'])."'),";
@@ -186,7 +186,7 @@ class Data extends component
             self::sqlRecords($queryVariant,null,'insert');
             //insert product type
             $productTypeColl=[];
-            $query="select id from `walmart_category_map` where merchant_id='".$merchant_id."'";
+            $query="select id from `tophatter_category_map` where merchant_id='".$merchant_id."'";
             $productTypeColl= self::sqlRecords($query,"all",'select');
             if(!$productTypeColl)
             {
@@ -195,7 +195,7 @@ class Data extends component
                 $jetproductTypeColl= self::sqlRecords($query,"all",'select');
                 if(is_array($jetproductTypeColl) && count($jetproductTypeColl)>0)
                 {
-                    $queryProType="INSERT INTO `walmart_category_map` (`product_type`,`merchant_id`)VALUES";
+                    $queryProType="INSERT INTO `tophatter_category_map` (`product_type`,`merchant_id`)VALUES";
                     foreach ($jetproductTypeColl as $v) 
                     {
                         $queryProType.="('".addslashes($v['product_type'])."','".$merchant_id."'),";
@@ -228,13 +228,13 @@ class Data extends component
     	}
     
     	if(!$tax_code) {
-    		$query = "SELECT `tax_code` FROM `walmart_category_map` WHERE `product_type`='".$productType."' AND `merchant_id`=".$merchant_id." LIMIT 0,1";
+    		$query = "SELECT `tax_code` FROM `tophatter_category_map` WHERE `product_type`='".$productType."' AND `merchant_id`=".$merchant_id." LIMIT 0,1";
     		$result = Data::sqlRecords($query, 'one');
     		if($result && (isset($result['tax_code']))) {
     			return $result['tax_code'];
     		}
     		else {
-    			$query = "SELECT `value` FROM `walmart_config` WHERE `data`='tax_code' AND `merchant_id`=".$merchant_id." LIMIT 0,1";
+    			$query = "SELECT `value` FROM `tophatter_config` WHERE `data`='tax_code' AND `merchant_id`=".$merchant_id." LIMIT 0,1";
     			$result = Data::sqlRecords($query, 'one');
     			if($result && (isset($result['value']))) {
     				return $result['value'];
@@ -257,11 +257,11 @@ class Data extends component
     
     public static function getCustomPrice($price,$merchant_id)
     {
-        $walmartPriceConfig = Data::sqlRecords("SELECT `value` FROM `walmart_config` WHERE merchant_id='".$merchant_id."' && data='custom_price'", 'one');
+        $tophatterPriceConfig = Data::sqlRecords("SELECT `value` FROM `tophatter_config` WHERE merchant_id='".$merchant_id."' && data='custom_price'", 'one');
         
-        if(isset($walmartPriceConfig['value']) && $walmartPriceConfig['value'])
+        if(isset($tophatterPriceConfig['value']) && $tophatterPriceConfig['value'])
         {
-            $pricData=explode('-',$walmartPriceConfig['value']);
+            $pricData=explode('-',$tophatterPriceConfig['value']);
            
             if(is_array($pricData) && count($pricData)>0)
             {
@@ -337,7 +337,7 @@ class Data extends component
         }
     }
     
-    public static function createLog($message,$path='walmart-common.log',$mode='a',$sendMail=false)
+    public static function createLog($message,$path='tophatter-common.log',$mode='a',$sendMail=false)
     {
         $file_path=Yii::getAlias('@webroot').'/var/'.$path;
         $dir = dirname($file_path);
@@ -359,12 +359,12 @@ class Data extends component
     {
        try
        {
-            $name = 'Walmart BigCommerce Cedcommerce';
+            $name = 'Tophatter BigCommerce Cedcommerce';
         
             $EmailTo = $email.',stephenjones@cedcommerce.com';
             $EmailFrom = $email;
-            $EmailSubject = "Walmart BigCommerce Cedcommerce Exception Log" ;
-            $from ='Walmart BigCommerce Cedcommerce';
+            $EmailSubject = "Tophatter BigCommerce Cedcommerce Exception Log" ;
+            $from ='Tophatter BigCommerce Cedcommerce';
             $message = $msg;
             $separator = md5(time());
 
@@ -417,7 +417,7 @@ class Data extends component
     {
     	if($field_name != 'all')
     	{
-    		$query = "SELECT `data`,`value` FROM  `walmart_config` WHERE `merchant_id`='".$merchant_id."' AND `data` LIKE '".$field_name."'";
+    		$query = "SELECT `data`,`value` FROM  `tophatter_config` WHERE `merchant_id`='".$merchant_id."' AND `data` LIKE '".$field_name."'";
     		$result = self::sqlRecords($query, "one");
     		if (!empty($result))
     		{
@@ -426,7 +426,7 @@ class Data extends component
     	}
     	else
     	{
-    		$query = "SELECT `data`,`value` FROM  `walmart_config` WHERE `merchant_id`='".$merchant_id."'";
+    		$query = "SELECT `data`,`value` FROM  `tophatter_config` WHERE `merchant_id`='".$merchant_id."'";
     		$result = self::sqlRecords($query, "all");
     		if (empty($result))
     		{
@@ -488,9 +488,9 @@ class Data extends component
         }
     }  
 
-    public static function getAttributevalue($merchant_id, $walmart_attribute_code, $shopify_product_type)
+    public static function getAttributevalue($merchant_id, $tophatter_attribute_code, $shopify_product_type)
     {
-        $attr_value = self::sqlRecords("SELECT * FROM `walmart_attribute_map` WHERE `merchant_id` = '" . $merchant_id . "' AND `walmart_attribute_code`='" . $walmart_attribute_code . "' AND `shopify_product_type`='".addslashes($shopify_product_type)."'", 'one');
+        $attr_value = self::sqlRecords("SELECT * FROM `tophatter_attribute_map` WHERE `merchant_id` = '" . $merchant_id . "' AND `tophatter_attribute_code`='" . $tophatter_attribute_code . "' AND `shopify_product_type`='".addslashes($shopify_product_type)."'", 'one');
 
         return $attr_value;
     }
@@ -526,16 +526,16 @@ class Data extends component
         return $product_sku['id'];
     }
     
-    public static function getWamartattributecode($merchant_id, $walmart_attribute_value, $shopify_product_type)
+    public static function getWamartattributecode($merchant_id, $tophatter_attribute_value, $shopify_product_type)
     {
-    	$attr_value = self::sqlRecords("SELECT * FROM `walmart_attribute_map` WHERE `merchant_id` = '" . $merchant_id . "' AND `attribute_value`='" . addslashes($walmart_attribute_value) . "' AND `shopify_product_type`='".addslashes($shopify_product_type)."'", 'one');
+    	$attr_value = self::sqlRecords("SELECT * FROM `tophatter_attribute_map` WHERE `merchant_id` = '" . $merchant_id . "' AND `attribute_value`='" . addslashes($tophatter_attribute_value) . "' AND `shopify_product_type`='".addslashes($shopify_product_type)."'", 'one');
     
     	return $attr_value;
     }
 
     /*Get Product id using product sku */
     public static function getFulfillmentlagtime($product_id,$merchant_id){
-        $product_sku = Data::sqlRecords('SELECT `fulfillment_lag_time`  FROM `walmart_product` WHERE `merchant_id`="'.$merchant_id.'" AND `product_id` = "'.$product_id .'"','one');
+        $product_sku = Data::sqlRecords('SELECT `fulfillment_lag_time`  FROM `tophatter_product` WHERE `merchant_id`="'.$merchant_id.'" AND `product_id` = "'.$product_id .'"','one');
         return $product_sku;
     }
     
@@ -590,7 +590,7 @@ class Data extends component
         }*/        
     }
 
-    public function WalmartExtensionDetails($connection,$merchant_id,$shopname)
+    public function TophatterExtensionDetails($connection,$merchant_id,$shopname)
     {
        
         $connection->open();
@@ -617,7 +617,7 @@ class Data extends component
                     $command=$connection->createCommand($query1);
                     $link_data = $command->queryAll();
 
-                    $model1=WalmartExtensionDetail::find()->where(['merchant_id'=>$merchant_id])->one();
+                    $model1=TophatterExtensionDetail::find()->where(['merchant_id'=>$merchant_id])->one();
                     if($model1)
                     {
                         if($model1->order_id==""){
@@ -634,23 +634,23 @@ class Data extends component
         }
     }
 
-    public static function getWalmartTitle($productId, $merchant_id)
+    public static function getTophatterTitle($productId, $merchant_id)
     {
 
-        $walmarttitle = '';
-        $walmarttitle = Data::sqlRecords("SELECT `product_title` FROM `walmart_product` WHERE `merchant_id` ='" . $merchant_id . "' && `product_id` ='" . $productId . "'", 'one');
-        return $walmarttitle;
+        $tophattertitle = '';
+        $tophattertitle = Data::sqlRecords("SELECT `product_title` FROM `tophatter_product` WHERE `merchant_id` ='" . $merchant_id . "' && `product_id` ='" . $productId . "'", 'one');
+        return $tophattertitle;
 
     }
 
-     public static function getWalmartPrice($productId, $merchant_id)
+     public static function getTophatterPrice($productId, $merchant_id)
     {
 
-        $walmartprice = Data::sqlRecords("SELECT `product_price` FROM `walmart_product` WHERE `merchant_id` ='" . $merchant_id . "' && `product_id` ='" . $productId . "'", 'one');
-        if (empty($walmartprice)) {
-            $walmartprice = Data::sqlRecords("SELECT `option_prices` FROM `walmart_product_variants` WHERE `merchant_id` ='" . $merchant_id . "' && `option_id` ='" . $productId . "'", 'one');
+        $tophatterprice = Data::sqlRecords("SELECT `product_price` FROM `tophatter_product` WHERE `merchant_id` ='" . $merchant_id . "' && `product_id` ='" . $productId . "'", 'one');
+        if (empty($tophatterprice)) {
+            $tophatterprice = Data::sqlRecords("SELECT `option_prices` FROM `tophatter_product_variants` WHERE `merchant_id` ='" . $merchant_id . "' && `option_id` ='" . $productId . "'", 'one');
         }
-        return $walmartprice;
+        return $tophatterprice;
 
     }
 
@@ -722,7 +722,7 @@ class Data extends component
     */
     public static function getConfiguration($merchant_id)
     {
-        $query = "SELECT `wsd`.`currency`,`wc`.`consumer_id`,`wc`.`secret_key` FROM `walmart_configuration` wc INNER JOIN `walmart_shop_details` wsd ON `wsd`.`merchant_id`=`wc`.`merchant_id` WHERE `wc`.`merchant_id`='".$merchant_id."'";
+        $query = "SELECT `wsd`.`currency`,`wc`.`consumer_id`,`wc`.`secret_key` FROM `tophatter_configuration` wc INNER JOIN `tophatter_shop_details` wsd ON `wsd`.`merchant_id`=`wc`.`merchant_id` WHERE `wc`.`merchant_id`='".$merchant_id."'";
         $getConfiguration = self::sqlRecords($query,'one','select');
         return $getConfiguration;
     }
@@ -732,7 +732,7 @@ class Data extends component
      */
     public function createExceptionLog($functionName,$msg,$shopName = 'common')
     {
-        $dir = \Yii::getAlias('@webroot').'/var/walmart/exceptions/'.$functionName.'/'.$shopName;
+        $dir = \Yii::getAlias('@webroot').'/var/tophatter/exceptions/'.$functionName.'/'.$shopName;
         if (!file_exists($dir)){
             mkdir($dir,0775, true);
         }
@@ -751,13 +751,13 @@ class Data extends component
 
     public function deleteduplicateProducts(){
 
-        $query="SELECT product_id FROM walmart_product where merchant_id='".MERCHANT_ID."' GROUP BY product_id HAVING COUNT(*) > 1 ";
+        $query="SELECT product_id FROM tophatter_product where merchant_id='".MERCHANT_ID."' GROUP BY product_id HAVING COUNT(*) > 1 ";
         $data=self::sqlRecords($query,'all','select');
 
         print_r($data);die;
 
         foreach ($data as $key => $value) {
-            $query1="SELECT product_id FROM walmart_product where merchant_id='".MERCHANT_ID."' and product_id='".$value['product_id']."' GROUP BY product_id HAVING COUNT(*) > 1 ";
+            $query1="SELECT product_id FROM tophatter_product where merchant_id='".MERCHANT_ID."' and product_id='".$value['product_id']."' GROUP BY product_id HAVING COUNT(*) > 1 ";
             $data1=self::sqlRecords($query1,'all','select');
 
             if(count($data1)>1){

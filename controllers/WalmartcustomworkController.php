@@ -5,27 +5,27 @@
  * Date: 19/4/17
  * Time: 11:36 AM
  */
-namespace frontend\modules\walmart\controllers;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\WalmartProduct;
-use frontend\modules\walmart\components\Walmartapi;
-use frontend\modules\walmart\components\WalmartRepricing;
-use frontend\modules\walmart\components\BigcommerceClientHelper;
+namespace frontend\modules\tophatter\controllers;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\TophatterProduct;
+use frontend\modules\tophatter\components\Tophatterapi;
+use frontend\modules\tophatter\components\TophatterRepricing;
+use frontend\modules\tophatter\components\BigcommerceClientHelper;
 use Yii;
 
-class WalmartcustomworkController extends WalmartmainController
+class TophattercustomworkController extends TophattermainController
 {
     public function actionGetproductreport()
     {
-        $reprice = new WalmartRepricing(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
-        $reprice->fetchWalmartProductReport();
+        $reprice = new TophatterRepricing(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
+        $reprice->fetchTophatterProductReport();
 
     }
 
     public function actionGetbuyboxreport()
     {
-        $reprice = new WalmartRepricing(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
-        $reprice->fetchWalmartBuyboxReport(null, true);
+        $reprice = new TophatterRepricing(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
+        $reprice->fetchTophatterBuyboxReport(null, true);
     }
 
     public function actionTestupc()
@@ -54,7 +54,7 @@ class WalmartcustomworkController extends WalmartmainController
             $row = 0;
 
             if (($handle = fopen($file_path, "r"))) {
-                $allSku = WalmartProduct::getAllProductSku($merchant_id);
+                $allSku = TophatterProduct::getAllProductSku($merchant_id);
                 $row = 0;
 
                 while (($data = fgetcsv($handle, 90000, ",")) !== FALSE) {
@@ -114,8 +114,8 @@ class WalmartcustomworkController extends WalmartmainController
     {
         if(isset($_GET['feed']) && !empty($_GET['feed'])){
             print_r($_GET['feed']);
-            $walmartapi = new Walmartapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
-            $result = $walmartapi->getFeeds($_GET['feed']);
+            $tophatterapi = new Tophatterapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
+            $result = $tophatterapi->getFeeds($_GET['feed']);
             var_dump($result);
             die('success');
 
@@ -135,8 +135,8 @@ class WalmartcustomworkController extends WalmartmainController
     public function actionGetorderdetails()
     {
         if($_GET['purchaseorderid']){
-            $this->walmartHelper = new Walmartapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
-            $orderdata = $this->walmartHelper->getOrder($_GET['purchaseorderid']);
+            $this->tophatterHelper = new Tophatterapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
+            $orderdata = $this->tophatterHelper->getOrder($_GET['purchaseorderid']);
             $shipdata = json_decode($orderdata,true);
             print_r($shipdata);die;
         }
@@ -150,7 +150,7 @@ class WalmartcustomworkController extends WalmartmainController
             $limit = 50;
 
             if (!empty($id)) {
-                $wal = new Walmartapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
+                $wal = new Tophatterapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
                 $feed_data = $wal->viewFeed($id, $limit);
 
                 print_r($feed_data);
@@ -159,14 +159,14 @@ class WalmartcustomworkController extends WalmartmainController
         }
     }
 
-    public function actionGetwalmartproductstatus()
+    public function actionGettophatterproductstatus()
     {
         if (isset($_GET['sku']) && !empty($_GET['sku'])) {
             $sku = $_GET['sku'];
             $limit = 50;
 
             if (!empty($sku)) {
-                $wal = new Walmartapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
+                $wal = new Tophatterapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
                 $feed_data = $wal->getItem($sku);
 
 
@@ -258,7 +258,7 @@ class WalmartcustomworkController extends WalmartmainController
         foreach ($webhook_topics as $key => $value) 
         {
             if($value=="isinstall"){
-                $url=$baseurl."walmart/walmart-webhook/";
+                $url=$baseurl."tophatter/tophatter-webhook/";
                 $response=$this->bigcom->call1("POST","hooks",["destination"=>$url.$value,"scope"=>$key]);     
             }
             else
@@ -279,7 +279,7 @@ class WalmartcustomworkController extends WalmartmainController
     {
         $merchant_id=$shopname = \Yii::$app->user->identity->id;
        
-        $bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+        $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
         
         if($_GET['order_id'])
         {
@@ -297,7 +297,7 @@ class WalmartcustomworkController extends WalmartmainController
         $session = Yii::$app->session;
         $session->open();
         
-        $bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+        $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
         $hooks = $bigcom->call1('GET','hooks');
         print_r($hooks);die(); 
             
@@ -310,7 +310,7 @@ class WalmartcustomworkController extends WalmartmainController
         $session = Yii::$app->session;
         $session->open();
         
-        $bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+        $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
         $hooks = $bigcom->call1('GET','hooks');
         foreach ($hooks as $hook) {
             $delete = $bigcom->call1('DELETE','hooks/'.$hook['id']);
@@ -324,7 +324,7 @@ class WalmartcustomworkController extends WalmartmainController
         $session = Yii::$app->session;
         $session->open();
         
-        $bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+        $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
         $shopdata = $bigcom->call1('GET','store');
         print_r($shopdata);die("d");
     }
@@ -332,7 +332,7 @@ class WalmartcustomworkController extends WalmartmainController
     public function actionSynccategory(){
 
         $c=0;
-        $query = "select product_type from walmart_product where merchant_id='" .MERCHANT_ID. "' ";
+        $query = "select product_type from tophatter_product where merchant_id='" .MERCHANT_ID. "' ";
         $product = Data::sqlRecords($query, 'all', 'select');
 
         foreach ($product as $k=> $pro){
@@ -342,7 +342,7 @@ class WalmartcustomworkController extends WalmartmainController
 
 
 
-        $query1 = "select product_type from walmart_category_map where merchant_id='" .MERCHANT_ID. "' ";
+        $query1 = "select product_type from tophatter_category_map where merchant_id='" .MERCHANT_ID. "' ";
         $product1 = Data::sqlRecords($query1, 'all', 'select');
 
         foreach ($product1 as $k=> $pro1){
@@ -353,13 +353,13 @@ class WalmartcustomworkController extends WalmartmainController
         foreach ($wcm as $p) {
             if (!in_array($p, $wp)) {
 
-                $query1 = "delete from walmart_category_map where merchant_id='" .MERCHANT_ID. "' and product_type='".addslashes($p)."'";
+                $query1 = "delete from tophatter_category_map where merchant_id='" .MERCHANT_ID. "' and product_type='".addslashes($p)."'";
                 $product1 = Data::sqlRecords($query1, 'all', 'delete');
 
             }
         }
 
-        Yii::$app->session->setFlash('success', "Walmart Categories are synced successfully");
+        Yii::$app->session->setFlash('success', "Tophatter Categories are synced successfully");
 
         return $this->redirect(['categorymap/index']);
 

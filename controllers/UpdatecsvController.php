@@ -5,23 +5,23 @@
  * Date: 28/3/17
  * Time: 5:07 PM
  */
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use yii\base\Exception;
 use yii\web\Response;
 use yii\web\UploadedFile;
-use frontend\modules\walmart\models\JetProduct;
-use frontend\modules\walmart\models\JetProductVariants;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\Walmartapi;
-use frontend\modules\walmart\components\Jetproductinfo;
-use frontend\modules\walmart\components\WalmartProduct;
-use frontend\modules\walmart\models\WalmartProduct as WalmartProductModel;
+use frontend\modules\tophatter\models\JetProduct;
+use frontend\modules\tophatter\models\JetProductVariants;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\Tophatterapi;
+use frontend\modules\tophatter\components\Jetproductinfo;
+use frontend\modules\tophatter\components\TophatterProduct;
+use frontend\modules\tophatter\models\TophatterProduct as TophatterProductModel;
 
-class UpdatecsvController extends WalmartmainController
+class UpdatecsvController extends TophattermainController
 {
-    protected $walmartHelper;
+    protected $tophatterHelper;
 
     public function actionIndex()
     {
@@ -56,7 +56,7 @@ class UpdatecsvController extends WalmartmainController
 
         $productdata = array();
         $i = 0;
-        $model = Data::sqlRecords("SELECT * FROM  `jet_product` INNER JOIN `walmart_product` ON `jet_product`.`bigproduct_id`=`walmart_product`.`product_id` WHERE `walmart_product`.`merchant_id`='".$merchant_id."' and `jet_product`.`merchant_id`='".$merchant_id."' and `walmart_product`.`status`='".$postData['export']."'","all","select");
+        $model = Data::sqlRecords("SELECT * FROM  `jet_product` INNER JOIN `tophatter_product` ON `jet_product`.`bigproduct_id`=`tophatter_product`.`product_id` WHERE `tophatter_product`.`merchant_id`='".$merchant_id."' and `jet_product`.`merchant_id`='".$merchant_id."' and `tophatter_product`.`status`='".$postData['export']."'","all","select");
 
         foreach ($model as $value) {
             
@@ -360,7 +360,7 @@ class UpdatecsvController extends WalmartmainController
                              $model = $connection->createCommand($query)->execute();
 
                              
-                             $query="UPDATE `walmart_product` SET product_price='".$value['price']."' WHERE product_id='".$product['bigproduct_id']."' AND merchant_id=".$merchant_id;  
+                             $query="UPDATE `tophatter_product` SET product_price='".$value['price']."' WHERE product_id='".$product['bigproduct_id']."' AND merchant_id=".$merchant_id;  
                              $model = $connection->createCommand($query)->execute();
 
                              $c++;
@@ -793,7 +793,7 @@ die("dsfds");
         }
         $ids = implode(',', $id);
         try {
-            $query = "UPDATE `walmart_product` SET 
+            $query = "UPDATE `tophatter_product` SET 
                                     `product_title` = CASE `id` 
                                    " . $when_title . "
                                 END, 
@@ -880,7 +880,7 @@ die("dsfds");
         }
         $ids = implode(',', $id);
         try {
-            $query = "UPDATE `walmart_product` SET 
+            $query = "UPDATE `tophatter_product` SET 
                                     `product_title` = CASE `id` 
                                    " . $when_title . "
                                 END, 
@@ -953,12 +953,12 @@ die("dsfds");
         $productdata = array();
         $i = 0;
 
-        $model = Data::sqlRecords("SELECT * FROM  `jet_product` INNER JOIN `walmart_product` ON `jet_product`.`bigproduct_id`=`walmart_product`.`product_id` WHERE `walmart_product`.`merchant_id`='".$merchant_id."' AND `walmart_product`.`status` = 'PUBLISHED'", 'all');
+        $model = Data::sqlRecords("SELECT * FROM  `jet_product` INNER JOIN `tophatter_product` ON `jet_product`.`bigproduct_id`=`tophatter_product`.`product_id` WHERE `tophatter_product`.`merchant_id`='".$merchant_id."' AND `tophatter_product`.`status` = 'PUBLISHED'", 'all');
 
         //print_r($model);die();
         if (empty($model)) {
 
-            Yii::$app->session->setFlash('error', "Your Products are not PUBLISHED on walmart....");
+            Yii::$app->session->setFlash('error', "Your Products are not PUBLISHED on tophatter....");
         
             return $this->redirect(['index-retire']);
         }
@@ -975,7 +975,7 @@ die("dsfds");
                 $optionResult = [];
                 /*$query = "SELECT option_id,option_title,option_sku,option_qty,option_unique_id,option_price,asin,option_mpn FROM `jet_product_variants` WHERE product_id='" . $value['product_id'] . "' order by option_sku='" . addslashes($value['sku']) . "' desc";
                 $optionResult = Data::sqlRecords($query);*/
-                $optionResult = Data::sqlRecords("SELECT * FROM `jet_product_variants` INNER JOIN `walmart_product_variants`  ON `jet_product_variants`.`option_id`=`walmart_product_variants`.`option_id` WHERE `walmart_product_variants`.`merchant_id`='" . $merchant_id . "' AND `walmart_product_variants`.`product_id`='" . $value['product_id'] . "'", 'all');
+                $optionResult = Data::sqlRecords("SELECT * FROM `jet_product_variants` INNER JOIN `tophatter_product_variants`  ON `jet_product_variants`.`option_id`=`tophatter_product_variants`.`option_id` WHERE `tophatter_product_variants`.`merchant_id`='" . $merchant_id . "' AND `tophatter_product_variants`.`product_id`='" . $value['product_id'] . "'", 'all');
 
 
                  //print_r($value['sku']);die();
@@ -1042,7 +1042,7 @@ die("dsfds");
             $selectedProducts = array();
             $import_errors = array();
             if (($handle = fopen($target, "r"))) {
-                $status = WalmartProductModel::PRODUCT_STATUS_UPLOADED;
+                $status = TophatterProductModel::PRODUCT_STATUS_UPLOADED;
                 /*$allpublishedSku = WalmartProduct::getAllProductSku($merchant_id);*/
                 /*$allpublishedSku = WalmartProduct::getAllProductSku($merchant_id,$status);*/
 
@@ -1123,7 +1123,7 @@ die("dsfds");
         $success = [];
         foreach ($skus['products'] as $sku) {
 
-            $retireProduct = new Walmartapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
+            $retireProduct = new Tophatterapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
             $feed_data = $retireProduct->retireProduct($sku['sku']);
 
 
@@ -1131,7 +1131,7 @@ die("dsfds");
                 $success[] = '<b>' . $feed_data['ItemRetireResponse']['sku'] . ' : </b>' . $feed_data['ItemRetireResponse']['message'];
             } elseif (isset($feed_data['errors']['error'])) {
                 if (isset($feed_data['errors']['error']['code']) && $feed_data['errors']['error']['code'] == "CONTENT_NOT_FOUND.GMP_ITEM_INGESTOR_API" && $feed_data['errors']['error']['field'] == "sku") {
-                    $errors[] = $sku['sku'] . ' : Product not Uploaded on Walmart.';
+                    $errors[] = $sku['sku'] . ' : Product not Uploaded on Tophatter.';
                 } else {
                     $errors[] = $sku['sku'] . ' : ' . $feed_data['errors']['error']['description'];
                 }

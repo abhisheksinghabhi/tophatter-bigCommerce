@@ -1,33 +1,33 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
-use frontend\modules\walmart\models\WalmartProduct;
-use frontend\modules\walmart\models\WalmartProductSearch;
+use frontend\modules\tophatter\models\TophatterProduct;
+use frontend\modules\tophatter\models\TophatterProductSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use frontend\modules\walmart\components\Jetappdetails;
-use frontend\modules\walmart\components\Jetproductinfo;
-use frontend\modules\walmart\models\JetProduct;
-use frontend\modules\walmart\components\Walmartapi;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\BigcommerceClientHelper;
-use frontend\modules\walmart\models\WalmartProductVariants;
-use frontend\modules\walmart\models\JetProductVariants;
-use frontend\modules\walmart\components\WalmartCategory;
-use frontend\modules\walmart\components\Bigcomapi;
-use frontend\modules\walmart\components\WalmartPromoStatus;
-use frontend\modules\walmart\models\WalmartExtensionDetail;
+use frontend\modules\tophatter\components\Jetappdetails;
+use frontend\modules\tophatter\components\Jetproductinfo;
+use frontend\modules\tophatter\models\JetProduct;
+use frontend\modules\tophatter\components\Tophatterapi;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\BigcommerceClientHelper;
+use frontend\modules\tophatter\models\TophatterProductVariants;
+use frontend\modules\tophatter\models\JetProductVariants;
+use frontend\modules\tophatter\components\TophatterCategory;
+use frontend\modules\tophatter\components\Bigcomapi;
+use frontend\modules\tophatter\components\TophatterPromoStatus;
+use frontend\modules\tophatter\models\TophatterExtensionDetail;
 use yii\web\UploadedFile;
-use frontend\modules\walmart\components\Appinstall;
+use frontend\modules\tophatter\components\Appinstall;
 /**
  * WalmartproductController implements the CRUD actions for WalmartProduct model.
  */
-class WalmartproductController extends WalmartmainController
+class TophatterproductController extends TophattermainController
 {
     protected $connection;
-    protected $walmartHelper;
+    protected $tophatterHelper;
     protected $bigcom;
     public function behaviors()
     {
@@ -45,7 +45,7 @@ class WalmartproductController extends WalmartmainController
     {
         if(parent::beforeAction($action))
         {
-            $this->walmartHelper = new Walmartapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
+            $this->tophatterHelper = new Tophatterapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
             return true;
         }
     }
@@ -64,10 +64,10 @@ class WalmartproductController extends WalmartmainController
             $merchant_id=MERCHANT_ID;
             $notAvaialble=false;
             $this->actionDuplicateproductsdelete();
-            $searchModel = new WalmartProductSearch();
+            $searchModel = new TophatterProductSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             $proCount = Data::sqlRecords("SELECT count(*) as 'pro_count' FROM `jet_product` where merchant_id='".$merchant_id."' LIMIT 0,1","one","select");
-            $walCount = Data::sqlRecords("SELECT count(*) as 'wal_count' FROM `walmart_product` where merchant_id='".$merchant_id."' LIMIT 0,1","one","select");
+            $walCount = Data::sqlRecords("SELECT count(*) as 'wal_count' FROM `tophatter_product` where merchant_id='".$merchant_id."' LIMIT 0,1","one","select");
             if(isset($proCount['pro_count'],$walCount['wal_count']) && $proCount['pro_count']>$walCount['wal_count'])
             {
                 $notAvaialble=true;
@@ -109,7 +109,7 @@ class WalmartproductController extends WalmartmainController
         if (Yii::$app->user->isGuest) {
             return \Yii::$app->getResponse()->redirect(\Yii::$app->getUser()->loginUrl);
         }
-        $model = new WalmartProduct();
+        $model = new TophatterProduct();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -161,7 +161,7 @@ class WalmartproductController extends WalmartmainController
      */
     protected function findModel($id)
     {
-        if (($model = WalmartProduct::findOne($id)) !== null) {
+        if (($model = TophatterProduct::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -173,7 +173,7 @@ class WalmartproductController extends WalmartmainController
      * configure walmart table
      */  
     
-    public function actionImportwalmart()
+    public function actionImporttophatter()
     {
         if (Yii::$app->user->isGuest) {
             return \Yii::$app->getResponse()->redirect(\Yii::$app->getUser()->loginUrl);
@@ -181,10 +181,10 @@ class WalmartproductController extends WalmartmainController
         $model=JetProduct::find()->select('id,type')->where(['merchant_id'=>MERCHANT_ID])->all();
         foreach ($model as $value)
         {
-            $walmartModel=WalmartProduct::find()->where(['product_id'=>$value['id']])->one();
-            if(!$walmartModel)
+            $tophatterModel=TophatterProduct::find()->where(['product_id'=>$value['id']])->one();
+            if(!$tophatterModel)
             {
-                $modelW=new WalmartProduct();
+                $modelW=new TophatterProduct();
                 $modelW->product_id=$value['id'];
                 $modelW->merchant_id=MERCHANT_ID;
                 $modelW->save(false);
@@ -194,10 +194,10 @@ class WalmartproductController extends WalmartmainController
                 $modelVar=JetProductVariants::find()->select('option_id')->where(['product_id'=>$value['id']])->all();
                 foreach ($modelVar as $val)
                 {
-                    $walmartModelVar=WalmartProductVariants::find()->where(['option_id'=>$val['option_id']])->one();
-                    if(!$walmartModelVar)
+                    $tophatterModelVar=TophatterProductVariants::find()->where(['option_id'=>$val['option_id']])->one();
+                    if(!$tophatterModelVar)
                     {
-                        $modelvar=new WalmartProductVariants();
+                        $modelvar=new TophatterProductVariants();
                         $modelvar->option_id=$val['option_id'];
                         $modelvar->merchant_id=MERCHANT_ID;
                         $modelvar->save(false);
@@ -218,12 +218,12 @@ class WalmartproductController extends WalmartmainController
 	    	
 	    	//echo $id;
 	    	$merchant_id=trim(Yii::$app->request->post('merchant_id'));
-	    	$model = WalmartProduct::find()->joinWith('jet_product')->where(['walmart_product.id'=>$id])->one();
+	    	$model = TophatterProduct::find()->joinWith('jet_product')->where(['tophatter_product.id'=>$id])->one();
 	    	//print_r($model);die("dfds");
 
 	    	$Category=[];
 	    	$category_path="";
-	    	$query="SELECT category_id,parent_id,attributes,attribute_values,walmart_attributes,walmart_attribute_values FROM `walmart_category` WHERE category_id='".$model->category."' LIMIT 1";
+	    	$query="SELECT category_id,parent_id,attributes,attribute_values,tophatter_attributes,tophatter_attribute_values FROM `tophatter_category` WHERE category_id='".$model->category."' LIMIT 1";
 	    	$Category = Data::sqlRecords($query,"one","select");
 	    	$parent_id="";
 	    	if(is_array($Category) && count($Category)>0)
@@ -251,7 +251,7 @@ class WalmartproductController extends WalmartmainController
 	    	$common_required_attributes = array();
 	    	//if(is_array($attributes) && count($attributes)>0)
 	    	//{
-	    	$result = WalmartCategory::getCategoryVariantAttributes($Category['category_id']);
+	    	$result = TophatterCategory::getCategoryVariantAttributes($Category['category_id']);
 	    	//print_r($result);die;
 	    	if(isset($result['common_attributes'])) {
 	    		$common_attributes = $result['common_attributes'];
@@ -354,7 +354,7 @@ class WalmartproductController extends WalmartmainController
 	    
 	    	//$optional_attr=explode(',',$Category['walmart_attributes']);
 	    	$requiredAttrValues=json_decode($Category['attribute_values'],true)?:[];
-	    	$optionalAttrValues=json_decode($Category['walmart_attribute_values'],true)?:[];
+	    	$optionalAttrValues=json_decode($Category['tophatter_attribute_values'],true)?:[];
 	    
 	    	/* code by himanshu start */
 	    	if(count($requiredAttrValues))
@@ -410,7 +410,7 @@ class WalmartproductController extends WalmartmainController
             return \Yii::$app->getResponse()->redirect(\Yii::$app->getUser()->loginUrl);
         }
         $connection = Yii::$app->getDb();
-        $model = WalmartProduct::find()->joinWith('jet_product')->where(['walmart_product.product_id'=>$id])->andWhere(['walmart_product.merchant_id'=>MERCHANT_ID])->one();
+        $model = TophatterProduct::find()->joinWith('jet_product')->where(['tophatter_product.product_id'=>$id])->andWhere(['tophatter_product.merchant_id'=>MERCHANT_ID])->one();
         $data=array();
         $sku=$model->jet_product->sku;
         $merchant_id = $model->merchant_id;
@@ -418,7 +418,7 @@ class WalmartproductController extends WalmartmainController
         
          if($_POST['JetProduct']['product_description']){
 
-            $sql="UPDATE `walmart_product` SET short_description='".addslashes($_POST['JetProduct']['product_description'])."' where merchant_id='".$merchant_id."' and product_id='".$id."'";
+            $sql="UPDATE `tophatter_product` SET short_description='".addslashes($_POST['JetProduct']['product_description'])."' where merchant_id='".$merchant_id."' and product_id='".$id."'";
             $model1 = $connection->createCommand($sql)->execute();
 
             $return_status['success']="Product information has been saved successfully..";
@@ -439,7 +439,7 @@ class WalmartproductController extends WalmartmainController
             if ($length > $maxLength) {
                 return json_encode(['error' => true, 'message' => 'Description Should be less than 4000 characters.']);
             } else {
-                $query = "UPDATE `walmart_product` SET `long_description`='" . addslashes($description) . "' WHERE `product_id`='" . $product_id . "'";
+                $query = "UPDATE `tophatter_product` SET `long_description`='" . addslashes($description) . "' WHERE `product_id`='" . $product_id . "'";
                 Data::sqlRecords($query, null, 'update');
 
                 return json_encode(['success' => true, 'message' => 'Description saved successfully.']);
@@ -460,7 +460,7 @@ class WalmartproductController extends WalmartmainController
             return \Yii::$app->getResponse()->redirect(Data::getUrl('site/login'));
         }
         $connection = Yii::$app->getDb();
-        $model = WalmartProduct::find()->joinWith('jet_product')->where(['walmart_product.product_id'=>$id])->andWhere(['walmart_product.merchant_id'=>MERCHANT_ID])->one();
+        $model = TophatterProduct::find()->joinWith('jet_product')->where(['tophatter_product.product_id'=>$id])->andWhere(['top_product.merchant_id'=>MERCHANT_ID])->one();
         $data = array();
         $sku = $model->jet_product->sku;
         $merchant_id = $model->merchant_id;
@@ -553,16 +553,16 @@ class WalmartproductController extends WalmartmainController
 
             if (Yii::$app->request->post('product-type') == 'variants') {
 
-                $walmart_attr = array();
+                $tophatter_attr = array();
                 $options = array();
                 $new_options = array();
                 $pro_attr = array();
-                $walmart_attributes = array();
+                $tophatter_attributes = array();
                 $attributes_of_jet = array();
                 $other_vari_opt = array();
                 $common_attr = "";
                 if (Yii::$app->request->post('jet_attributes')) {
-                    $walmart_attributes = Yii::$app->request->post('jet_attributes');
+                    $tophatter_attributes = Yii::$app->request->post('jet_attributes');
                 }
 
                 if (Yii::$app->request->post('attributes_of_jet')) {
@@ -690,11 +690,11 @@ class WalmartproductController extends WalmartmainController
                     }
                     /*-------------check asin and upc for variant-simple here ends----------*/
                 }
-                if ($walmart_attributes) {
-                    foreach ($walmart_attributes as $attr_id => $value_arr) {
+                if ($tophatter_attributes) {
+                    foreach ($tophatter_attributes as $attr_id => $value_arr) {
                         $flag = false;
                         if (is_array($value_arr) && count($value_arr) > 0) {
-                            $walmart_attr_id = "";
+                            $tophatter_attr_id = "";
                             foreach ($value_arr as $val_key => $chd_arr) {
                                 if ($val_key == "jet_attr_id" && trim($chd_arr) == "") {
                                     $flag = true;
@@ -714,14 +714,14 @@ class WalmartproductController extends WalmartmainController
                                         $str_id_arr = array();
                                         $str_id = trim($chd_arr);
                                         $str_id_arr = explode(',', $str_id);
-                                        $walmart_attr_id = trim($str_id_arr[0]);
+                                        $tophatter_attr_id = trim($str_id_arr[0]);
                                     } elseif ($val_key == "jet_attr_name") {
                                         $unit = "";
                                         $s_unit = [];
-                                        if (count($attributes_of_jet) > 0 && array_key_exists($walmart_attr_id, $attributes_of_jet)) {
-                                            $unit = $attributes_of_jet[$walmart_attr_id]['unit'];
+                                        if (count($attributes_of_jet) > 0 && array_key_exists($tophatter_attr_id, $attributes_of_jet)) {
+                                            $unit = $attributes_of_jet[$tophatter_attr_id]['unit'];
                                         }
-                                        $s_unit[] = trim($walmart_attr_id);
+                                        $s_unit[] = trim($tophatter_attr_id);
                                         if ($unit != "") {
                                             $s_unit[] = trim($unit);
                                         }
@@ -729,7 +729,7 @@ class WalmartproductController extends WalmartmainController
                                         $pro_attr[trim($chd_arr)] = $s_unit;
                                     } elseif (is_array($chd_arr)) {
                                         //$options[$attr_id]['option_id'][]=trim($val_key);
-                                        $options[trim($val_key)][$walmart_attr_id] = trim($chd_arr['value']);
+                                        $options[trim($val_key)][$tophatter_attr_id] = trim($chd_arr['value']);
                                         $new_options[trim($val_key)][trim($attr_id)] = trim($chd_arr['value']);
                                     }
 
@@ -743,13 +743,13 @@ class WalmartproductController extends WalmartmainController
 
                     }
                 }
-                $walmart_attr = $options;
+                $tophatter_attr = $options;
                 //$connection = Yii::$app->getDb();
                 $product_id = '';
                 $product_id = trim($id);
-                if (is_array($walmart_attr) && count($walmart_attr) > 0) {
+                if (is_array($tophatter_attr) && count($tophatter_attr) > 0) {
                     $opt_count = 0;
-                    foreach ($walmart_attr as $opt_key => $option_value) {
+                    foreach ($tophatter_attr as $opt_key => $option_value) {
                         $option_id = "";
                         $option_id = trim($opt_key);
                         $options_save = "";
@@ -795,27 +795,27 @@ class WalmartproductController extends WalmartmainController
                             if (!empty($opt_upc)) {
                                 $sql = "UPDATE `jet_product_variants` SET
                                     option_unique_id='" . trim($opt_upc) . "',
-                                    option_qty ='" . $other_vari_opt[$option_id]['walmart_product_inventory'] . "'
+                                    option_qty ='" . $other_vari_opt[$option_id]['tophatter_product_inventory'] . "'
                                     where option_id='" . $option_id . "'";
                             } else {
                                 $sql = "UPDATE `jet_product_variants` SET
-                                    option_qty ='" . $other_vari_opt[$option_id]['walmart_product_inventory'] . "'
+                                    option_qty ='" . $other_vari_opt[$option_id]['tophatter_product_inventory'] . "'
                                     where option_id='" . $option_id . "'";
                             }
 
                             Data::sqlRecords($sql, null, "update");
                             //$connection->createCommand($sql)->execute();
                             $model3 = "";
-                            $query = "SELECT `option_id` from `walmart_product_variants` WHERE option_id='" . $option_id . "' LIMIT 1";
+                            $query = "SELECT `option_id` from `tophatter_product_variants` WHERE option_id='" . $option_id . "' LIMIT 1";
                             $model3 = Data::sqlRecords($query, "one", "select");
                             if ($model3 !== "") {
                                 $sql = "";
-                                $sql = "UPDATE `walmart_product_variants` SET
+                                $sql = "UPDATE `tophatter_product_variants` SET
                                     new_variant_option_1='" . addslashes($new_variant_option_1) . "',
                                     new_variant_option_2='" . addslashes($new_variant_option_2) . "',
                                     new_variant_option_3='" . addslashes($new_variant_option_3) . "',
-                                    walmart_option_attributes='" . addslashes($options_save) . "' ,
-                                    option_prices =" . $other_vari_opt[$option_id]['walmart_product_price'] . "
+                                    tophatter_option_attributes='" . addslashes($options_save) . "' ,
+                                    option_prices =" . $other_vari_opt[$option_id]['tophatter_product_price'] . "
                                     where option_id='" . $option_id . "'";
                                 Data::sqlRecords($sql, null, "update");
                             }
@@ -823,9 +823,9 @@ class WalmartproductController extends WalmartmainController
 
                         if ($option_id == $variant_id) {
                             $model->jet_product->upc = trim($opt_upc);
-                            $model->jet_product->qty = trim($other_vari_opt[$option_id]['walmart_product_inventory']);
+                            $model->jet_product->qty = trim($other_vari_opt[$option_id]['tophatter_product_inventory']);
                             $model->jet_product->brand = trim($product_vendor);
-                            $model->product_price = $other_vari_opt[$option_id]['walmart_product_price'];
+                            $model->product_price = $other_vari_opt[$option_id]['tophatter_product_price'];
                         }
                         $opt_count++;
                     }
@@ -858,19 +858,19 @@ class WalmartproductController extends WalmartmainController
                                 $sql = "";
                                 $sql = "UPDATE `jet_product_variants` SET
                                         option_unique_id='" . trim($opt_upc) . "',
-                                        option_qty ='" . $other_vari_opt[$option_id]['walmart_product_inventory'] . "'
+                                        option_qty ='" . $other_vari_opt[$option_id]['tophatter_product_inventory'] . "'
                                         where option_id='" . $option_id . "'";
                                 //$connection->createCommand($sql)->execute();
                                 Data::sqlRecords($sql, null, "update");
 
                             }
                             $model3 = "";
-                            $model3 = $connection->createCommand("SELECT `option_id` from `walmart_product_variants` WHERE option_id='" . $option_id . "'")->queryOne();
+                            $model3 = $connection->createCommand("SELECT `option_id` from `tophatter_product_variants` WHERE option_id='" . $option_id . "'")->queryOne();
                             if ($model3 !== "") {
                                 $sql = "";
-                                $sql = "UPDATE `walmart_product_variants` SET
-                                        walmart_option_attributes='',
-                                        option_prices =" . $other_vari_opt[$option_id]['walmart_product_price'] . "
+                                $sql = "UPDATE `tophatter_product_variants` SET
+                                        tophatter_option_attributes='',
+                                        option_prices =" . $other_vari_opt[$option_id]['tophatter_product_price'] . "
                                         where option_id='" . $option_id . "'";
                                 Data::sqlRecords($sql, null, "update");
                                 //$connection->createCommand($sql)->execute();
@@ -883,19 +883,19 @@ class WalmartproductController extends WalmartmainController
                 unset($sql);
                 unset($options_save);
                 if (count($pro_attr) == 0)
-                    $model->walmart_attributes = '';
+                    $model->tophatter_attributes = '';
                 else
-                    $model->walmart_attributes = json_encode($pro_attr);
+                    $model->tophatter_attributes = json_encode($pro_attr);
                 $model->jet_product->brand = $product_vendor;
                 $model->short_description = $product_short;
                 $model->self_description = $product_self;
                 $model->tax_code = $product_tax;
-                if (isset($_POST['walmart_product_title'])) {
-                    $model->product_title = $_POST['walmart_product_title'];
+                if (isset($_POST['tophatter_product_title'])) {
+                    $model->product_title = $_POST['tophatter_product_title'];
                 }
                 $model->jet_product->save(false);
                 $model->save(false);
-                unset($walmart_attributes);
+                unset($tophatter_attributes);
                 unset($other_vari_opt);
                 unset($attributes_of_jet);
 
@@ -946,45 +946,45 @@ class WalmartproductController extends WalmartmainController
                     return json_encode($return_status);
                 }
                 /*-------------check asin and upc for simple here ends----------*/
-                $walmart_attributes1 = "";
+                $tophatter_attributes1 = "";
                 if (Yii::$app->request->post('jet_attributes1')) {
-                    $walmart_attributes1 = Yii::$app->request->post('jet_attributes1');
+                    $tophatter_attributes1 = Yii::$app->request->post('jet_attributes1');
                 }
-                $walmart_attr = array();
-                if ($walmart_attributes1) {
-                    foreach ($walmart_attributes1 as $key => $value) {
+                $tophatter_attr = array();
+                if ($tophatter_attributes1) {
+                    foreach ($tophatter_attributes1 as $key => $value) {
                         if (count($value) == 1 && $value[0] != '') {
-                            $walmart_attr[$key] = array(0 => $value[0]);
+                            $tophatter_attr[$key] = array(0 => $value[0]);
                         } elseif (count($value) == 2 && $value[0] != '' && $value[1] != '') {
-                            $walmart_attr[$key] = array(0 => $value[0], 1 => $value[1]);
+                            $tophatter_attr[$key] = array(0 => $value[0], 1 => $value[1]);
                         }
                     }
                 }
 
-                if (count($walmart_attr) == 0)
-                    $model->walmart_attributes = '';
+                if (count($tophatter_attr) == 0)
+                    $model->tophatter_attributes = '';
                 else
-                    $model->walmart_attributes = json_encode($walmart_attr);
+                    $model->tophatter_attributes = json_encode($tophatter_attr);
 
-                if((!is_numeric($_POST['walmart_product_price']) && ($_POST['walmart_product_inventory']!=''))|| ($_POST['walmart_product_price']<0))
+                if((!is_numeric($_POST['tophatter_product_price']) && ($_POST['tophatter_product_inventory']!=''))|| ($_POST['tophatter_product_price']<0))
                 {
                     $return_status['error'][]="Price is not valid";
                     $true=1;
                     //return json_encode($return_status);
                 }
 
-                if($_POST['walmart_product_price']==''){
+                if($_POST['tophatter_product_price']==''){
                     $return_status['error'][]="Price is required";
                     $true=1;
                 }
 
-                if((!is_numeric($_POST['walmart_product_inventory']) && ($_POST['walmart_product_inventory']!=''))|| ($_POST['walmart_product_inventory']<0)) 
+                if((!is_numeric($_POST['tophatter_product_inventory']) && ($_POST['tophatter_product_inventory']!=''))|| ($_POST['tophatter_product_inventory']<0)) 
                 {
                     $return_status['error'][]="Inventory is not valid.";
                     $true=1;
                     //return json_encode($return_status);
                 }
-                if($_POST['walmart_product_inventory']==''){
+                if($_POST['tophatter_product_inventory']==''){
                     $return_status['error'][]="Inventory is required";
                     $true=1;
                 }
@@ -1003,11 +1003,11 @@ class WalmartproductController extends WalmartmainController
                 $model->short_description = $product_short;
                 $model->tax_code = $product_tax;
                 $model->self_description = $product_self;
-                if (isset($_POST) && !empty($_POST['walmart_product_price']) && !empty($_POST['walmart_product_inventory'])) {
+                if (isset($_POST) && !empty($_POST['tophatter_product_price']) && !empty($_POST['tophatter_product_inventory'])) {
 
-                    $model->product_price = $_POST['walmart_product_price'];
-                    $model->product_title = $_POST['walmart_product_title'];
-                    $model->jet_product->qty = $_POST['walmart_product_inventory'];
+                    $model->product_price = $_POST['tophatter_product_price'];
+                    $model->product_title = $_POST['tophatter_product_title'];
+                    $model->jet_product->qty = $_POST['tophatter_product_inventory'];
                 }
                 //$model->category=$category;
                 $model->jet_product->save(false);
@@ -1021,7 +1021,7 @@ class WalmartproductController extends WalmartmainController
                     Data::sqlRecords($query,null,'update');
 
                 }*/
-                unset($walmart_attr);
+                unset($tophatter_attr);
             }
             if (isset($return_status['error'])) {
                 return json_encode($return_status);
@@ -1042,7 +1042,7 @@ class WalmartproductController extends WalmartmainController
     	$countProducts = "SELECT * FROM `jet_product` WHERE merchant_id='226'";
     	$result = Data::sqlRecords($countProducts,null,"select");
     	foreach ($result as $r){
-    		    	$query='UPDATE `walmart_product` SET `product_type`="'.addslashes($r['product_type']).'" where product_id="'.$r['bigproduct_id'].'" and `merchant_id`="226"';
+    		    	$query='UPDATE `tophatter_product` SET `product_type`="'.addslashes($r['product_type']).'" where product_id="'.$r['bigproduct_id'].'" and `merchant_id`="226"';
     		    	$updateResult =Data::sqlRecords($query,null,"update");
     	}
 
@@ -1125,7 +1125,7 @@ class WalmartproductController extends WalmartmainController
         if($action=='batch-upload')
         {
             /** Check for Trial period*/
-            $undertrial=$this->walmartHelper->underTrial($merchant_id);
+            $undertrial=$this->tophatterHelper->underTrial($merchant_id);
             
             if($undertrial[0]=='not_purchase' && $merchant_id!=367 && $merchant_id!=427 && $merchant_id!=437 && $merchant_id!=440 && $merchant_id!=446 && $merchant_id!=483 && $merchant_id!=501){
                 if($undertrial[1]==1){
@@ -1222,10 +1222,10 @@ class WalmartproductController extends WalmartmainController
         }
         elseif($action == 'batch-promotion-price')
         {
-            $data  = $this->walmartHelper->updateBulkPromotionalPriceOnWalmart($selection);
+            $data  = $this->tophatterHelper->updateBulkPromotionalPriceOnTophatter($selection);
             if(isset($data['success']))
             {
-                Yii::$app->session->setFlash('success', "Successfully Updated Promo Price on Walmart. FeedId : ".$data['feedId']);
+                Yii::$app->session->setFlash('success', "Successfully Updated Promo Price on Tophatter. FeedId : ".$data['feedId']);
             }
             elseif(isset($data['error']))
             {
@@ -1254,13 +1254,13 @@ class WalmartproductController extends WalmartmainController
             //foreach ($selection as $id) {
             $id = $selection[$index];
 
-            $query = "SELECT sku,type FROM (SELECT * FROM `jet_product` WHERE `merchant_id`='" . MERCHANT_ID . "' AND `bigproduct_id`='" . $id . "') as `jp` INNER JOIN (SELECT * FROM `walmart_product` WHERE `merchant_id`='" . MERCHANT_ID . "' AND `product_id`='" . $id . "') as `wp` ON `jp`.`bigproduct_id`=`wp`.`product_id` WHERE `wp`.`merchant_id`='" . MERCHANT_ID . "' ";
+            $query = "SELECT sku,type FROM (SELECT * FROM `jet_product` WHERE `merchant_id`='" . MERCHANT_ID . "' AND `bigproduct_id`='" . $id . "') as `jp` INNER JOIN (SELECT * FROM `tophatter_product` WHERE `merchant_id`='" . MERCHANT_ID . "' AND `product_id`='" . $id . "') as `wp` ON `jp`.`bigproduct_id`=`wp`.`product_id` WHERE `wp`.`merchant_id`='" . MERCHANT_ID . "' ";
             $result = Data::sqlRecords($query, 'one');
 
             if (isset($result['sku']) && !empty($result)) {
                 if ($result['type'] == 'variants') {
 
-                    $query = "SELECT option_sku,`jvp`.option_id FROM (SELECT * FROM `jet_product_variants` WHERE `merchant_id`='" . MERCHANT_ID . "' AND `product_id`='" . $id . "') as `jvp` INNER JOIN (SELECT * FROM `walmart_product_variants` WHERE `merchant_id`='" . MERCHANT_ID . "' AND `product_id`='" . $id . "') as `wvp` ON `jvp`.`option_id`=`wvp`.`option_id` WHERE `wvp`.`merchant_id`='" . MERCHANT_ID . "' ";
+                    $query = "SELECT option_sku,`jvp`.option_id FROM (SELECT * FROM `jet_product_variants` WHERE `merchant_id`='" . MERCHANT_ID . "' AND `product_id`='" . $id . "') as `jvp` INNER JOIN (SELECT * FROM `tophatter_product_variants` WHERE `merchant_id`='" . MERCHANT_ID . "' AND `product_id`='" . $id . "') as `wvp` ON `jvp`.`option_id`=`wvp`.`option_id` WHERE `wvp`.`merchant_id`='" . MERCHANT_ID . "' ";
                     $skus = Data::sqlRecords($query, 'all');
                     if (is_array($skus) && count($skus)) {
                         $error = [];
@@ -1269,20 +1269,20 @@ class WalmartproductController extends WalmartmainController
 
                         foreach ($skus as $sku) {
 
-                            $productStatus = new Walmartapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
+                            $productStatus = new Tophatterapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
                             $feed_data = $productStatus->getItemstatus($sku['option_sku']);
 
                             if (isset($feed_data['error'])) {
                                 $notUploadCount++;
                                 if ($feed_data['error'][0]['code'] == 'CONTENT_NOT_FOUND.GMP_ITEM_QUERY_API') {
 
-                                    $error[] = 'Error : ' . $sku['option_sku'] . ' : Product not uploaded on Walmart';
+                                    $error[] = 'Error : ' . $sku['option_sku'] . ' : Product not uploaded on Tophatter';
 
                                 } else {
                                     $error[] = 'Error : ' . $sku['option_sku'] . ' : ' . $feed_data['error'][0]['info'];
                                 }
 
-                                $query = "UPDATE walmart_product_variants SET status='" . WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE option_id='" . $sku['option_id'] . "' AND `merchant_id`='" . MERCHANT_ID . "'";
+                                $query = "UPDATE tophatter_product_variants SET status='" . TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE option_id='" . $sku['option_id'] . "' AND `merchant_id`='" . MERCHANT_ID . "'";
 
                             } elseif (isset($feed_data['MPItemView'])) {
                                 $uploadCount++;
@@ -1291,7 +1291,7 @@ class WalmartproductController extends WalmartmainController
                                 }
 
                                 $status = $feed_data['MPItemView'][0]['publishedStatus'];
-                                $query = "UPDATE walmart_product_variants SET status='" . $status . "' WHERE option_id='" . $sku['option_id'] . "' AND `merchant_id`='" . MERCHANT_ID . "'";
+                                $query = "UPDATE tophatter_product_variants SET status='" . $status . "' WHERE option_id='" . $sku['option_id'] . "' AND `merchant_id`='" . MERCHANT_ID . "'";
                                 Data::sqlRecords($query, null, 'update');
 
                             } else {
@@ -1303,12 +1303,12 @@ class WalmartproductController extends WalmartmainController
                         //update main product status
                         if ($uploadCount) {
                             if ($notUploadCount) {
-                                $query = "UPDATE walmart_product SET status='" . WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE product_id='" . $id . "' AND `merchant_id`='" . MERCHANT_ID . "'";
+                                $query = "UPDATE tophatter_product SET status='" . TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE product_id='" . $id . "' AND `merchant_id`='" . MERCHANT_ID . "'";
                             } else {
-                                $query = "UPDATE walmart_product SET status='" . WalmartProduct::PRODUCT_STATUS_UPLOADED . "' WHERE product_id='" . $id . "' AND `merchant_id`='" . MERCHANT_ID . "'";
+                                $query = "UPDATE tophatter_product SET status='" . TophatterProduct::PRODUCT_STATUS_UPLOADED . "' WHERE product_id='" . $id . "' AND `merchant_id`='" . MERCHANT_ID . "'";
                             }
                         } else {
-                            $query = "UPDATE walmart_product SET status='" . WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE product_id='" . $id . "' AND `merchant_id`='" . MERCHANT_ID . "'";
+                            $query = "UPDATE tophatter_product SET status='" . TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE product_id='" . $id . "' AND `merchant_id`='" . MERCHANT_ID . "'";
                         }
                         Data::sqlRecords($query, null, 'update');
                         //end
@@ -1319,10 +1319,10 @@ class WalmartproductController extends WalmartmainController
                             $returnArr = ['success' => ['count' => $uploadCount, 'message' => 'Status Successfully Updated']];
                         }
                     } else {
-                        $returnArr['error'] = 'Product not found on Walmart';
+                        $returnArr['error'] = 'Product not found on Tophatter';
                     }
                 } else {
-                    $productStatus = new Walmartapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
+                    $productStatus = new Wapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
                     $feed_data = $productStatus->getItemstatus($result['sku']);
 
                     if (isset($feed_data['MPItemView'])) {
@@ -1330,7 +1330,7 @@ class WalmartproductController extends WalmartmainController
                         $status = $feed_data['MPItemView'][0]['publishedStatus'];
 
                         //update main product status(s)
-                        $query = "UPDATE walmart_product SET status='" . $status . "' WHERE product_id='" . $id . "' AND `merchant_id`='" . MERCHANT_ID . "'";
+                        $query = "UPDATE tophatter_product SET status='" . $status . "' WHERE product_id='" . $id . "' AND `merchant_id`='" . MERCHANT_ID . "'";
                         Data::sqlRecords($query, null, 'update');
 
                         $returnArr = ['success' => ['count' => 1, 'message' => 'Status Successfully Updated']];
@@ -1339,11 +1339,11 @@ class WalmartproductController extends WalmartmainController
                         $error[] = $feed_data['error'][0]['info'];
 
                         if ($feed_data['error'][0]['code'] == 'CONTENT_NOT_FOUND.GMP_ITEM_QUERY_API') {
-                            $returnArr['error'] = $result['sku'] . ' : Product not uploaded on Walmart';
+                            $returnArr['error'] = $result['sku'] . ' : Product not uploaded on Tophatter';
                         } else {
                             $returnArr['error'] = $result['sku'] . ' : ' . $feed_data['error'][0]['info'];
                         }
-                        $query = "UPDATE walmart_product SET status='" .WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE product_id='" . $id . "' AND `merchant_id`='" . MERCHANT_ID . "'";
+                        $query = "UPDATE tophatter_product SET status='" .TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE product_id='" . $id . "' AND `merchant_id`='" . MERCHANT_ID . "'";
                         Data::sqlRecords($query, null, 'update');
 
                     } else {
@@ -1388,7 +1388,7 @@ class WalmartproductController extends WalmartmainController
 
             try {
                 //$productResponse = $this->walmartHelper->createProductOnWalmart($selectedProducts,$this->walmartHelper,MERCHANT_ID,$connection);
-                $productResponse = $this->walmartHelper->createProductOnWalmart($selectedProducts, MERCHANT_ID);
+                $productResponse = $this->tophatterHelper->createProductOnTophatter($selectedProducts, MERCHANT_ID);
                 
 
                 if(!is_array($productResponse)){
@@ -1401,16 +1401,16 @@ class WalmartproductController extends WalmartmainController
                     $ids = implode(',',$productResponse['uploadIds']);
                     foreach($productResponse['uploadIds'] as $val)
                     {
-                        $query="UPDATE `walmart_product` SET status='Items Processing', error='' where product_id='".$val."'";
+                        $query="UPDATE `tophatter_product` SET status='Items Processing', error='' where product_id='".$val."'";
                         Data::sqlRecords($query,null,"update");
                     }
 
                     $feed_file = isset($productResponse['feed_file'])?$productResponse['feed_file']:'';
-                    $query="INSERT INTO `walmart_product_feed`(`merchant_id`,`feed_id`,`product_ids`,`feed_file`)VALUES('".MERCHANT_ID."','".$productResponse['feedId']."','".$ids."','".$feed_file."')";
+                    $query="INSERT INTO `tophatter_product_feed`(`merchant_id`,`feed_id`,`product_ids`,`feed_file`)VALUES('".MERCHANT_ID."','".$productResponse['feedId']."','".$ids."','".$feed_file."')";
                     Data::sqlRecords($query,null,"insert");
                     //echo $query;die;
 
-                    $msg = "product feed successfully submitted on walmart.";
+                    $msg = "product feed successfully submitted on tophatter.";
                     $feed_count = count($productResponse['uploadIds']);
                     $feedId = $productResponse['feedId'];
                     $returnArr = ['success'=>true, 'message'=>$msg, 'count'=>$feed_count, 'feed_id'=>$feedId];
@@ -1443,7 +1443,7 @@ class WalmartproductController extends WalmartmainController
                 			$error = implode(',', $error);
                 		}
                 
-                		$query = "UPDATE `walmart_product` wp JOIN `jet_product` jp ON wp.product_id=jp.bigproduct_id AND jp.merchant_id = wp.merchant_id SET wp.`error`='" . addslashes($error) . "' where jp.sku='" . $productSku . "'";
+                		$query = "UPDATE `tophatter_product` wp JOIN `jet_product` jp ON wp.product_id=jp.bigproduct_id AND jp.merchant_id = wp.merchant_id SET wp.`error`='" . addslashes($error) . "' where jp.sku='" . $productSku . "'";
                 		Data::sqlRecords($query, null, "update");
                 	}
                 
@@ -1478,7 +1478,7 @@ class WalmartproductController extends WalmartmainController
     		return \Yii::$app->getResponse()->redirect(\Yii::$app->getUser()->loginUrl);
     	}
     
-        $query = 'SELECT `jet`.`bigproduct_id`, `jet`.`merchant_id`, `sku`, `type`, `qty`, `fulfillment_lag_time` FROM (SELECT * FROM `walmart_product` WHERE `merchant_id`="' . MERCHANT_ID . '") as `wal` INNER JOIN (SELECT * FROM `jet_product` WHERE `merchant_id`="' . MERCHANT_ID . '") as `jet` ON `jet`.`bigproduct_id`=`wal`.`product_id` where `wal`.`status`="PUBLISHED" and  `wal`.`merchant_id`="' . MERCHANT_ID . '"'; /* AND wal.id BETWEEN 1156390 AND 1160094 */
+        $query = 'SELECT `jet`.`bigproduct_id`, `jet`.`merchant_id`, `sku`, `type`, `qty`, `fulfillment_lag_time` FROM (SELECT * FROM `tophatter_product` WHERE `merchant_id`="' . MERCHANT_ID . '") as `wal` INNER JOIN (SELECT * FROM `jet_product` WHERE `merchant_id`="' . MERCHANT_ID . '") as `jet` ON `jet`.`bigproduct_id`=`wal`.`product_id` where `wal`.`status`="PUBLISHED" and  `wal`.`merchant_id`="' . MERCHANT_ID . '"'; /* AND wal.id BETWEEN 1156390 AND 1160094 */
         
         $product = Data::sqlRecords($query, "all", "select");
 
@@ -1546,11 +1546,11 @@ class WalmartproductController extends WalmartmainController
     	$errors = [];
     
     	if($count) {
-    		$response = $this->walmartHelper->updateInventoryOnWalmart($selectedProducts, "product",MERCHANT_ID);
+    		$response = $this->tophatterHelper->updateInventoryOnTophatter($selectedProducts, "product",MERCHANT_ID);
 
             print_r($response);
     		if(isset($response['errors']))
-    			$returnArr = ['error' => "Inventory Feed Error : Inventory not updated on walmart",'message'=>'Inventory for some Products is not updated due to '.json_encode($response['errors'])];
+    			$returnArr = ['error' => "Inventory Feed Error : Inventory not updated on tophatter",'message'=>'Inventory for some Products is not updated due to '.json_encode($response['errors'])];
     		else
     			$returnArr = ['success' => true, 'count'=>$count];
     	}
@@ -1564,7 +1564,7 @@ class WalmartproductController extends WalmartmainController
             return \Yii::$app->getResponse()->redirect(\Yii::$app->getUser()->loginUrl);
         }
         
-        $query='select jet.bigproduct_id,sku,type,price,comparision_price from `walmart_product` wal INNER JOIN `jet_product` jet ON jet.bigproduct_id=wal.product_id where wal.status!="Not Uploaded" and wal.merchant_id=jet.merchant_id and wal.merchant_id="'.MERCHANT_ID.'"';
+        $query='select jet.bigproduct_id,sku,type,price,comparision_price from `tophatter_product` wal INNER JOIN `jet_product` jet ON jet.bigproduct_id=wal.product_id where wal.status!="Not Uploaded" and wal.merchant_id=jet.merchant_id and wal.merchant_id="'.MERCHANT_ID.'"';
         $product = Data::sqlRecords($query,"all","select");
 
         $Productcount = count($product);
@@ -1610,9 +1610,9 @@ class WalmartproductController extends WalmartmainController
         $errors = [];
         
         if($count) {
-            $response = $this->walmartHelper->updatePriceOnWalmart($selectedProducts, "product");
+            $response = $this->tophatterHelper->updatePriceOnTophatter($selectedProducts, "product");
             if(isset($response['errors']))
-                $returnArr = ['error' => "Price Feed Error : Price not updated on walmart",'message'=>'Price for some Products is not updated due to '.json_encode($response['errors'])];
+                $returnArr = ['error' => "Price Feed Error : Price not updated on tophatter",'message'=>'Price for some Products is not updated due to '.json_encode($response['errors'])];
             else
                 $returnArr = ['success' => true, 'count'=>$count];
         }
@@ -1650,20 +1650,20 @@ class WalmartproductController extends WalmartmainController
     			//print_r($skus);die;
     			foreach ($skus as $sku) {
     
-    				$retireProduct = new Walmartapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
+    				$retireProduct = new Tophatterapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
     				$feed_data = $retireProduct->retireProduct($sku['option_sku']);
     
     				if (isset($feed_data['ItemRetireResponse'])){
     					$success[] = '<b>' . $feed_data['ItemRetireResponse']['sku'] . ' : </b>' . $feed_data['ItemRetireResponse']['message'];
     				} elseif (isset($feed_data['errors']['error'])) {
     					if (isset($feed_data['errors']['error']['code']) && $feed_data['errors']['error']['code'] == "CONTENT_NOT_FOUND.GMP_ITEM_INGESTOR_API" && $feed_data['errors']['error']['field'] == "sku") {
-    						$errors[] = $sku['option_sku'] . ' : Product not Uploaded on Walmart.';
+    						$errors[] = $sku['option_sku'] . ' : Product not Uploaded on Tophatter.';
     					} else {
     						$errors[] = $sku['option_sku'] . ' : ' . $feed_data['errors']['error']['description'];
     					}
     				}
     				else{  
-    				    $returnArr = ['error' => 'Product Not Uploaded to walmart panel!!'];
+    				    $returnArr = ['error' => 'Product Not Uploaded to tophatter panel!!'];
     				}
     			}
     			if (count($errors)) {
@@ -1803,7 +1803,7 @@ class WalmartproductController extends WalmartmainController
         $store_hash=STOREHASH;
         $countProducts=0;$pages=0;
 
-        $bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+        $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
           
         $resource='catalog/products';
         
@@ -1832,7 +1832,7 @@ class WalmartproductController extends WalmartmainController
 
     public function actionCustomerdata(){
 
-        $bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+        $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
         $resource='stores';
 
         $customers= $bigcom->get1($resource); 
@@ -1934,14 +1934,14 @@ class WalmartproductController extends WalmartmainController
     public function actionLoad()
     {
         //echo Yii::$app->homeUrl.'var/MPProduct.xml';die;
-        $str = file_get_contents('/opt/lampp/htdocs/walmart/var/MPProduct.xml');
-        $response = Walmartapi::xmlToArray($str);
+        $str = file_get_contents('/opt/lampp/htdocs/tophatter/var/MPProduct.xml');
+        $response = Tophatterapi::xmlToArray($str);
         echo addslashes($response['MPItemFeed']['_value']['MPItem']['Product']['longDescription']);
     }
 
     public function actionCategoryadd()
     {
-        $query="select category_id,attribute_values,parent_id from walmart_category where level=1";
+        $query="select category_id,attribute_values,parent_id from tophatter_category where level=1";
         $response = Data::sqlRecords($query, "all", "select");
         $parentcategory=[];
         $count=0;
@@ -1953,7 +1953,7 @@ class WalmartproductController extends WalmartmainController
             }        
         }
         foreach($parentcategory as $val){
-            $query="insert into walmart_category(merchant_id,category_id,title,parent_id,level)values(1,'Other','Other','".$val."',1)";
+            $query="insert into tophatter_category(merchant_id,category_id,title,parent_id,level)values(1,'Other','Other','".$val."',1)";
             $response = Data::sqlRecords($query, null, "insert");
         }
         
@@ -1961,13 +1961,13 @@ class WalmartproductController extends WalmartmainController
 
     public function actionBatchproductstatus()
     {
-        $query = 'select count(*) as products from (SELECT * FROM `walmart_product` WHERE `merchant_id`= "' . MERCHANT_ID . '") as wal INNER JOIN (SELECT * FROM `jet_product` WHERE `merchant_id`= "' . MERCHANT_ID . '") as jet ON jet.bigproduct_id=wal.product_id where wal.merchant_id="' . MERCHANT_ID . '" LIMIT 0,1';
+        $query = 'select count(*) as products from (SELECT * FROM `tophatter_product` WHERE `merchant_id`= "' . MERCHANT_ID . '") as wal INNER JOIN (SELECT * FROM `jet_product` WHERE `merchant_id`= "' . MERCHANT_ID . '") as jet ON jet.bigproduct_id=wal.product_id where wal.merchant_id="' . MERCHANT_ID . '" LIMIT 0,1';
         $product = Data::sqlRecords($query, "one", "select");
         
         if (is_array($product) && isset($product['products']) && intval($product['products']) > 0) {
             $pages = ceil(intval($product['products']) / 20);
             $session = Yii::$app->session;
-            $session->set('walmartHelper', serialize($this->walmartHelper));
+            $session->set('tophatterHelper', serialize($this->tophatterHelper));
             $session->set('product_page', $pages);
 
             return $this->render('batchstatus',
@@ -1987,7 +1987,7 @@ class WalmartproductController extends WalmartmainController
         if (is_array($product) && isset($product['products']) && intval($product['products']) > 0) {
             $pages = ceil(22000/ 20);
             $session = Yii::$app->session;
-            $session->set('walmartHelper', serialize($this->walmartHelper));
+            $session->set('tophatterHelper', serialize($this->tophatterHelper));
             $session->set('product_page', $pages);
 
             return $this->render('bulkretire',
@@ -2013,14 +2013,14 @@ class WalmartproductController extends WalmartmainController
         $finishWithError = false;
 
         $session = Yii::$app->session;
-        $walmartHelper = unserialize($session->get('walmartHelper'));
+        $tophatterHelper = unserialize($session->get('tophatterHelper'));
         $merchant_id = MERCHANT_ID;
-        if (!is_object($walmartHelper)) {
-            $walmartHelper = $this->walmartHelper;
+        if (!is_object($tophatterHelper)) {
+            $tophatterHelper = $this->tophatterHelper;
         }
         $offset = $index * $getItemsCount;
         // Get $getItemsCount products status(s) from walmart
-        $productArray = $walmartHelper->getItems(['limit' => $getItemsCount, 'offset' => $offset,'sku'=>$sku,'publishedStatus'=>'']);
+        $productArray = $tophatterHelper->getItems(['limit' => $getItemsCount, 'offset' => $offset,'sku'=>$sku,'publishedStatus'=>'']);
 
         print_r($productArray);die("dgfdg");
 
@@ -2035,17 +2035,17 @@ class WalmartproductController extends WalmartmainController
        
     	try {
     		$session = Yii::$app->session;
-    		$walmartHelper = unserialize($session->get('walmartHelper'));
+    		$tophatterHelper = unserialize($session->get('tophatterHelper'));
     		$merchant_id = MERCHANT_ID;
 
-    		if (!is_object($walmartHelper)) {
-    			$walmartHelper = $this->walmartHelper;
+    		if (!is_object($tophatterHelper)) {
+    			$tophatterHelper = $this->tophatterHelper;
     		}
 
     		$offset = $index * $getItemsCount;
 
     		// Get $getItemsCount products status(s) from walmart
-    		$productArray = $walmartHelper->getItems(['limit' => $getItemsCount,'offset' => $offset,'publishedStatus'=>'PUBLISHED']);
+    		$productArray = $tophatterHelper->getItems(['limit' => $getItemsCount,'offset' => $offset,'publishedStatus'=>'PUBLISHED']);
     	   
     		$count = 0;
     		if(isset($productArray['error']))
@@ -2069,7 +2069,7 @@ class WalmartproductController extends WalmartmainController
     				if(isset($productArray['errors']['error']['code']) && $productArray['errors']['error']['code']=='UNAUTHORIZED.GMP_GATEWAY_API')
     				{
     					$finishWithError = true;
-    					$returnArr['error'] = "Walmart API Credentials are invalid.";
+    					$returnArr['error'] = "Tophatter API Credentials are invalid.";
     				}
     			}
     			$returnArr['api_error'] = true;
@@ -2120,10 +2120,10 @@ class WalmartproductController extends WalmartmainController
     		if ($finish || $finishWithError) {
     			if ($finish) {
     				 
-    				$query1 = "UPDATE `walmart_product` SET `status`='" . WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE `status`='" . WalmartProduct::PRODUCT_STATUS_PROCESSING . "' AND `merchant_id`='" . $merchant_id . "'";
+    				$query1 = "UPDATE `tophatter_product` SET `status`='" . TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE `status`='" . TophatterProduct::PRODUCT_STATUS_PROCESSING . "' AND `merchant_id`='" . $merchant_id . "'";
     				Data::sqlRecords($query1, null, 'update');
     	
-    				$query = "UPDATE `walmart_product_variants` SET `status`='" . WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE `status`='" . WalmartProduct::PRODUCT_STATUS_PROCESSING . "' AND `merchant_id`='" . $merchant_id . "'";
+    				$query = "UPDATE `tophatter_product_variants` SET `status`='" . TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE `status`='" . TophatterProduct::PRODUCT_STATUS_PROCESSING . "' AND `merchant_id`='" . $merchant_id . "'";
     				Data::sqlRecords($query, null, 'update');
     			}
     			$returnArr['finish'] = true;
@@ -2146,14 +2146,14 @@ class WalmartproductController extends WalmartmainController
         $index = Yii::$app->request->post('index');
         try {
             $session = Yii::$app->session;
-            $walmartHelper = unserialize($session->get('walmartHelper'));
+            $tophatterHelper = unserialize($session->get('tophatterHelper'));
             $merchant_id = MERCHANT_ID;
-            if (!is_object($walmartHelper)) {
-                $walmartHelper = $this->walmartHelper;
+            if (!is_object($tophatterHelper)) {
+                $tophatterHelper = $this->tophatterHelper;
             }
             $offset = $index * $getItemsCount;
             // Get $getItemsCount products status(s) from walmart
-            $productArray = $walmartHelper->getItems(['limit' => $getItemsCount,'offset' => $offset,'publishedStatus'=>'']);
+            $productArray = $tophatterHelper->getItems(['limit' => $getItemsCount,'offset' => $offset,'publishedStatus'=>'']);
 
             $count = 0;
             if(isset($productArray['error']))
@@ -2176,7 +2176,7 @@ class WalmartproductController extends WalmartmainController
                     if(isset($productArray['errors']['error']['code']) && $productArray['errors']['error']['code']=='UNAUTHORIZED.GMP_GATEWAY_API')
                     {
                         $finishWithError = true;
-                        $returnArr['error'] = "Walmart API Credentials are invalid.";
+                        $returnArr['error'] = "Tophatter API Credentials are invalid.";
                     }
                 }
                 $returnArr['api_error'] = true;
@@ -2193,7 +2193,7 @@ class WalmartproductController extends WalmartmainController
                     
                     if (is_array($product) && count($product) > 0) {
                         //update main product status(s)
-                        $query = "update walmart_product set status='" . $value['publishedStatus'] . "' where product_id='" . $product['bigproduct_id'] . "' and merchant_id='".MERCHANT_ID."'";
+                        $query = "update tophatter_product set status='" . $value['publishedStatus'] . "' where product_id='" . $product['bigproduct_id'] . "' and merchant_id='".MERCHANT_ID."'";
                         Data::sqlRecords($query, null, 'update');
 
                         $code=$value['upc']!=''?$value['upc']:$value['gtin'];
@@ -2209,7 +2209,7 @@ class WalmartproductController extends WalmartmainController
                     $productVariant = Data::sqlRecords($query, 'one', 'select');
                     if (is_array($productVariant) && count($productVariant) > 0) {
                         //update main product status(s)
-                        $query = "update walmart_product_variants set status='" . $value['publishedStatus'] . "' where option_id='" . $productVariant['option_id'] . "' and merchant_id='".MERCHANT_ID."'";
+                        $query = "update tophatter_product_variants set status='" . $value['publishedStatus'] . "' where option_id='" . $productVariant['option_id'] . "' and merchant_id='".MERCHANT_ID."'";
                         Data::sqlRecords($query, null, 'update');
 
                         if(!isset($product['sku']))
@@ -2221,10 +2221,10 @@ class WalmartproductController extends WalmartmainController
             if ($finish || $finishWithError) {
                 if ($finish) {
                    
-                    $query1 = "UPDATE `walmart_product` SET `status`='" . WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE `status`='" . WalmartProduct::PRODUCT_STATUS_PROCESSING . "' AND `merchant_id`='" . $merchant_id . "'";
+                    $query1 = "UPDATE `tophatter_product` SET `status`='" . TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE `status`='" .TophatterProduct::PRODUCT_STATUS_PROCESSING . "' AND `merchant_id`='" . $merchant_id . "'";
                     Data::sqlRecords($query1, null, 'update');
 
-                    $query = "UPDATE `walmart_product_variants` SET `status`='" . WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE `status`='" . WalmartProduct::PRODUCT_STATUS_PROCESSING . "' AND `merchant_id`='" . $merchant_id . "'";
+                    $query = "UPDATE `_product_variants` SET `status`='" . TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE `status`='" . TophatterProduct::PRODUCT_STATUS_PROCESSING . "' AND `merchant_id`='" . $merchant_id . "'";
                     Data::sqlRecords($query, null, 'update');
                 }
                 $returnArr['finish'] = true;
@@ -2238,12 +2238,12 @@ class WalmartproductController extends WalmartmainController
         }
     }
 
-    public function actionGetwalmartdata()
+    public function actionGettophatterdata()
     {
        $this->layout='main2';
         $html='';
 
-        $bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH); 
+        $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH); 
 
         $sku=trim(Yii::$app->request->post('id'));
         $merchant_id=Yii::$app->request->post('merchant_id');
@@ -2256,8 +2256,8 @@ class WalmartproductController extends WalmartmainController
              $html=$this->render('store',array('data'=>$products['data']),true);
         }*/
         //else{
-            $resultItems=$this->walmartHelper->getItem($sku);
-            $resultInventory=$this->walmartHelper->getInventory($sku);
+            $resultItems=$this->tophatterHelper->getItem($sku);
+            $resultInventory=$this->tophatterHelper->getInventory($sku);
             $result_array=[];
             if(is_array($resultItems) && isset($resultItems['MPItemView'][0]) && count($resultItems)>0)
             {
@@ -2275,7 +2275,7 @@ class WalmartproductController extends WalmartmainController
         $this->layout='main2';
         $html='';
         $id=trim(Yii::$app->request->post('id'));
-        $query="select tax_code,cat_desc from walmart_tax_codes where 1";
+        $query="select tax_code,cat_desc from tophatter_tax_codes where 1";
         $TaxCollection=Data::sqlRecords($query,'all','select');
         if(is_array($TaxCollection) && count($TaxCollection)>0)
         {
@@ -2284,7 +2284,7 @@ class WalmartproductController extends WalmartmainController
         return $html;
     }
 
-    public function actionErrorwalmart()
+    public function actionErrortophatter()
     {
         $this->layout="main2";
         $id = trim(Yii::$app->request->post('id'));
@@ -2292,7 +2292,7 @@ class WalmartproductController extends WalmartmainController
         
         $errorData=array();
         $connection=Yii::$app->getDb();
-        $errorData=$connection->createCommand('SELECT `error` from `walmart_product` where merchant_id="'.$merchant_id.'" AND `id`="'.$id.' LIMIT 0, 1"')->queryOne();
+        $errorData=$connection->createCommand('SELECT `error` from `tophatter_product` where merchant_id="'.$merchant_id.'" AND `id`="'.$id.' LIMIT 0, 1"')->queryOne();
         
         $html = $this->render('errors',array('data'=>$errorData),true);
         $connection->close();
@@ -2356,7 +2356,7 @@ class WalmartproductController extends WalmartmainController
     
     public function actionAddcustomproduct($id){
 
-        $bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+        $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
 
         $resource='catalog/products/'.$id.'?include=variants,images';
        
@@ -2368,7 +2368,7 @@ class WalmartproductController extends WalmartmainController
     }
     
     public function actionBuybox(){
-        $bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+        $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
         $resource='catalog/products/'.$id.'?include=variants,images';
         $products= $bigcom->getbuybox();
         $images=$products['data']['images'];
@@ -2381,7 +2381,7 @@ class WalmartproductController extends WalmartmainController
 
         $session = Yii::$app->session;
         $post = Yii::$app->request->post();
-        $query = "SELECT * FROM `walmart_promotional_price` WHERE `merchant_id`='{$post['merchant_id']}' AND `product_id`='{$post['product_id']}' AND `option_id`='{$post['option_id']}'";
+        $query = "SELECT * FROM `tophatter_promotional_price` WHERE `merchant_id`='{$post['merchant_id']}' AND `product_id`='{$post['product_id']}' AND `option_id`='{$post['option_id']}'";
         $promotions = Data::sqlRecords($query,"all","select");
        
         echo $this->render('promotions',['promotions'=>$promotions,'post'=>$post]);
@@ -2398,12 +2398,12 @@ class WalmartproductController extends WalmartmainController
                 $productId=$post['product_id'];
                
                 if(isset($post['promotion']['id']) && isset($post['promotion']['id'][$key])){
-                    $query = "UPDATE `walmart_promotional_price` SET `original_price`='{$price}',`special_price`='{$post['promotion']['special_price'][$key]}',`effective_date`='{$post['promotion']['effective_date'][$key]}',`expiration_date`='{$post['promotion']['expiration_date'][$key]}' WHERE id='{$post['promotion']['id'][$key]}' ";
+                    $query = "UPDATE `tophatter_promotional_price` SET `original_price`='{$price}',`special_price`='{$post['promotion']['special_price'][$key]}',`effective_date`='{$post['promotion']['effective_date'][$key]}',`expiration_date`='{$post['promotion']['expiration_date'][$key]}' WHERE id='{$post['promotion']['id'][$key]}' ";
                      Data::sqlRecords($query,"one","update");
                 }
                 else
                 {
-                    $query = "INSERT INTO `walmart_promotional_price` (`product_id`,`sku`,`merchant_id`,`original_price`,`special_price`,`effective_date`,`expiration_date`) VALUES($productId,'{$post['sku']}','{$post['merchant_id']}','{$post['promotion']['orignal_price'][$key]}','{$post['promotion']['special_price'][$key]}','{$post['promotion']['effective_date'][$key]}','{$post['promotion']['expiration_date'][$key]}') ";
+                    $query = "INSERT INTO `tophatter_promotional_price` (`product_id`,`sku`,`merchant_id`,`original_price`,`special_price`,`effective_date`,`expiration_date`) VALUES($productId,'{$post['sku']}','{$post['merchant_id']}','{$post['promotion']['orignal_price'][$key]}','{$post['promotion']['special_price'][$key]}','{$post['promotion']['effective_date'][$key]}','{$post['promotion']['expiration_date'][$key]}') ";
                     Data::sqlRecords($query,"one","insert");
                 }
             } 
@@ -2434,7 +2434,7 @@ class WalmartproductController extends WalmartmainController
         $index = Yii::$app->request->post('index');
         $error = [];
         if (!empty($selection)) {
-            $response = $this->walmartHelper->batchupdateInventoryOnWalmart($selection, "product");
+            $response = $this->tophatterHelper->batchupdateInventoryOnTophatter($selection, "product");
                 if(isset($response['feedId'])){
                     if(isset($response['erroredSkus'])){
                         $returnArr = ['success' => true, 'count' => $count-$response['error_count'],'erroredSkus' => json_encode($response['erroredSkus']),'error_count'=>$response['error_count']];
@@ -2497,9 +2497,9 @@ class WalmartproductController extends WalmartmainController
 
             if($prod['status']==404){
 
-                $data = Data::sqlRecords('SELECT status FROM `walmart_product` WHERE product_id="'.$id.'" AND merchant_id="'.MERCHANT_ID.'" ','one'); 
+                $data = Data::sqlRecords('SELECT status FROM `tophatter_product` WHERE product_id="'.$id.'" AND merchant_id="'.MERCHANT_ID.'" ','one'); 
 
-                $query = Data::sqlRecords('SELECT sku,type,variant_id,w.status FROM `jet_product`j LEFT JOIN `walmart_product` as w ON j.bigproduct_id=w.product_id WHERE bigproduct_id="'.$id.'" AND w.merchant_id="'.MERCHANT_ID.'" AND j.merchant_id="'.MERCHANT_ID.'" ','one');            
+                $query = Data::sqlRecords('SELECT sku,type,variant_id,w.status FROM `jet_product`j LEFT JOIN `tophatter_product` as w ON j.bigproduct_id=w.product_id WHERE bigproduct_id="'.$id.'" AND w.merchant_id="'.MERCHANT_ID.'" AND j.merchant_id="'.MERCHANT_ID.'" ','one');            
 
                 //if(isset($query) && !empty($query) && $query['status']!='Not Uploaded'){
                 if($query['type']=='variants')
@@ -2517,7 +2517,7 @@ class WalmartproductController extends WalmartmainController
                 foreach ($skus as $sku) {
 
                     if($query['status']!='Not Uploaded'){
-                        $retireProduct = new Walmartapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
+                        $retireProduct = new Tophatterapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
                         $feed_data = $retireProduct->retireProduct($sku['option_sku']);
 
                         if($query['type']=='variants'){
@@ -2702,7 +2702,7 @@ class WalmartproductController extends WalmartmainController
         $return_array=[];
         $product = Yii::$app->request->post();
         unset($product['option_id']);
-        $check = WalmartRepricing::isRepricingEnabled($product);
+        $check = TophatterRepricing::isRepricingEnabled($product);
         if($check){
             $return_array['success']=true;
         }
@@ -2726,7 +2726,7 @@ class WalmartproductController extends WalmartmainController
         $countProducts = 0;
         $pages = 0;
         if($this->bigcom)
-            $this->bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+            $this->bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
         $import_option = Data::getConfigValue($merchant_id, 'import_product_option');
         $resource="";
         if($import_option)
@@ -2776,7 +2776,7 @@ class WalmartproductController extends WalmartmainController
             $shopname = SHOP;
             $token = TOKEN;
             if($this->bigcom)
-                $this->bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+                $this->bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
             // Get all products
             $limit = 250;
             $import_option = Data::getConfigValue($merchant_id, 'import_product_option');
@@ -2838,12 +2838,12 @@ class WalmartproductController extends WalmartmainController
 
     //need to modify according bigcom  end=====================================================================
      public function actionGetpromostatus(){
-        $query = "SELECT `product_id` FROM `walmart_product` WHERE merchant_id='".MERCHANT_ID."'";
+        $query = "SELECT `product_id` FROM `tophatter_product` WHERE merchant_id='".MERCHANT_ID."'";
         $productIds = Data::sqlRecords($query, null,'all');
         if(!is_array($productIds) || (is_array($productIds) && !count($productIds)))
             $productIds = [];
         $productIds = array_column($productIds, 'product_id');
-        $result = WalmartPromoStatus::getPromoStatus($productIds);
+        $result = TophatterPromoStatus::getPromoStatus($productIds);
         if(!$result){
             Yii::$app->session->setFlash('error', "No Product(s) available...");
         }
@@ -2869,7 +2869,7 @@ class WalmartproductController extends WalmartmainController
         $store_hash=STOREHASH;
         $countProducts=0;$pages=0;
 
-        $bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+        $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
           
         $resource='catalog/products';
         
@@ -2947,7 +2947,7 @@ class WalmartproductController extends WalmartmainController
         return json_encode(['html' => $html]);
     }
     
-    public function actionUpdatewalmartprice()
+    public function actionUpdatetophatterprice()
     {
     	$product = Yii::$app->request->post();
     	$returnArr = ['error' => true];
@@ -2957,14 +2957,14 @@ class WalmartproductController extends WalmartmainController
     	$errors = [];
     
     	if ($count) {
-    		$response = $this->walmartHelper->updateWalmartprice($product);
+    		$response = $this->tophatterHelper->updateTophatterprice($product);
     		if (isset($response['errors'])) {
-    			$returnArr = ['error' => "Price Feed Error : Price not updated on walmart", 'message' => 'Price for some Products is not updated due to ' . json_encode($response['errors'])];
+    			$returnArr = ['error' => "Price Feed Error : Price not updated on tophatter", 'message' => 'Price for some Products is not updated due to ' . json_encode($response['errors'])];
     		} else {
     			if ($product['type'] == 'simple') {
-    				$query = "UPDATE `walmart_product` SET `product_price` = '" . $product['price'] . "' WHERE `merchant_id`= '" . MERCHANT_ID . "' AND `id`='" . $product['id'] . "' ";
+    				$query = "UPDATE `tophatter_product` SET `product_price` = '" . $product['price'] . "' WHERE `merchant_id`= '" . MERCHANT_ID . "' AND `id`='" . $product['id'] . "' ";
     			} else {
-    				$query = "UPDATE `walmart_product_variants` SET `option_prices` = '" . $product['price'] . "' WHERE `merchant_id`= '" . MERCHANT_ID . "' AND `product_id`='" . $product['id'] . "' AND `option_id`='" . $product['option_id'] . "'";
+    				$query = "UPDATE `tophatter_product_variants` SET `option_prices` = '" . $product['price'] . "' WHERE `merchant_id`= '" . MERCHANT_ID . "' AND `product_id`='" . $product['id'] . "' AND `option_id`='" . $product['option_id'] . "'";
     			}
     			Data::sqlRecords($query, null, 'update');
     			$returnArr = ['success' => true, 'count' => $count];
@@ -2975,7 +2975,7 @@ class WalmartproductController extends WalmartmainController
     }
 
     
-    public function actionUpdatewalmartinventory()
+    public function actionUpdatetophatterinventory()
     {
         $product = Yii::$app->request->post();
 
@@ -2986,9 +2986,9 @@ class WalmartproductController extends WalmartmainController
         $errors = [];
 
         if ($count) {
-            $response = $this->walmartHelper->updateWalmartinventory($product);
+            $response = $this->tophatterHelper->updateTophatterinventory($product);
             if (isset($response['errors'])) {
-                $returnArr = ['error' => "Inventory Feed Error : Inventory not updated on walmart", 'message' => 'Inventory for some Products is not updated due to ' . json_encode($response['errors'])];
+                $returnArr = ['error' => "Inventory Feed Error : Inventory not updated on tophatter", 'message' => 'Inventory for some Products is not updated due to ' . json_encode($response['errors'])];
             } else {
                 if ($product['type'] == 'simple') {
                     $query = "UPDATE `jet_product` SET `qty` = '" . $product['qty'] . "' WHERE `merchant_id`= '" . MERCHANT_ID . "' AND `bigproduct_id`='" . $product['id'] . "' ";
@@ -3001,7 +3001,7 @@ class WalmartproductController extends WalmartmainController
             }
 
             /*update inventory on bigcommerce store*/
-            $bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH);
+            $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
 
             if ($product['type'] == 'simple') {
                 $updateInventory['variant']=array(
@@ -3085,7 +3085,7 @@ class WalmartproductController extends WalmartmainController
         //$id1=Yii::$app->request->post('id');        
                 
         $connection = Yii::$app->getDb();        
-        $bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,TOKEN,STOREHASH); 
+        $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH); 
 		
 		if($tmp){
 			$tmpdata = Data::sqlRecords("SELECT * FROM `jet_product_tmp` WHERE `merchant_id`='".MERCHANT_ID ."'", 'all', 'select');
@@ -3234,10 +3234,10 @@ class WalmartproductController extends WalmartmainController
     	$duplicateProducts=Data::sqlRecords("SELECT bigproduct_id FROM jet_product where merchant_id='".MERCHANT_ID."' GROUP BY bigproduct_id HAVING COUNT(*) > 1
                 ",null,'all');
     	
-    	$duplicateProducts1=Data::sqlRecords("SELECT product_id FROM walmart_product where merchant_id='".MERCHANT_ID."' GROUP BY product_id HAVING COUNT(*) > 1
+    	$duplicateProducts1=Data::sqlRecords("SELECT product_id FROM tophatter_product where merchant_id='".MERCHANT_ID."' GROUP BY product_id HAVING COUNT(*) > 1
                 ",null,'all');
 
-        $duplicateProducts2=Data::sqlRecords("SELECT product_id,option_id FROM walmart_product_variants where merchant_id='".MERCHANT_ID."' GROUP BY option_id HAVING COUNT(*) > 1
+        $duplicateProducts2=Data::sqlRecords("SELECT product_id,option_id FROM tophatter_product_variants where merchant_id='".MERCHANT_ID."' GROUP BY option_id HAVING COUNT(*) > 1
                 ",null,'all');
 
     	foreach($duplicateProducts as $dp){
@@ -3251,20 +3251,20 @@ class WalmartproductController extends WalmartmainController
 
     	foreach($duplicateProducts1 as $dp){
     	
-    		$dpcount=Data::sqlRecords("SELECT count(product_id) as count FROM walmart_product where merchant_id='".MERCHANT_ID."' and product_id='".$dp['product_id']."'",null,'one');
+    		$dpcount=Data::sqlRecords("SELECT count(product_id) as count FROM tophatter_product where merchant_id='".MERCHANT_ID."' and product_id='".$dp['product_id']."'",null,'one');
     		$c=$dpcount[0]['count']-1;
     	
-    		$deldupprod="DELETE FROM `walmart_product` WHERE merchant_id='".MERCHANT_ID."' and product_id='".$dp['product_id']."' LIMIT ".$c;
+    		$deldupprod="DELETE FROM `tophatter_product` WHERE merchant_id='".MERCHANT_ID."' and product_id='".$dp['product_id']."' LIMIT ".$c;
     		$model = $connection->createCommand($deldupprod)->execute();
     	
     	}
 
         foreach($duplicateProducts2 as $dp){
         
-            $dpcount=Data::sqlRecords("SELECT count(product_id) as count FROM walmart_product_variants where merchant_id='".MERCHANT_ID."' and option_id='".$dp['option_id']."'",null,'one');
+            $dpcount=Data::sqlRecords("SELECT count(product_id) as count FROM tophatter_product_variants where merchant_id='".MERCHANT_ID."' and option_id='".$dp['option_id']."'",null,'one');
             $c=$dpcount[0]['count']-1;
         
-            $deldupprod="DELETE FROM `walmart_product_variants` WHERE merchant_id='".MERCHANT_ID."' and option_id='".$dp['option_id']."' LIMIT ".$c;
+            $deldupprod="DELETE FROM `tophatter_product_variants` WHERE merchant_id='".MERCHANT_ID."' and option_id='".$dp['option_id']."' LIMIT ".$c;
             $model = $connection->createCommand($deldupprod)->execute();
         
         }

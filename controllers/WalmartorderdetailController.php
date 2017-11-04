@@ -1,28 +1,28 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
-use frontend\modules\walmart\models\WalmartOrderDetail;
-use frontend\modules\walmart\models\WalmartOrderDetailSearch;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\models\TophatterOrderDetail;
+use frontend\modules\tophatter\models\TophatterOrderDetailSearch;
+use frontend\modules\tophatter\components\Data;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use frontend\modules\walmart\components\Walmartapi;
+use frontend\modules\tophatter\components\Tophatterapi;
 use common\models\User;
-use frontend\modules\walmart\components\Mail;
-use frontend\modules\walmart\components\Bigcomapi;
-use frontend\modules\walmart\components\Dashboard\OrderInfo;
-use frontend\modules\walmart\components\BigcommerceClientHelper;
-use frontend\modules\walmart\models\WalmartOrderImportError;
+use frontend\modules\tophatter\components\Mail;
+use frontend\modules\tophatter\components\Bigcomapi;
+use frontend\modules\tophatter\components\Dashboard\OrderInfo;
+use frontend\modules\tophatter\components\BigcommerceClientHelper;
+use frontend\modules\tophatter\models\TophatterOrderImportError;
 
 /**
  * WalmartorderdetailController implements the CRUD actions for WalmartOrderDetail model.
  */
-class WalmartorderdetailController extends WalmartmainController
+class TophatterorderdetailController extends TophattermainController
 {
     protected $connection;
-    protected $walmartHelper;
+    protected $tophatterHelper;
     protected $bigcom;
     public function behaviors()
     {
@@ -45,13 +45,13 @@ class WalmartorderdetailController extends WalmartmainController
         if (Yii::$app->user->isGuest) {
             return \Yii::$app->getResponse()->redirect(\Yii::$app->getUser()->loginUrl);
         }
-        $searchModel = new WalmartOrderDetailSearch();
+        $searchModel = new TophatterOrderDetailSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $connection = Yii::$app->getDb();
         $merchant_id=Yii::$app->user->identity->id;
         $resultdata=array();
         $queryObj="";
-        $query="SELECT `bigcommerce_order_id` FROM `walmart_order_details` WHERE merchant_id='".$merchant_id."' AND status='acknowledged' AND bigcommerce_order_id=''";
+        $query="SELECT `bigcommerce_order_id` FROM `tophatter_order_details` WHERE merchant_id='".$merchant_id."' AND status='acknowledged' AND bigcommerce_order_id=''";
         $queryObj = $connection->createCommand($query);
         $resultdata = $queryObj->queryAll();
         $countOrders=0;
@@ -71,7 +71,7 @@ class WalmartorderdetailController extends WalmartmainController
     public function beforeAction($action){
     	 
     	if(parent::beforeAction($action)){
-    		$this->walmartHelper = new Walmartapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
+    		$this->tophatterHelper = new Tophatterapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
     		return true;
     	}
     }
@@ -84,7 +84,7 @@ class WalmartorderdetailController extends WalmartmainController
     		return \Yii::$app->getResponse()->redirect(\Yii::$app->getUser()->loginUrl);
     	}
     	if($config){
-    		$this->walmartHelper = new Walmartapi($config['consumer_id'],$config['secret_key'],$config['consumer_channel_type_id']);
+    		$this->tophatterHelper = new Tophatterapi($config['consumer_id'],$config['secret_key'],$config['consumer_channel_type_id']);
     	}
     	$data = Yii::$app->request->queryParams;
 
@@ -93,7 +93,7 @@ class WalmartorderdetailController extends WalmartmainController
     
     		$lineNumbers = [];
     		$connection = Yii::$app->getDb();
-    		$query="SELECT * FROM `walmart_order_details` WHERE purchase_order_id='".$data['pid']."'";
+    		$query="SELECT * FROM `tophatter_order_details` WHERE purchase_order_id='".$data['pid']."'";
     		$order = $connection->createCommand($query)->queryOne();
 
     		if($merchant_id==$order['merchant_id']){
@@ -118,7 +118,7 @@ class WalmartorderdetailController extends WalmartmainController
     			}
     			$handle = fopen($directory.'/cancel.log','a');
     			fwrite($handle,'Cancel SHIP DATA : '.print_r($dataShip,true).PHP_EOL.PHP_EOL);
-    			$response = $this->walmartHelper->rejectOrder($data['pid'],$dataShip);
+    			$response = $this->tophatterHelper->rejectOrder($data['pid'],$dataShip);
     			if(isset($response['errors'])){
     				if(isset($response['errors']['error']))
     					Yii::$app->session->setFlash('error', $response['errors']['error']['description']);
@@ -127,7 +127,7 @@ class WalmartorderdetailController extends WalmartmainController
     			}
     			else
     			{
-    				$query="UPDATE `walmart_order_details` SET status='canceled' WHERE purchase_order_id='".$data['pid']."'";
+    				$query="UPDATE `tophatter_order_details` SET status='canceled' WHERE purchase_order_id='".$data['pid']."'";
     				$order = $connection->createCommand($query)->execute();
     				Yii::$app->session->setFlash('success', 'Order has been refunded.');
     			}
@@ -158,7 +158,7 @@ class WalmartorderdetailController extends WalmartmainController
         }
         $id=trim(Yii::$app->request->post('id'));
         $connection = Yii::$app->getDb();
-        $query="SELECT * FROM `walmart_order_details` WHERE id='".$id."'";
+        $query="SELECT * FROM `tophatter_order_details` WHERE id='".$id."'";
         $queryObj = $connection->createCommand($query);
 
         $orderData = $queryObj->queryOne();
@@ -167,8 +167,8 @@ class WalmartorderdetailController extends WalmartmainController
 
 
         if($purchase_order_id){
-            $this->walmartHelper = new Walmartapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
-            $orderData = $this->walmartHelper->getOrder($purchase_order_id);
+            $this->tophatterHelper = new Tophatterapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
+            $orderData = $this->tophatterHelper->getOrder($purchase_order_id);
 
             //$orderData = json_decode($orderdata1,true);
 
@@ -216,17 +216,17 @@ class WalmartorderdetailController extends WalmartmainController
                     $orderData['includeShipping'] = 0;
                 
                 fwrite($handle,'Prepared refund Data : '.PHP_EOL.json_encode($orderData).PHP_EOL.PHP_EOL);
-                $result = $this->walmartHelper->refundOrder($data['purchaseOrderId'],$orderData);
-                fwrite($handle,'refundResponse from walmart : '.PHP_EOL.json_encode($result).PHP_EOL.PHP_EOL);
+                $result = $this->tophatterHelper->refundOrder($data['purchaseOrderId'],$orderData);
+                fwrite($handle,'refundResponse from tophatter : '.PHP_EOL.json_encode($result).PHP_EOL.PHP_EOL);
                
                 if(isset($result['ns4:errors'])){
-                    fwrite($handle,'Prepared xml Data : '.PHP_EOL.$this->walmartHelper->requestedXml.PHP_EOL.PHP_EOL);
+                    fwrite($handle,'Prepared xml Data : '.PHP_EOL.$this->tophatterHelper->requestedXml.PHP_EOL.PHP_EOL);
                     if(isset($result['ns4:errors']['ns4:error']))
                         Yii::$app->session->setFlash('error', $result['ns4:errors']['ns4:error']['ns4:description']);
                 }
                 else
                 {
-                    $query="UPDATE `walmart_order_details` SET status='refunded' WHERE purchase_order_id='".$data['purchaseOrderId']."'";
+                    $query="UPDATE `tophatter_order_details` SET status='refunded' WHERE purchase_order_id='".$data['purchaseOrderId']."'";
                     $order = $connection->createCommand($query)->execute();
                     Yii::$app->session->setFlash('success', 'Order has been refunded.');
                 }
@@ -248,7 +248,7 @@ class WalmartorderdetailController extends WalmartmainController
 
         //echo $merchant_id;
     	
-    	$query="SELECT `purchase_order_id` FROM `walmart_order_details` WHERE `status`!='shipped' AND `merchant_id`='".$merchant_id."'";
+    	$query="SELECT `purchase_order_id` FROM `tophatter_order_details` WHERE `status`!='shipped' AND `merchant_id`='".$merchant_id."'";
     	$queryObj = $connection->createCommand($query);
     	
     	$resultdata = $queryObj->queryAll();
@@ -257,13 +257,13 @@ class WalmartorderdetailController extends WalmartmainController
     		
     		$PurchaseOrderId=$orderresultdata['purchase_order_id'];
     		//echo $PurchaseOrderId;
-    		$this->walmartHelper = new Walmartapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
+    		$this->tophatterHelper = new Tophatterapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
 
             if($config){
-                $this->walmartHelper = new Walmartapi($config['consumer_id'],$config['secret_key'],$config['consumer_channel_type_id']);
+                $this->tophatterHelper = new Tophatterapi($config['consumer_id'],$config['secret_key'],$config['consumer_channel_type_id']);
             }
 
-    		$orderdata = $this->walmartHelper->getOrder($PurchaseOrderId);
+    		$orderdata = $this->tophatterHelper->getOrder($PurchaseOrderId);
 
     		$responseOrders=json_decode($orderdata,true);
 
@@ -275,7 +275,7 @@ class WalmartorderdetailController extends WalmartmainController
     		$status=$responseOrders['order']['orderLines']['orderLine'][0]['orderLineStatuses']['orderLineStatus'][0]['status'];
     	
         
-    		$updateQuery="UPDATE `walmart_order_details` SET `status`='".lcfirst($status)."',`shipment_data`='".addslashes(json_encode($shipment_data))."'  WHERE merchant_id='".$merchant_id."' and purchase_order_id='".$PurchaseOrderId."'";
+    		$updateQuery="UPDATE `tophatter_order_details` SET `status`='".lcfirst($status)."',`shipment_data`='".addslashes(json_encode($shipment_data))."'  WHERE merchant_id='".$merchant_id."' and purchase_order_id='".$PurchaseOrderId."'";
     		$updated = $connection->createCommand($updateQuery)->execute();
     	}
     	if($config){
@@ -299,8 +299,8 @@ class WalmartorderdetailController extends WalmartmainController
                          
         $response = ""; 
         $responseOrders = array();
-        $this->walmartHelper = new Walmartapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
-        $orderdata = $this->walmartHelper->getOrder($PurchaseOrderId);
+        $this->tophatterHelper = new Tophatterapi(API_USER,API_PASSWORD,CONSUMER_CHANNEL_TYPE_ID);
+        $orderdata = $this->tophatterHelper->getOrder($PurchaseOrderId);
 
         //$response = $this->walmartHelper->getRequestorder('v3/orders/'.$PurchaseOrderId);         
         $responseOrders=json_decode($orderdata,true);  
@@ -336,9 +336,9 @@ class WalmartorderdetailController extends WalmartmainController
                     $response=array();
                     $prev_date = date('Y-m-d', strtotime(date('Y-m-d') .' -2 month'));
                     if($config){
-                        $this->walmartHelper = new Walmartapi($config['consumer_id'],$config['secret_key'],$config['consumer_channel_type_id']);
+                        $this->tophatterHelper = new tophatterapi($config['consumer_id'],$config['secret_key'],$config['consumer_channel_type_id']);
                     }
-                    $orderdata = $this->walmartHelper->getOrders(['status'=>'Acknowledged','limit'=>'100','createdStartDate'=>$prev_date],Walmartapi::GET_ORDERS_SUB_URL,$test);
+                    $orderdata = $this->tophatterHelper->getOrders(['status'=>'Acknowledged','limit'=>'100','createdStartDate'=>$prev_date],Tophatterapi::GET_ORDERS_SUB_URL,$test);
                     
                     /*if($_SERVER['REMOTE_ADDR'] == '182.72.248.90'){
                         print_r($orderdata);
@@ -380,13 +380,13 @@ class WalmartorderdetailController extends WalmartmainController
                     {
                         foreach($orders as $order)
                         {
-                            $directory = \Yii::getAlias('@webroot').'/var/walmart/order/'.$merchant_id.'/'.$order['purchaseOrderId'];
+                            $directory = \Yii::getAlias('@webroot').'/var/tophatter/order/'.$merchant_id.'/'.$order['purchaseOrderId'];
                             if (!file_exists($directory)){
                                 mkdir($directory,0775, true);
                             }
 
                             $handle=fopen($directory.'/fetch.log','a');
-                            fwrite($handle,'Requested Order Data From Walmart : '.PHP_EOL.json_encode($order).PHP_EOL.PHP_EOL);
+                            fwrite($handle,'Requested Order Data From Tophatter : '.PHP_EOL.json_encode($order).PHP_EOL.PHP_EOL);
 
                             $order_ack=array();
                             $order_ack['acknowledgement_status'] = "accepted";
@@ -395,7 +395,7 @@ class WalmartorderdetailController extends WalmartmainController
                             $resultdata="";
                             $skus = array();
                             $queryObj="";
-                            $query="SELECT `purchase_order_id` FROM `walmart_order_details` WHERE merchant_id='".$merchant_id."' AND purchase_order_id='".$purchaseOrderId."'";
+                            $query="SELECT `purchase_order_id` FROM `tophatter_order_details` WHERE merchant_id='".$merchant_id."' AND purchase_order_id='".$purchaseOrderId."'";
                             $queryObj = $connection->createCommand($query);
 
                             $resultdata = $queryObj->queryOne();
@@ -482,7 +482,7 @@ class WalmartorderdetailController extends WalmartmainController
                                     $ackData=array();
                                     $ackResponse="";
                                    
-                                    fwrite($handle,'Acknowlegde Response From Walmart : '.PHP_EOL.json_encode($ackResponse).PHP_EOL.PHP_EOL);
+                                    fwrite($handle,'Acknowlegde Response From Tophatter : '.PHP_EOL.json_encode($ackResponse).PHP_EOL.PHP_EOL);
                                     
                                     $countOrder++;
                                     $status='acknowledged';
@@ -491,7 +491,7 @@ class WalmartorderdetailController extends WalmartmainController
 
                                     $shippingData = isset($order['orderLines'])?$order['orderLines']:array();
 
-                                    $query='INSERT INTO `walmart_order_details`
+                                    $query='INSERT INTO `tophatter_order_details`
                                                 (
                                                     `merchant_id`,
                                                     `sku`,
@@ -547,7 +547,7 @@ class WalmartorderdetailController extends WalmartmainController
 
         if($count>0){
          if($config){
-                echo "There is error for some orders.Please <a href='https://bigcommerce.cedcommerce.com/integration/walmart/walmartorderimporterror/index'>click</a> to check failed order errors.";
+                echo "There is error for some orders.Please <a href='https://bigcommerce.cedcommerce.com/integration/tophatter/tophatterorderimporterror/index'>click</a> to check failed order errors.";
                 return;
             }
             Yii::$app->session->setFlash('error',"There is error for some orders.Please <a href=".Yii::$app->request->getBaseUrl()."/walmart/walmartorderimporterror/index>click</a> to check failed order errors.");
@@ -555,7 +555,7 @@ class WalmartorderdetailController extends WalmartmainController
         }
         if($countOrder==0 && $count==0){
             if($config){
-                echo "Walmart Api Error: ".$isError;
+                echo "Tophatter Api Error: ".$isError;
                 return;
             }
             Yii::$app->session->setFlash('error',"No Order in Created State");
@@ -563,10 +563,10 @@ class WalmartorderdetailController extends WalmartmainController
         elseif($isError)
         {
             if($config){
-                echo "Walmart Api Error: ".$isError;
+                echo "Tophatter Api Error: ".$isError;
                 return;
             }
-            Yii::$app->session->setFlash('error',"Walmart Api Error: ".$isError);
+            Yii::$app->session->setFlash('error',"Tophatter Api Error: ".$isError);
         }
         if($countOrder>0){
             if($config){
@@ -611,9 +611,9 @@ class WalmartorderdetailController extends WalmartmainController
                     $response=array();
                     $prev_date = date('Y-m-d', strtotime(date('Y-m-d') .' -2 month'));
                     if($config){
-                        $this->walmartHelper = new Walmartapi($config['consumer_id'],$config['secret_key'],$config['consumer_channel_type_id']);
+                        $this->tophatterHelper = new Tophatterapi($config['consumer_id'],$config['secret_key'],$config['consumer_channel_type_id']);
                     }
-                    $orderdata = $this->walmartHelper->getOrders(['status'=>'Created','limit'=>'100','createdStartDate'=>$prev_date],Walmartapi::GET_ORDERS_SUB_URL,$test);
+                    $orderdata = $this->tophatterHelper->getOrders(['status'=>'Created','limit'=>'100','createdStartDate'=>$prev_date],Tophatterapi::GET_ORDERS_SUB_URL,$test);
 					
                    // print_r($orderdata);die;
                     /*if($_SERVER['REMOTE_ADDR'] == '182.72.248.90'){
@@ -656,13 +656,13 @@ class WalmartorderdetailController extends WalmartmainController
                     {
                         foreach($orders as $order)
                         {
-                            $directory = \Yii::getAlias('@webroot').'/var/walmart/order/'.$merchant_id.'/'.$order['purchaseOrderId'];
+                            $directory = \Yii::getAlias('@webroot').'/var/tophatter/order/'.$merchant_id.'/'.$order['purchaseOrderId'];
                             if (!file_exists($directory)){
                                 mkdir($directory,0775, true);
                             }
 
                             $handle=fopen($directory.'/fetch.log','a');
-                            fwrite($handle,'Requested Order Data From Walmart : '.PHP_EOL.json_encode($order).PHP_EOL.PHP_EOL);
+                            fwrite($handle,'Requested Order Data From Tophatter : '.PHP_EOL.json_encode($order).PHP_EOL.PHP_EOL);
 
                             $order_ack=array();
                             $order_ack['acknowledgement_status'] = "accepted";
@@ -671,7 +671,7 @@ class WalmartorderdetailController extends WalmartmainController
                             $resultdata="";
                             $skus = array();
                             $queryObj="";
-                            $query="SELECT `purchase_order_id` FROM `walmart_order_details` WHERE merchant_id='".$merchant_id."' AND purchase_order_id='".$purchaseOrderId."'";
+                            $query="SELECT `purchase_order_id` FROM `tophatter_order_details` WHERE merchant_id='".$merchant_id."' AND purchase_order_id='".$purchaseOrderId."'";
                             $queryObj = $connection->createCommand($query);
 
                             $resultdata = $queryObj->queryOne();
@@ -758,10 +758,10 @@ class WalmartorderdetailController extends WalmartmainController
                                     $ackResponse="";
 
 
-                                    $ackResponse=$this->walmartHelper->acknowledgeOrder($order['purchaseOrderId']);
+                                    $ackResponse=$this->tophatterHelper->acknowledgeOrder($order['purchaseOrderId']);
 
 
-                                    fwrite($handle,'Acknowlegde Response From Walmart : '.PHP_EOL.json_encode($ackResponse).PHP_EOL.PHP_EOL);
+                                    fwrite($handle,'Acknowlegde Response From Tophatter : '.PHP_EOL.json_encode($ackResponse).PHP_EOL.PHP_EOL);
 
                                     if(isset($ackResponse['purchaseOrderId'])){
                                         $countOrder++;
@@ -771,7 +771,7 @@ class WalmartorderdetailController extends WalmartmainController
 
                                         $shippingData = isset($order['orderLines'])?$order['orderLines']:array();
 
-                                        $query='INSERT INTO `walmart_order_details`
+                                        $query='INSERT INTO `tophatter_order_details`
                                                     (
                                                         `merchant_id`,
                                                         `sku`,
@@ -789,13 +789,13 @@ class WalmartorderdetailController extends WalmartmainController
                                                         "'.$status.'"
                                                     )';
                                         $queryObj = $connection->createCommand($query)->execute();
-                                        $sql_email = 'SELECT email FROM walmart_shop_details where merchant_id='.$merchant_id;
+                                        $sql_email = 'SELECT email FROM tophatter_shop_details where merchant_id='.$merchant_id;
                                         $model_email = Data::sqlRecords($sql_email,"one","select");
                                         $email = $model_email['email'];
                                         $mailData = ['sender' => 'bigcommerce@cedcommerce.com',
                                                     'reciever' => $email,
                                                     'email' => $email,
-                                                    'subject' => 'You have an order from Walmart.com',
+                                                    'subject' => 'You have an order from tophatter.com',
                                                     'bcc' => 'stephenjones@cedcommerce.com,barryallen@cedcommerce.com,hanumantpandey@cedcoss.com',
                                                     'reference_order_id' => $order['purchaseOrderId'],
                                                     'merchant_order_id' => $order['purchaseOrderId'],
@@ -807,7 +807,7 @@ class WalmartorderdetailController extends WalmartmainController
                                             $mailData = ['sender' => 'bigcommerce@cedcommerce.com',
                                                     'reciever' => $email,
                                                     'email' => 'info@liload.com','staceyr@rmlsite.com',
-                                                    'subject' => 'You have an order from Walmart.com',
+                                                    'subject' => 'You have an order from tophatter.com',
                                                     'bcc' => 'stephenjones@cedcommerce.com,barryallen@cedcommerce.com,hanumantpandey@cedcoss.com',
                                                     'reference_order_id' => $order['purchaseOrderId'],
                                                     'merchant_order_id' => $order['purchaseOrderId'],
@@ -829,13 +829,13 @@ class WalmartorderdetailController extends WalmartmainController
                                         $handle=fopen($directory.'/ordernotfetch.log','a');
                                         fwrite($handle,'Order Not Fetch Mail: '.PHP_EOL.json_encode($error_array).PHP_EOL.PHP_EOL);
                                         
-                                        $sql_email = 'SELECT email FROM walmart_shop_details where merchant_id='.$merchant_id;
+                                        $sql_email = 'SELECT email FROM tophatter_shop_details where merchant_id='.$merchant_id;
                                         $model_email = Data::sqlRecords($sql_email,"one","select");
                                         $email = $model_email['email'];
                                         $mailData = ['sender' => 'bigcommerce@cedcommerce.com',
                                         'reciever' => '',
                                         'email' => $email,
-                                        'subject' => 'You have an order from Walmart.com under failed order',
+                                        'subject' => 'You have an order from tophatter.com under failed order',
                                         'bcc' => 'stephenjones@cedcommerce.com',
                                         'reference_order_id' => $order['purchaseOrderId'],
                                         'merchant_order_id' => $order['purchaseOrderId'],
@@ -891,7 +891,7 @@ class WalmartorderdetailController extends WalmartmainController
             $message1="";
             foreach ($error_array as $order_error){
                 $result="";
-                $orderErrorModel = $connection->createCommand("SELECT * FROM `walmart_order_import_error` WHERE purchase_order_id='".$order_error['purchase_order_id']."'");
+                $orderErrorModel = $connection->createCommand("SELECT * FROM `tophatter_order_import_error` WHERE purchase_order_id='".$order_error['purchase_order_id']."'");
                 $result = $orderErrorModel->queryOne();
                 if($result)
                 {
@@ -899,7 +899,7 @@ class WalmartorderdetailController extends WalmartmainController
                     continue;
                 }else{
     
-                    $sql='INSERT INTO `walmart_order_import_error`(`purchase_order_id`,`merchant_id`,`reason`)
+                    $sql='INSERT INTO `tophatter_order_import_error`(`purchase_order_id`,`merchant_id`,`reason`)
                             VALUES("'.$order_error['purchase_order_id'].'","'.$order_error['merchant_id'].'","'.$order_error['reason'].'")';
                     try{
                         $errorCount++;
@@ -916,15 +916,15 @@ class WalmartorderdetailController extends WalmartmainController
         
         if($count>0){
          if($config){
-                echo "There is error for some orders.Please <a href='https://bigcommerce.cedcommerce.com/integration/walmart/walmartorderimporterror/index'>click</a> to check failed order errors.";
+                echo "There is error for some orders.Please <a href='https://bigcommerce.cedcommerce.com/integration/tophatter/tophatterorderimporterror/index'>click</a> to check failed order errors.";
                 return;
             }
-            Yii::$app->session->setFlash('error',"There is error for some orders.Please <a href=".Yii::$app->request->getBaseUrl()."/walmart/walmartorderimporterror/index>click</a> to check failed order errors.");
+            Yii::$app->session->setFlash('error',"There is error for some orders.Please <a href=".Yii::$app->request->getBaseUrl()."/tophatter/tophatterorderimporterror/index>click</a> to check failed order errors.");
         
         }
         if($countOrder==0 && $count==0){
         	if($config){
-        		echo "Walmart Api Error: ".$isError;
+        		echo "Tophatter Api Error: ".$isError;
         		return;
         	}
             Yii::$app->session->setFlash('error',"No Order in Created State");
@@ -932,10 +932,10 @@ class WalmartorderdetailController extends WalmartmainController
         elseif($isError)
         {
         	if($config){
-        		echo "Walmart Api Error: ".$isError;
+        		echo "Tophatter Api Error: ".$isError;
         		return;
         	}
-        	Yii::$app->session->setFlash('error',"Walmart Api Error: ".$isError);
+        	Yii::$app->session->setFlash('error',"Tophatter Api Error: ".$isError);
         }
         if($countOrder>0){
          	if($config){
@@ -1096,7 +1096,7 @@ class WalmartorderdetailController extends WalmartmainController
                 $bigcommerceError="";
                 $resultdata=array();
                 $queryObj="";
-                $query="SELECT `purchase_order_id`,`order_data` FROM `walmart_order_details` WHERE `merchant_id`='".$merchant_id."' AND (status='acknowledged' OR status='Partially Acknowledged') AND (bigcommerce_order_id IS NULL OR bigcommerce_order_id='')";
+                $query="SELECT `purchase_order_id`,`order_data` FROM `tophatter_order_details` WHERE `merchant_id`='".$merchant_id."' AND (status='acknowledged' OR status='Partially Acknowledged') AND (bigcommerce_order_id IS NULL OR bigcommerce_order_id='')";
 
                 $queryObj = $connection->createCommand($query);
                 $resultdata = $queryObj->queryAll();
@@ -1104,7 +1104,7 @@ class WalmartorderdetailController extends WalmartmainController
                 //$sc = new ShopifyClientHelper($shopname, $token, WALMART_APP_KEY, WALMART_APP_SECRET);
                 $resource='orders';
                 if($config)
-                    $this->bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,$token,$shopname);
+                    $this->bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,$token,$shopname);
                 if(count($resultdata)>0)
                 {
                     foreach($resultdata as $val)

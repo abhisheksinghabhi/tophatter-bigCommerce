@@ -1,20 +1,20 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\AttributeMap;
-use frontend\modules\walmart\models\WalmartAttributeMap;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\AttributeMap;
+use frontend\modules\tophatter\models\TophatterAttributeMap;
 
-use frontend\modules\walmart\components\BigcommerceClientHelper;
-use frontend\modules\walmart\components\Walmartapi;
+use frontend\modules\tophatter\components\BigcommerceClientHelper;
+use frontend\modules\tophatter\components\Tophatterapi;
 
-class WalmartCarriersMapController extends WalmartmainController
+class TophatterCarriersMapController extends TophattermainController
 {
     public function actionIndex()
     {
         $merchant_id = MERCHANT_ID;
-        $query = "SELECT value FROM `walmart_config` WHERE `merchant_id`={$merchant_id} AND data='shipping_mappings' ";
+        $query = "SELECT value FROM `tophatter_config` WHERE `merchant_id`={$merchant_id} AND data='shipping_mappings' ";
         $result = Data::sqlRecords($query, null, 'select');
         
         $shipping_mappings = '';
@@ -41,7 +41,7 @@ class WalmartCarriersMapController extends WalmartmainController
 
                foreach($data['carrier']['shopify'] as $key=>$value){
                 if (!is_null($value)) {
-                    $result[$this->getKey($value)] = ['shopify'=>$value,'walmart'=>$data['carrier']['walmart'][$key]];
+                    $result[$this->getKey($value)] = ['shopify'=>$value,'tophatter'=>$data['carrier']['tophatter'][$key]];
                 }
                 
             }
@@ -49,23 +49,23 @@ class WalmartCarriersMapController extends WalmartmainController
 
             
             $result = addslashes(json_encode($result));
-            $query = "SELECT value FROM `walmart_config` WHERE `merchant_id`={$merchant_id} AND data='shipping_mappings' ";
+            $query = "SELECT value FROM `tophatter_config` WHERE `merchant_id`={$merchant_id} AND data='shipping_mappings' ";
             $result1 = Data::sqlRecords($query, null, 'select');
             if(count($result1)==0)
             {
-                $query = "INSERT INTO `walmart_config`(`merchant_id`,`data`,`value`) VALUES('{$merchant_id}','shipping_mappings','{$result}') ";
+                $query = "INSERT INTO `tophatter_config`(`merchant_id`,`data`,`value`) VALUES('{$merchant_id}','shipping_mappings','{$result}') ";
                 Data::sqlRecords($query, null, 'insert');
             }
             else
             {
-                $query = "UPDATE `walmart_config` SET `value`='{$result}' WHERE `merchant_id`={$merchant_id} AND data='shipping_mappings' ";
+                $query = "UPDATE `tophatter_config` SET `value`='{$result}' WHERE `merchant_id`={$merchant_id} AND data='shipping_mappings' ";
                 Data::sqlRecords($query, null, 'update');
             }
             Yii::$app->session->setFlash('success', "successfully mapped carrier !");
             return $this->redirect(['index']);
         }
         else{
-              $query = "DELETE FROM `walmart_config` WHERE `merchant_id`={$merchant_id} AND data='shipping_mappings' ";
+              $query = "DELETE FROM `tophatter_config` WHERE `merchant_id`={$merchant_id} AND data='shipping_mappings' ";
                 Data::sqlRecords($query, null, 'delete');
             Yii::$app->session->setFlash('error', "Please map carrier atleast one carrier !");
                 return $this->redirect(['index']);

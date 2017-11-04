@@ -1,17 +1,17 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\AttributeMap;
-use frontend\modules\walmart\models\WalmartAttributeMap;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\AttributeMap;
+use frontend\modules\tophatter\models\TophatterAttributeMap;
 
-use frontend\modules\walmart\components\ShopifyClientHelper;
-use frontend\modules\walmart\components\Walmartapi;
+use frontend\modules\tophatter\components\ShopifyClientHelper;
+use frontend\modules\tophatter\components\Tophatterapi;
 
 use yii\data\Pagination;
 
-class WalmartAttributemapController extends WalmartmainController
+class TophatterAttributemapController extends TophattermainController
 {
     public function actionIndex()
     {
@@ -22,15 +22,15 @@ class WalmartAttributemapController extends WalmartmainController
         {
 
             $product_type = $type_arr['product_type'];
-            $WalmartCategoryId = $type_arr['category_id'];
+            $tophatterCategoryId = $type_arr['category_id'];
 
             $category_path = $type_arr['category_path'];
 
             $parent = explode(',',$category_path);
 
-            $walmartAttributes = [];
-            if(!is_null($WalmartCategoryId)) {
-                $walmartAttributes = AttributeMap::getWalmartCategoryAttributes($WalmartCategoryId,$parent[0])?:[];
+            $tophatterAttributes = [];
+            if(!is_null($TophatterCategoryId)) {
+                $tophatterAttributes = AttributeMap::getTophatterCategoryAttributes($TophatterCategoryId,$parent[0])?:[];
             }
 
             $shopifyAttributes = AttributeMap::getShopifyProductAttributes($product_type);
@@ -39,10 +39,10 @@ class WalmartAttributemapController extends WalmartmainController
 
             $attributes[$product_type] = [
                                             'product_type' => $product_type,
-                                            'walmart_attributes' => $walmartAttributes,
+                                            'tophatter_attributes' => $tophatterAttributes,
                                             'shopify_attributes' => $shopifyAttributes,
                                             'mapped_values' => $mapped_values,
-                                            'walmart_category_id' => $WalmartCategoryId
+                                            'tophatter_category_id' => $TophatterCategoryId
                                         ];
         }
         
@@ -56,40 +56,40 @@ class WalmartAttributemapController extends WalmartmainController
     {
         $data = Yii::$app->request->post();
         //print_r($data);die;
-        if($data && isset($data['walmart']))
+        if($data && isset($data['tophatter']))
         {
             $merchant_id = MERCHANT_ID;
             $insert_value = [];
-            foreach($data['walmart'] as $key => $value)
+            foreach($data['tophatter'] as $key => $value)
             {
                 $shopifyProductType = addslashes($key);
-                foreach ($value as $walmart_attr => $value) {
-                    $walmartAttrCode = $walmart_attr;
+                foreach ($value as $tophatter_attr => $value) {
+                    $tophatterAttrCode = $tophatter_attr;
                     $attrValueType = '';
                     $attrValue = '';
                     if(is_array($value)) {
                         if(count($value) > 1) {
                             unset($value['text']);
-                            $attrValueType = WalmartAttributeMap::VALUE_TYPE_SHOPIFY;
+                            $attrValueType = TophatterAttributeMap::VALUE_TYPE_SHOPIFY;
                             $attrValue = implode(',', $value);
                         } elseif(count($value) == 1) {
                             if(isset($value['text'])) {
-                                $attrValueType = WalmartAttributeMap::VALUE_TYPE_TEXT;
+                                $attrValueType = TophatterAttributeMap::VALUE_TYPE_TEXT;
                                 $attrValue = $value['text'];
                             } else {
-                                $attrValueType = WalmartAttributeMap::VALUE_TYPE_SHOPIFY;
+                                $attrValueType = TophatterAttributeMap::VALUE_TYPE_SHOPIFY;
                                 $attrValue = reset($value);
                             }
                         }
                     }
                     elseif ($value != '') {
-                        $attrValueType = WalmartAttributeMap::VALUE_TYPE_WALMART;
+                        $attrValueType = TophatterAttributeMap::VALUE_TYPE_TOPHATTER;
                         $attrValue = $value;
                     }
 
                     if($attrValueType != '' && $attrValue != '')
                     {
-                        $insert_value[] = "(".$merchant_id.",'".$shopifyProductType."','".addslashes($walmartAttrCode)."','".addslashes($attrValueType)."','".addslashes($attrValue)."')";
+                        $insert_value[] = "(".$merchant_id.",'".$shopifyProductType."','".addslashes($tophatterAttrCode)."','".addslashes($attrValueType)."','".addslashes($attrValue)."')";
                     }
                 }
             }
@@ -97,10 +97,10 @@ class WalmartAttributemapController extends WalmartmainController
                 //remove attr map from session
                 AttributeMap::unsetAttrMapSession(MERCHANT_ID);
 
-                $delete = "DELETE FROM `walmart_attribute_map` WHERE `merchant_id`=".$merchant_id;
+                $delete = "DELETE FROM `tophatter_attribute_map` WHERE `merchant_id`=".$merchant_id;
                 Data::sqlRecords($delete, null, 'delete');
 
-                $query = "INSERT INTO `walmart_attribute_map`(`merchant_id`, `shopify_product_type`, `walmart_attribute_code`, `attribute_value_type`, `attribute_value`) VALUES ".implode(',', $insert_value);
+                $query = "INSERT INTO `tophatter_attribute_map`(`merchant_id`, `shopify_product_type`, `tophatter_attribute_code`, `attribute_value_type`, `attribute_value`) VALUES ".implode(',', $insert_value);
                 Data::sqlRecords($query, null, 'insert');
 
                 Yii::$app->session->setFlash('success', "Attributes Have been Mapped Successfully!!");

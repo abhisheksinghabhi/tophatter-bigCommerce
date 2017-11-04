@@ -1,5 +1,5 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 use Yii;
 use yii\web\Controller;
 use frontend\modules\jet\models\JetCronSchedule;
@@ -13,15 +13,15 @@ use frontend\modules\jet\components\Data;
 use frontend\modules\jet\components\Mail;
 use frontend\modules\jet\components\Orderdata;
 use frontend\modules\jet\controllers\JetorderimporterrorController;
-use frontend\modules\walmart\controllers\WalmartorderdetailController;
-use frontend\modules\walmart\models\WalmartCronSchedule;
-use frontend\modules\walmart\components\Walmartappdetails;
+use frontend\modules\tophatter\controllers\TophatterorderdetailController;
+use frontend\modules\tophatter\models\TophatterCronSchedule;
+use frontend\modules\tophatter\components\Tophatterappdetails;
 
 
 /**
 * Test controller
 */
-class WalmartcronController extends Controller 
+class TophattercronController extends Controller 
 {
 
   public function actionRemovefailedorders()
@@ -103,19 +103,19 @@ class WalmartcronController extends Controller
     }   
   }    
   
-  public function actionWalmartorder()
+  public function actionTophatterorder()
   {
     ob_start ();
-    $obj = new WalmartorderdetailController(Yii::$app->controller->id,'');
+    $obj = new TophatterorderdetailController(Yii::$app->controller->id,'');
     $cron_array = array();
     $connection = Yii::$app->getDb();
-    $cronData = WalmartCronSchedule::find()->where(['cron_name'=>'fetch_order'])->one();
+    $cronData = TophatterCronSchedule::find()->where(['cron_name'=>'fetch_order'])->one();
     if($cronData && $cronData['cron_data'] != ""){
       $cron_array = json_decode($cronData['cron_data'],true);
     }
     else
     {
-      $cron_array = Walmartappdetails::getConfig();
+      $cron_array = Tophatterappdetails::getConfig();
     }
     $processedMerchantCount = 0;
     $size = 40;
@@ -136,7 +136,7 @@ class WalmartcronController extends Controller
         catch (Exception $e)
         {
           //$OrderError["error"][]=$e->getMessage();
-          Data::createLog("order fetch exception ".$e->getTraceAsString(),'walmartOrderCron/exception.log','a',true);
+          Data::createLog("order fetch exception ".$e->getTraceAsString(),'tophatterOrderCron/exception.log','a',true);
           unset($cron_array[$k]);
           continue;
         }
@@ -641,7 +641,7 @@ class WalmartcronController extends Controller
           $import_status = (isset($customData['import_status']) && $customData['import_status'])?$customData['import_status']:"";
 
           Data::checkInstalledApp($merchant_id,$type=false,$installData);
-          $onWalmart=isset($installData['walmart'])?true:false;
+          $onTophatter=isset($installData['tophatter'])?true:false;
         
           $query='SELECT bigproduct_id,title,sku,type,product_type,description,image,qty,weight,price,attr_ids,jet_attributes,brand,upc,jet_browse_node FROM `jet_product` WHERE `bigproduct_id`="'.$value['product_id'].'" AND `merchant_id`="'.$merchant_id.'" LIMIT 0,1';
           $result=Data::sqlRecords($query,"one","select");
@@ -652,7 +652,7 @@ class WalmartcronController extends Controller
           {
             //$count++;
             if(is_array($data) && count($data)>0)
-                Jetproductinfo::productUpdateData($result,$data,$jetHelper,$token,$storehash,$fullfillmentnodeid,$merchant_id,$file,$customPrice,$newCustomPrice,$onWalmart,$import_status);
+                Jetproductinfo::productUpdateData($result,$data,$jetHelper,$token,$storehash,$fullfillmentnodeid,$merchant_id,$file,$customPrice,$newCustomPrice,$onTophatter,$import_status);
           }
           else
           {

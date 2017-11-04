@@ -1,22 +1,22 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use Yii;
 use yii\helpers\Html;
 use yii\filters\VerbFilter;
 use yii\data\ArrayDataProvider;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\Walmartapi;
-use frontend\modules\walmart\components\WalmartReport;
-use frontend\modules\walmart\components\WalmartProduct as WalmartProductComponent;
-use frontend\modules\walmart\components\WalmartRepricing;
-use frontend\modules\walmart\models\WalmartProduct;
-use frontend\modules\walmart\components\Jetproductinfo;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\Tohatterapi;
+use frontend\modules\tophatter\components\TohatterReport;
+use frontend\modules\tophatter\components\TohatterProduct as TophatterProductComponent;
+use frontend\modules\tophatter\components\TohatterRepricing;
+use frontend\modules\tophatter\models\TohatterProduct;
+use frontend\modules\tophatter\components\Jetproductinfo;
 
 /**
  * ProductstatusController
  */
-class ProductstatusController extends WalmartmainController
+class ProductstatusController extends TohattermainController
 {
     /**
      * Number of products to be synced in a request
@@ -41,13 +41,13 @@ class ProductstatusController extends WalmartmainController
     {
         $merchant_id = Yii::$app->user->identity->id;
 
-        $walmartReport = new WalmartReport(API_USER, API_PASSWORD);
-        $csvFilePath = $walmartReport->downloadItemReport($merchant_id);
+        $tophatterReport = new TophatterReport(API_USER, API_PASSWORD);
+        $csvFilePath = $tophatterReport->downloadItemReport($merchant_id);
         if($csvFilePath)
         {
             if(file_exists($csvFilePath))
             {
-                $itemCount = WalmartReport::getRowsInCsv($csvFilePath);
+                $itemCount = TohatterReport::getRowsInCsv($csvFilePath);
 
 
                 if($itemCount)
@@ -77,7 +77,7 @@ class ProductstatusController extends WalmartmainController
         if(Yii::$app->request->referrer) {
             return $this->redirect(Yii::$app->request->referrer);
         } else {
-            return $this->redirect(Data::getUrl('walmartproduct/index'));
+            return $this->redirect(Data::getUrl('tophatterproduct/index'));
         }
     }
 
@@ -256,20 +256,20 @@ class ProductstatusController extends WalmartmainController
                     unlink($file_path);
                 }
 
-                $csvData = WalmartReport::readItemCsv($csvFilePath, $size_of_request, $index);
+                $csvData = TophatterReport::readItemCsv($csvFilePath, $size_of_request, $index);
 
               
                 $skuList = array_keys($csvData);
                 $skus = "'".implode("','", $skuList)."'";
 
-                $query = "SELECT `jp`.`sku`,`jp`.`bigproduct_id`,`wp`.`status` FROM `walmart_product` `wp` INNER JOIN (SELECT * FROM `jet_product` WHERE `merchant_id` = '{$merchant_id}') as `jp` ON `wp`.`product_id`=`jp`.`bigproduct_id` WHERE `wp`.`merchant_id`='{$merchant_id}' AND `jp`.`sku` IN ({$skus})";
+                $query = "SELECT `jp`.`sku`,`jp`.`bigproduct_id`,`wp`.`status` FROM `tophatter_product` `wp` INNER JOIN (SELECT * FROM `jet_product` WHERE `merchant_id` = '{$merchant_id}') as `jp` ON `wp`.`product_id`=`jp`.`bigproduct_id` WHERE `wp`.`merchant_id`='{$merchant_id}' AND `jp`.`sku` IN ({$skus})";
                 $productData = Data::sqlRecords($query, 'all', 'select');
                 $productDataSku = [];
                 if($productData !== false) {
                     $productDataSku = array_column($productData, 'sku');
                 }
 
-                $query = "SELECT `jpv`.`option_id`, `jpv`.`option_sku`, `wpv`.`status` FROM `walmart_product_variants` `wpv` INNER JOIN (SELECT * FROM `jet_product_variants` WHERE `merchant_id` = '{$merchant_id}') as `jpv` ON `wpv`.`option_id`=`jpv`.`option_id` WHERE `jpv`.`merchant_id`='{$merchant_id}' AND `jpv`.`option_sku`IN ({$skus})";
+                $query = "SELECT `jpv`.`option_id`, `jpv`.`option_sku`, `wpv`.`status` FROM `tophatter_product_variants` `wpv` INNER JOIN (SELECT * FROM `jet_product_variants` WHERE `merchant_id` = '{$merchant_id}') as `jpv` ON `wpv`.`option_id`=`jpv`.`option_id` WHERE `jpv`.`merchant_id`='{$merchant_id}' AND `jpv`.`option_sku`IN ({$skus})";
                 $variantData = Data::sqlRecords($query, 'all', 'select');
                 $variantDataSku = [];
                 if($variantData !== false) {
@@ -281,7 +281,7 @@ class ProductstatusController extends WalmartmainController
                     if(($pindex=array_search($sku, $productDataSku)) !== false)
                     {
                         if($data['publish_status'] != $productData[$pindex]['status']) {
-                            $query = "UPDATE  `walmart_product` SET `status` = '{$data['publish_status']}' WHERE `product_id` = '{$productData[$pindex]['bigproduct_id']}' and `merchant_id`='{$merchant_id}'";
+                            $query = "UPDATE  `tophatter_product` SET `status` = '{$data['publish_status']}' WHERE `product_id` = '{$productData[$pindex]['bigproduct_id']}' and `merchant_id`='{$merchant_id}'";
                             Data::sqlRecords($query, null, 'update');
 
                             if(!isset($successSku[$sku]) && !isset($uptodateSku[$sku])) {
@@ -331,7 +331,7 @@ class ProductstatusController extends WalmartmainController
                     if(($vindex=array_search($sku, $variantDataSku)) !== false)
                     {   
                         if($data['publish_status'] != $variantData[$vindex]['status']) {
-                            $query = "UPDATE  `walmart_product_variants` SET `status` = '{$data['publish_status']}' WHERE `option_id` = '{$variantData[$vindex]['option_id']}' and `merchant_id`='{$merchant_id}'";
+                            $query = "UPDATE  `tophatter_product_variants` SET `status` = '{$data['publish_status']}' WHERE `option_id` = '{$variantData[$vindex]['option_id']}' and `merchant_id`='{$merchant_id}'";
                             Data::sqlRecords($query, null, 'update');
 
                             if(!isset($successSku[$sku]) && !isset($uptodateSku[$sku])) {
@@ -359,10 +359,10 @@ class ProductstatusController extends WalmartmainController
 
                 if($isLastPage)
                 {
-                    $query1 = "UPDATE `walmart_product` SET `status`='" . WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE `status`='" . WalmartProduct::PRODUCT_STATUS_PROCESSING . "' AND `merchant_id`='" . $merchant_id . "'";
+                    $query1 = "UPDATE `tophatter_product` SET `status`='" . Product::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE `status`='" . TophatterProduct::PRODUCT_STATUS_PROCESSING . "' AND `merchant_id`='" . $merchant_id . "'";
                     Data::sqlRecords($query1, null, 'update');
 
-                    $query = "UPDATE `walmart_product_variants` SET `status`='" . WalmartProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE `status`='" . WalmartProduct::PRODUCT_STATUS_PROCESSING . "' AND `merchant_id`='" . $merchant_id . "'";
+                    $query = "UPDATE `tophatter_product_variants` SET `status`='" . TophatterProduct::PRODUCT_STATUS_NOT_UPLOADED . "' WHERE `status`='" . TophatterProduct::PRODUCT_STATUS_PROCESSING . "' AND `merchant_id`='" . $merchant_id . "'";
                     Data::sqlRecords($query, null, 'update');
                 }
 
@@ -459,7 +459,7 @@ class ProductstatusController extends WalmartmainController
 
         if(file_exists($file_path)) 
         {
-            $gridData = WalmartReport::readItemCsv($file_path);
+            $gridData = TophatterReport::readItemCsv($file_path);
 
             foreach ($gridData as $key => $prod) {
 
@@ -527,7 +527,7 @@ class ProductstatusController extends WalmartmainController
 
             $filterTypes = ['sku'=>'pattern', 'product_name'=>'pattern', 'product_category'=>'pattern', 'price'=>'equal', 'publish_status'=>'equal', 'inventory_count'=>'equal', 'upc'=>'equal'];
 
-            $filterModel = new \frontend\modules\walmart\models\ArrayGridSearch();
+            $filterModel = new \frontend\modules\tophatter\models\ArrayGridSearch();
             $queryParams = Yii::$app->request->queryParams;
             if(isset($queryParams['ArrayGridSearch']))
             {
@@ -628,7 +628,7 @@ class ProductstatusController extends WalmartmainController
             $file_path = Yii::getAlias('@webroot') . $file_path;
 
             if(file_exists($file_path)) {
-                $gridData = WalmartReport::readItemCsv($file_path);
+                $gridData = TophatterReport::readItemCsv($file_path);
                 $selected = array_column($gridData, 'sku');
             }
         }
@@ -681,7 +681,7 @@ class ProductstatusController extends WalmartmainController
                 $errors = [];
                 foreach ($selectedProducts as $sku) 
                 {
-                    $retireProduct = new Walmartapi(API_USER, API_PASSWORD);
+                    $retireProduct = new Tophatterapi(API_USER, API_PASSWORD);
                     $feed_data = $retireProduct->retireProduct($sku);
                     if (isset($feed_data['ItemRetireResponse'])) 
                     {
@@ -690,7 +690,7 @@ class ProductstatusController extends WalmartmainController
                     elseif (isset($feed_data['errors']['error'])) 
                     {
                         if (isset($feed_data['errors']['error']['code']) && $feed_data['errors']['error']['code'] == "CONTENT_NOT_FOUND.GMP_ITEM_INGESTOR_API" && $feed_data['errors']['error']['field'] == "sku") {
-                            $errors[] = $sku . ' : Product not Found on Walmart.';
+                            $errors[] = $sku . ' : Product not Found on Tophatter.';
                         } else {
                             $errors[] = $sku . ' : ' . $feed_data['errors']['error']['description'];
                         }

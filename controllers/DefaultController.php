@@ -1,5 +1,5 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
 use yii\web\Controller;
 
