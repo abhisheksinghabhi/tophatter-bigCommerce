@@ -1,11 +1,11 @@
 <?php
-namespace frontend\modules\walmart\controllers;
+namespace frontend\modules\tophatter\controllers;
 
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\components\Walmartapi;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\components\Tophatterapi;
 use Yii;
-use frontend\modules\walmart\models\WalmartProductFeed;
-use frontend\modules\walmart\models\WalmartProductFeedSearch;
+use frontend\modules\tophatter\models\TophatterProductFeed;
+use frontend\modules\tophatter\models\TophatterProductFeedSearch;
 use yii\base\Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -14,7 +14,7 @@ use yii\filters\VerbFilter;
 /**
  * WalmartproductfeedController implements the CRUD actions for WalmartProductFeed model.
  */
-class WalmartproductfeedController extends WalmartmainController
+class TophatterproductfeedController extends TophattermainController
 {
     public function behaviors()
     {
@@ -35,7 +35,7 @@ class WalmartproductfeedController extends WalmartmainController
     public function actionIndex()
     {
 
-        $searchModel = new WalmartProductFeedSearch();
+        $searchModel = new TophatterProductFeedSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -75,11 +75,11 @@ class WalmartproductfeedController extends WalmartmainController
 
         foreach ($feed_details['ids'] as $feed_id) {
 
-            $query = Data::sqlRecords('SELECT status FROM `walmart_product_feed` WHERE feed_id="'.$feed_id.'"','one');
+            $query = Data::sqlRecords('SELECT status FROM `tophatter_product_feed` WHERE feed_id="'.$feed_id.'"','one');
 
             if($query['status'] != 'PROCESSED') {
 
-                $wal = new Walmartapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
+                $wal = new Tophatterapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
                 $feed_data = $wal->getFeeds($feed_id);
 
                 try {
@@ -92,7 +92,7 @@ class WalmartproductfeedController extends WalmartmainController
                             }else{
                                 $feed_date = "";
                             }
-                            $model = Data::sqlRecords('UPDATE `walmart_product_feed` SET status ="' . $val['feedStatus'] . '", items_received="' . $val['itemsReceived'] . '", items_succeeded="' . $val['itemsSucceeded'] . '", items_failed="' . $val['itemsFailed'] . '", items_processing="' . $val['itemsProcessing'] . '", feed_date="' . $feed_date . '" WHERE feed_id="' . $val['feedId'] . '" AND merchant_id="' . MERCHANT_ID . '" ', null, 'update');
+                            $model = Data::sqlRecords('UPDATE `tophatter_product_feed` SET status ="' . $val['feedStatus'] . '", items_received="' . $val['itemsReceived'] . '", items_succeeded="' . $val['itemsSucceeded'] . '", items_failed="' . $val['itemsFailed'] . '", items_processing="' . $val['itemsProcessing'] . '", feed_date="' . $feed_date . '" WHERE feed_id="' . $val['feedId'] . '" AND merchant_id="' . MERCHANT_ID . '" ', null, 'update');
                             $count++;
                         }
                     }else{
@@ -118,10 +118,10 @@ class WalmartproductfeedController extends WalmartmainController
     public function actionViewfeed($id)
     {
 
-        $feed_detail = Data::sqlRecords("SELECT * FROM `walmart_product_feed` WHERE id='" . $id . "'", 'one');
+        $feed_detail = Data::sqlRecords("SELECT * FROM `tophatter_product_feed` WHERE id='" . $id . "'", 'one');
 
         if (!empty($feed_detail['feed_id'])) {
-            $wal = new Walmartapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
+            $wal = new Waapi(API_USER, API_PASSWORD, CONSUMER_CHANNEL_TYPE_ID);
             $feed_data = $wal->viewFeed($feed_detail['feed_id']);
         }
 
@@ -133,7 +133,7 @@ class WalmartproductfeedController extends WalmartmainController
     {
         $merchant_id = MERCHANT_ID;
 
-        $query = Data::sqlRecords('SELECT feed_file FROM `walmart_product_feed` WHERE merchant_id="'.$merchant_id.'" AND id= "'.$id.'" ','one');
+        $query = Data::sqlRecords('SELECT feed_file FROM `tophatter_product_feed` WHERE merchant_id="'.$merchant_id.'" AND id= "'.$id.'" ','one');
 
         if (!empty($query['feed_file']) && file_exists($query['feed_file'])){
             $file = $query['feed_file'];
@@ -161,7 +161,7 @@ class WalmartproductfeedController extends WalmartmainController
      */
     protected function findModel($id)
     {
-        if (($model = WalmartProductFeed::findOne($id)) !== null) {
+        if (($model = TophatterProductFeed::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
