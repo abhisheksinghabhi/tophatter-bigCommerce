@@ -1,8 +1,8 @@
 <?php 
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 use Yii;
 use yii\base\Component;
-use frontend\modules\walmart\models\WalmartCategory;
+use frontend\modules\tophatter\models\TophatterCategory;
 
 class Jetcategorytree extends component
 {
@@ -10,7 +10,7 @@ class Jetcategorytree extends component
     {
 		if($data =="" || (is_array($data) && count($data)==0))
 		{
-			$data=WalmartCategory::find()->all();
+			$data=TophatterCategory::find()->all();
 		}
 		$category_tree=array();
         $category_detail=array();

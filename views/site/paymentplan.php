@@ -1,5 +1,5 @@
 <div class="payment_preview containers">
-  <h2 style="font-family: verdana;" class="payment_preview_thanku">Thank you for choosing Walmart-Marketplace Integration App</h2>
+  <h2 style="font-family: verdana;" class="payment_preview_thanku">Thank you for choosing Tophatter-Marketplace Integration App</h2>
   <div class="generic-heading-shopify">
     <h2 class="section-heading">Payment Plan</h2>
     <span style="font-family: verdana;">No obligations.Change plans anytime.Maximise your Earnings!</span>
@@ -19,9 +19,9 @@
               <?php
               $url = Yii::$app->request->getUrl();
 
-              if($url != '/integration/walmart'){ ?>
+              if($url != '/integration/tophatter'){ ?>
 
-                  <a href="<?= Yii::$app->request->getBaseUrl().'/walmart/site/paymentplan?plan=3' ?>">
+                  <a href="<?= Yii::$app->request->getBaseUrl().'/tophatter/site/paymentplan?plan=3' ?>">
                       <div class="addtocart yearly-plan">
                           Choose this Plan
                       </div>
@@ -33,7 +33,7 @@
                 <ul>
                   <li>20 products(including variants)</li>
                   <li>Upto 10 orders fulfillment</li>
-                  <li>Walmart Category/Attributes Mapping</li>
+                  <li>Tophatter Category/Attributes Mapping</li>
                   <li>Real-time fulfillment</li>
                   <li>Price Customization</li>
                   <li>Shipwork and Shipstation Integration</li>
@@ -55,7 +55,7 @@
         <!-- <a href="http://cedcommerce.com/shopify-extensions/jet-shopify-integration"><div class="addtocart">Add to cart</div></a> -->
         <p class="push-sign">Save $180</p>
       </div>
-      <a href="https://cedcommerce.com/bigcommerce-extensions/walmart-bigcommerce-integration" target="_blank">
+      <a href="https://cedcommerce.com/bigcommerce-extensions/tophatter-bigcommerce-integration" target="_blank">
         <div class="addtocart yearly-plan"> 
           Choose this Plan
         </div>
@@ -65,7 +65,7 @@
         <ul>
           <li>50,000(including variants)</li>
           <li>Upto 700 orders fulfillment</li>
-          <li>Walmart Category/Attributes Mapping</li>
+          <li>Tophatter Category/Attributes Mapping</li>
           <li>Real-time fulfillment</li>
           <li>Price Customization</li>
           <li>Shipwork and Shipstation Integration</li>
@@ -87,7 +87,7 @@
           <!-- <a href="http://cedcommerce.com/shopify-extensions/jet-shopify-integration"><div class="addtocart">Add to cart</div></a>
           
         </div>
-        <a href="https://cedcommerce.com/bigcommerce-extensions/walmart-bigcommerce-halfyearly-integration" target="_blank">
+        <a href="https://cedcommerce.com/bigcommerce-extensions/tophatter-bigcommerce-halfyearly-integration" target="_blank">
                 <div class="addtocart yearly-plan"> 
                   Choose this Plan
         </div>
@@ -97,7 +97,7 @@
                   <ul>
                       <li>20,000(including variants)</li>
                       <li>Upto 300 orders fulfillment</li>
-                      <li>Walmart Category/Attributes Mapping</li>
+                      <li>tophatter Category/Attributes Mapping</li>
                       <li>Real-time fulfillment</li>
                       <li>Price Customization</li>
                       <li>Shipwork and Shipstation Integration</li>

@@ -1,12 +1,12 @@
 <?php
 use yii\helpers\Html;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 
 $this->title = 'Syncing Product Status';
 
-$success_img = Yii::$app->request->baseUrl.'/frontend/modules/walmart/assets/images/batchupload/fam_bullet_success.gif';
-$error_img = Yii::$app->request->baseUrl.'/frontend/modules/walmart/assets/images/batchupload/error_msg_icon.gif';
-$loader_img = Yii::$app->request->baseUrl.'/frontend/modules/walmart/assets/images/batchupload/rule-ajax-loader.gif';
+$success_img = Yii::$app->request->baseUrl.'/frontend/modules/tophatter/assets/images/batchupload/fam_bullet_success.gif';
+$error_img = Yii::$app->request->baseUrl.'/frontend/modules/tophatter/assets/images/batchupload/error_msg_icon.gif';
+$loader_img = Yii::$app->request->baseUrl.'/frontend/modules/tophatter/assets/images/batchupload/rule-ajax-loader.gif';
 
 $url = Data::getUrl('productstatus/startstatusupdate');
 ?>
@@ -49,7 +49,7 @@ $url = Data::getUrl('productstatus/startstatusupdate');
                 <ul id="profileRows">
                     <li style="background-color:#DDF; ">
                         <img class="v-middle" src="<?php echo $success_img ?>">
-                        <?php echo 'Total '.$total_products.' records(s) found in walmart item report.'; ?>
+                        <?php echo 'Total '.$total_products.' records(s) found in tophatter item report.'; ?>
                     </li>
                     <li class="" id="success_count" style="background-color: rgb(221, 221, 255); display: none;"></li>
                     <li class="" id="uptodate_count" style="background-color: rgb(221, 221, 255); display: none;"></li>

@@ -168,7 +168,7 @@
 						</tr>
 						<tr>
 							<td class="value_label" width="45%">
-								<span>Walmart Secret Key</span>
+								<span>Tophatter Secret Key</span>
 							</td>
 							<td class="value form-group field-jetconfiguration-api_password required" width="100%">
 								<input id="test-jetconfiguration-api_password" class="form-control" type="text" value="" name="test_api_password" maxlength="255">

@@ -1,8 +1,8 @@
 <?php
 use yii\helpers\Html;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 
-$this->title = 'BigCommerce-Walmart Category Mapping';
+$this->title = 'BigCommerce-tophatter Category Mapping';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="category-map-index content-section">
@@ -30,8 +30,8 @@ $this->params['breadcrumbs'][] = $this->title;
 				<tr>
 					<th>Id</th>
 					<th>Product Type(BigCommerce)</th>
-					<th>Walmart Tax Code <a href="<?= frontend\modules\walmart\components\Data::getUrl('walmarttaxcodes/index');?>">(click here to get taxcode)</a></th>
-					<th class="center" colspan="3">Walmart Category Name</th>
+					<th>Tophatter Tax Code <a href="<?= frontend\modules\tophatter\components\Data::getUrl('tophattertaxcodes/index');?>">(click here to get taxcode)</a></th>
+					<th class="center" colspan="3">Tophatter Category Name</th>
 				</tr>
 				<?php
 				$i=0;
@@ -378,7 +378,7 @@ j$('#category_map').submit(function( event ) {
 
             setTimeout(function () {
                 categorymapQuicktour.start().oncomplete(function() {
-                    window.location.href = '<?= Data::getUrl("walmartproduct/index?tour") ?>';
+                    window.location.href = '<?= Data::getUrl("tophatterproduct/index?tour") ?>';
                 },1000);
             });
     	});

@@ -1,5 +1,5 @@
 <?php
-namespace frontend\modules\walmart\components\Xml;
+namespace frontend\modules\tophatter\components\Xml;
 class Parser
 {
     /**

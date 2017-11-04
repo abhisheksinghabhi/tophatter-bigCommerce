@@ -3,7 +3,7 @@ use yii\helpers\Html;
 $succes_img = Yii::$app->request->baseUrl.'/frontend/images/batchupload/fam_bullet_success.gif';
 $error_img = Yii::$app->request->baseUrl.'/frontend/images/batchupload/error_msg_icon.gif';
 $loader_img = Yii::$app->request->baseUrl.'/frontend/images/batchupload/rule-ajax-loader.gif';
-$ipmort_url=Yii::$app->request->baseUrl.'/walmart/productcsv/index';
+$ipmort_url=Yii::$app->request->baseUrl.'/tophatter/productcsv/index';
 
 $url=\yii\helpers\Url::toRoute(['productcsv/inventoryupdate']);
 $productfeedUrl= \yii\helpers\Url::toRoute(['productcsv/index']);

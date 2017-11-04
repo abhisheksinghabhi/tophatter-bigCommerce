@@ -1,9 +1,9 @@
 <?php 
-namespace frontend\modules\walmart\components\Dashboard;
+namespace frontend\modules\tophatter\components\Dashboard;
 
 use Yii;
 use yii\base\Component;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 
 class LatestUpdates extends Component
 {   
@@ -19,7 +19,7 @@ class LatestUpdates extends Component
         {
             $latestUpdates = [];
 
-            $query = "SELECT * FROM `latest_updates` WHERE `marketplace` IN ('walmart','all') ORDER BY `latest_updates`.`updated_at` DESC";
+            $query = "SELECT * FROM `latest_updates` WHERE `marketplace` IN ('tophatter','all') ORDER BY `latest_updates`.`updated_at` DESC";
             if($limit != 'all') {
               $query .= " LIMIT $limit";
             }

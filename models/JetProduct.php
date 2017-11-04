@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\modules\walmart\models;
+namespace frontend\modules\tophatter\models;
 
 use Yii;
 
@@ -115,7 +115,7 @@ class JetProduct extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWalmartProductRepricings()
+    public function getTophatterProductRepricings()
     {
         return $this->hasMany(WalmartProductRepricing::className(), ['product_id' => 'id']);
     }
@@ -123,7 +123,7 @@ class JetProduct extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWalmartPromotionalPrices()
+    public function getTophatterPromotionalPrices()
     {
         return $this->hasMany(WalmartPromotionalPrice::className(), ['product_id' => 'id']);
     }

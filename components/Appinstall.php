@@ -1,5 +1,5 @@
 <?php
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 use Yii;
 use yii\base\Component;
 
@@ -118,7 +118,7 @@ class Appinstall extends component{
 	
 	// Get the URL required to request authorization
 	public function getAuthorizeUrl($shop, $redirect_url='') {
-		$url = "https://{$shop}/manage/marketplace/apps/".WALMART_APP_ID;
+		$url = "https://{$shop}/manage/marketplace/apps/".TOPHATTER_APP_ID;
 		/* if ($redirect_url != '')
 		{
 			$url .= "&redirect_uri=" .$redirect_url;

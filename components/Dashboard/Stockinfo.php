@@ -1,9 +1,9 @@
 <?php 
-namespace frontend\modules\walmart\components\Dashboard;
+namespace frontend\modules\tophatter\components\Dashboard;
 
 use Yii;
 use yii\base\Component;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Data;
 
 class Stockinfo extends Component
 {
@@ -21,7 +21,7 @@ class Stockinfo extends Component
     					'minQty'=>5,
     					'count'=>0
 					];
-    		$query = "SELECT `value` FROM `walmart_config` WHERE `data` = 'inventory' AND `merchant_id` ={$merchantId}";
+    		$query = "SELECT `value` FROM `tophatter_config` WHERE `data` = 'inventory' AND `merchant_id` ={$merchantId}";
             $result = Data::sqlRecords($query, 'one');
             $minQty = is_array($result) && isset($result['value'])?$result['value']:5;
             $result = [];

@@ -1,11 +1,11 @@
 <?php 
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 
 use Yii;
 use yii\base\Component;
 use common\models\User;
-use frontend\modules\walmart\models\AppStatus;
-use frontend\modules\walmart\components\Jetproductinfo;
+use frontend\modules\tophatter\models\AppStatus;
+use frontend\modules\tophatter\components\Jetproductinfo;
 
 class Jetappdetails extends component{
 	

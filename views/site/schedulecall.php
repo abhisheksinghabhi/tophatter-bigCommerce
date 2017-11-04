@@ -4,7 +4,7 @@
 $urlcallschedule = \yii\helpers\Url::toRoute(['site/requestcall']);
 $merchant_id = Yii::$app->user->identity->id;
 
-$data = \frontend\modules\walmart\components\Data::sqlRecords("SELECT * FROM `call_schedule` WHERE `status`='" . \frontend\modules\walmart\controllers\SiteController::PENDING . "' AND `marketplace`='" . \frontend\modules\walmart\controllers\SiteController::MARKETPLACE . "'", 'all');
+$data = \frontend\modules\tophatter\components\Data::sqlRecords("SELECT * FROM `call_schedule` WHERE `status`='" . \frontend\modules\tophatter\controllers\SiteController::PENDING . "' AND `marketplace`='" . \frontend\modules\tophatter\controllers\SiteController::MARKETPLACE . "'", 'all');
 
 ?>
 
@@ -27,7 +27,7 @@ $data = \frontend\modules\walmart\components\Data::sqlRecords("SELECT * FROM `ca
                     <div>
                         <span> Enter your phone number: </span>
                         <input class="callschedule-input" type="text"
-                        id="walmart_call_schedule" name="walmart_call_schedule" autocomplete="off"
+                        id="tophatter_call_schedule" name="tophatter_call_schedule" autocomplete="off"
                         placeholder="+1 201-555-5555"
                         value="">
                         <!--<button class="btn btn-primary btn-call" type="button"
@@ -108,7 +108,7 @@ $data = \frontend\modules\walmart\components\Data::sqlRecords("SELECT * FROM `ca
     function callschedule() {
 
         var csrfToken = $('meta[name="csrf-token"]').attr("content");
-        var phonenumber = $('#walmart_call_schedule').val();
+        var phonenumber = $('#tophatter_call_schedule').val();
         var date = $('#form_datetime').val();
         var timezone = $('#time-zone').val();
         var time = $('#time1').val();

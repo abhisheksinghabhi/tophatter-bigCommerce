@@ -1,11 +1,11 @@
 <?php 
-use frontend\modules\walmart\components\Dashboard\Earninginfo;
-// use frontend\modules\walmart\components\Dashboard\Setupprogress;
-use frontend\modules\walmart\components\Dashboard\Productinfo;
-use frontend\modules\walmart\components\Dashboard\OrderInfo;
-use frontend\modules\walmart\components\Dashboard\LatestUpdates;
-use frontend\modules\walmart\components\Dashboard\Stockinfo;
-use frontend\modules\walmart\components\Data;
+use frontend\modules\tophatter\components\Dashboard\Earninginfo;
+// use frontend\modules\tophatter\components\Dashboard\Setupprogress;
+use frontend\modules\tophatter\components\Dashboard\Productinfo;
+use frontend\modules\tophatter\components\Dashboard\OrderInfo;
+use frontend\modules\tophatter\components\Dashboard\LatestUpdates;
+use frontend\modules\tophatter\components\Dashboard\Stockinfo;
+use frontend\modules\tophatter\components\Data;
 
 ?>
 <?php 
@@ -110,8 +110,8 @@ $latestUpdates = LatestUpdates::fetchLatestUpdates();
 															<span class="heading earnings">Published Products</span>
 															<div class="product-count">
 																<h4><?= $PublishedProducts; ?></h4>
-																<a href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartproduct/index?WalmartProductSearch[status]=PUBLISHED"><span>know more</span></a>
-																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartproduct/index?WalmartProductSearch[status]=PUBLISHED"><i class="fa fa-eye" aria-hidden="true"></i></a>
+																<a href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterproduct/index?TophatterProductSearch[status]=PUBLISHED"><span>know more</span></a>
+																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterproduct/index?TophatterProductSearch[status]=PUBLISHED"><i class="fa fa-eye" aria-hidden="true"></i></a>
 															</div>
 														</div>
 													</div>
@@ -120,8 +120,8 @@ $latestUpdates = LatestUpdates::fetchLatestUpdates();
 															<span class="heading earnings ">Processing Products</span>
 															<div class="product-count">
 																<h4><?= $ProcessingProducts; ?></h4>
-																<a href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartproduct/index?WalmartProductSearch[status]=Items+Processing"><span>know more</span></a>
-																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartproduct/index?WalmartProductSearch[status]=Items+Processing"><i class="fa fa-binoculars" aria-hidden="true"></i>
+																<a href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterproduct/index?TophatterProductSearch[status]=Items+Processing"><span>know more</span></a>
+																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterproduct/index?TophatterProductSearch[status]=Items+Processing"><i class="fa fa-binoculars" aria-hidden="true"></i>
 																</a>
 															</div>
 														</div>
@@ -133,8 +133,8 @@ $latestUpdates = LatestUpdates::fetchLatestUpdates();
 															<span class="heading earnings">Unpublished Products</span>
 															<div class="product-count">
 																<h4><?php echo $UnpublishedProducts; ?></h4>
-																<a href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartproduct/index?WalmartProductSearch[status]=UNPUBLISHED"><span>know more</span></a>
-																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartproduct/index?WalmartProductSearch[status]=UNPUBLISHED"><i class="fa fa-question-circle-o" aria-hidden="true"></i>
+																<a href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterproduct/index?TophatterProductSearch[status]=UNPUBLISHED"><span>know more</span></a>
+																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterproduct/index?TophatterProductSearch[status]=UNPUBLISHED"><i class="fa fa-question-circle-o" aria-hidden="true"></i>
 																</a>
 															</div>
 														</div>
@@ -144,8 +144,8 @@ $latestUpdates = LatestUpdates::fetchLatestUpdates();
 															<span class="heading earnings">Staged Products</span>
 															<div class="product-count">
 																<h4><?php echo $StagedProducts; ?></h4> 
-																<a href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartproduct/index?WalmartProductSearch[status]=STAGE"><span>know more</span></a>
-																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartproduct/index?WalmartProductSearch[status]=STAGE"><i class="fa fa-folder-open" aria-hidden="true"></i>
+																<a href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterproduct/index?TophatterProductSearch[status]=STAGE"><span>know more</span></a>
+																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterproduct/index?TophatterProductSearch[status]=STAGE"><i class="fa fa-folder-open" aria-hidden="true"></i>
 																</a>
 															</div>
 														</div>
@@ -160,8 +160,8 @@ $latestUpdates = LatestUpdates::fetchLatestUpdates();
 																	<h4><?php echo $NotUploadedProducts; ?></h4>
 																</div>
 																<div class="right">
-																	<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartproduct/index?WalmartProductSearch[status]=Not+Uploaded"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></a>
-																	<a href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartproduct/index?WalmartProductSearch[status]=Not+Uploaded"><span>know more</span></a>
+																	<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterproduct/index?TophatterProductSearch[status]=Not+Uploaded"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></a>
+																	<a href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterproduct/index?TophatterProductSearch[status]=Not+Uploaded"><span>know more</span></a>
 																</div>
 																<div class="clear"></div>
 															</div>
@@ -176,8 +176,8 @@ $latestUpdates = LatestUpdates::fetchLatestUpdates();
 															<span class="heading earnings">Completed Orders</span>
 															<div class="product-count">
 																<h4><?php echo $CompletedOrders; ?></h4>
-																<a href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartorderdetail/index?WalmartOrderDetailSearch[status]=Shipped"><span>know more</span></a>
-																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartorderdetail/index?WalmartOrderDetailSearch[status]=Shipped"><i class="fa fa-list-alt" aria-hidden="true"></i></a>
+																<a href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterorderdetail/index?TophatterOrderDetailSearch[status]=Shipped"><span>know more</span></a>
+																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterorderdetail/index?TophatterOrderDetailSearch[status]=Shipped"><i class="fa fa-list-alt" aria-hidden="true"></i></a>
 															</div>
 														</div>
 													</div>
@@ -186,8 +186,8 @@ $latestUpdates = LatestUpdates::fetchLatestUpdates();
 															<span class="heading earnings ">Acknowledged Orders</span>
 															<div class="product-count">
 																<h4><?php echo $AcknowledgedOrders; ?></h4>
-																<a href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartorderdetail/index?WalmartOrderDetailSearch[status]=acknowledged"><span>know more</span></a>
-																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartorderdetail/index?WalmartOrderDetailSearch[status]=acknowledged"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+																<a href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterorderdetail/index?TophatterOrderDetailSearch[status]=acknowledged"><span>know more</span></a>
+																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterorderdetail/index?TophatterOrderDetailSearch[status]=acknowledged"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
 																</a>
 															</div>
 														</div>
@@ -199,8 +199,8 @@ $latestUpdates = LatestUpdates::fetchLatestUpdates();
 															<span class="heading earnings">Cancelled Orders</span>
 															<div class="product-count">
 																<h4><?php echo $CancelledOrders; ?></h4>
-																<a href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartorderdetail/index?WalmartOrderDetailSearch[status]=Cancelled"><span>know more</span></a>
-																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartorderdetail/index?WalmartOrderDetailSearch[status]=Cancelled"><i class="fa fa-window-close-o" aria-hidden="true"></i>
+																<a href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterorderdetail/index?TophatterOrderDetailSearch[status]=Cancelled"><span>know more</span></a>
+																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterorderdetail/index?TophatterOrderDetailSearch[status]=Cancelled"><i class="fa fa-window-close-o" aria-hidden="true"></i>
 																</a>
 															</div>
 														</div>
@@ -210,8 +210,8 @@ $latestUpdates = LatestUpdates::fetchLatestUpdates();
 															<span class="heading earnings">Failed Orders</span>
 															<div class="product-count">
 																<h4><?php echo $FailedOrders; ?></h4>
-																<a href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartorderimporterror/index"><span>know more</span></a>
-																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartorderimporterror/index"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
+																<a href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterorderimporterror/index"><span>know more</span></a>
+																<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/Tophatter/tophatterorderimporterror/index"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
 																</a>
 															</div>
 														</div>
@@ -226,8 +226,8 @@ $latestUpdates = LatestUpdates::fetchLatestUpdates();
 																<h4><?php echo $TotalOrders + $FailedOrders; ?></h4>
 																</div>
 																<div class="right">
-																	<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/walmart/wawlmartorderdetail/index"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></a>
-																	<a href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartorderdetail/index"><span>know more</span></a>
+																	<a class="icon" href="<?=Yii::$app->request->baseUrl;?>/tophatter/wawlmartorderdetail/index"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></a>
+																	<a href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterorderdetail/index"><span>know more</span></a>
 																</div>
 																<div class="clear"></div>
 															</div>
@@ -354,7 +354,7 @@ $latestUpdates = LatestUpdates::fetchLatestUpdates();
 															<?php $i = 0;?>
 															<?php foreach($productsWithLowStock['title'] as $value){?>
 																<li>
-																	<p>Attention !<a href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartproduct/index?WalmartProductSearch[title]=<?=urlencode($value);?>"> <?=$value?></a></p>
+																	<p>Attention !<a href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterproduct/index?TophatterProductSearch[title]=<?=urlencode($value);?>"> <?=$value?></a></p>
 																	<span>Less than <?=$productsWithLowStock['minQty']?> in inventory.</span>
 																</li>
 																<?php $i++;?>
@@ -362,7 +362,7 @@ $latestUpdates = LatestUpdates::fetchLatestUpdates();
 															<?php }?>
 															<?php if($productsWithLowStock['count'] > 3){?>
 																<li>
-																	<a class="btn btn-primary" href="<?=Yii::$app->request->baseUrl;?>/walmart/walmartproduct/index?low=<?=$productsWithLowStock['minQty']?>" target="_blank">Check For More</a>
+																	<a class="btn btn-primary" href="<?=Yii::$app->request->baseUrl;?>/tophatter/tophatterproduct/index?low=<?=$productsWithLowStock['minQty']?>" target="_blank">Check For More</a>
 																</li>
 															<?php }?>
 														<?php }else{?>
@@ -428,19 +428,19 @@ $latestUpdates = LatestUpdates::fetchLatestUpdates();
 				},
 				{
 	                element: '.syncing-update',
-	                intro: "Get latest updates of Your product(s) syncing with Walmart.",
+	                intro: "Get latest updates of Your product(s) syncing with Tophatter.",
 	                position: 'top',
 	                scrollToElement: true,
 				},
 				{
 					element: '.tool-box-content',
-	                intro: "Upload your Products on Walmart.com.",
+	                intro: "Upload your Products on Tophatter.com.",
 	                position: 'left',
 	                scrollToElement: true,
 				},
 				{
 					element: '.update-section',
-	                intro: "Get all the latest updates related to Walmart.",
+	                intro: "Get all the latest updates related to tophatter.",
 	                position: 'bottom',
 	                scrollToElement: true,
 				},

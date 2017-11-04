@@ -1,5 +1,5 @@
 <?php
-namespace frontend\modules\walmart\components\Grid\OrderCancel;
+namespace frontend\modules\tophatter\components\Grid\OrderCancel;
 
 use Yii;
 use Closure;
@@ -20,7 +20,7 @@ class ActionColumn extends CoreActionColumn
         
         if (!isset($this->buttons['refund'])) {
             $this->buttons['cancel'] = function ($url, $model, $key) {
-                $cancelUrl = \yii\helpers\Url::toRoute(['walmartorderimporterror/cancel-order','pid'=>$model->purchase_order_id]);
+                $cancelUrl = \yii\helpers\Url::toRoute(['tophatterorderimporterror/cancel-order','pid'=>$model->purchase_order_id]);
                     $options = array_merge([
                         'title' => Yii::t('yii', 'Cancel'),
                         'aria-label' => Yii::t('yii', 'Cancel'),
@@ -28,7 +28,7 @@ class ActionColumn extends CoreActionColumn
                         'data-pjax' => '1',
                     ], $this->buttonOptions);
                     $options['data-step']='3';
-                $options['data-intro']="Cancel order from walmart.";
+                $options['data-intro']="Cancel order from tophatter.";
                 $options['data-position']='left';
                     return Html::a('<span class="glyphicon glyphicon-remove-circle"></span>', 'javascript:void(0);', $options);
                

@@ -1,5 +1,5 @@
 <?php
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 
 
 class XmlGenerator

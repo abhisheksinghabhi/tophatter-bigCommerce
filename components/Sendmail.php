@@ -1,8 +1,8 @@
 <?php 
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 
 use yii\base\Component;
-use frontend\modules\walmart\components\Mail;
+use frontend\modules\tophatter\components\Mail;
 class Sendmail extends Component
 {
 	public static function installmail($email)
@@ -12,7 +12,7 @@ class Sendmail extends Component
                     'sender' => 'bigcommerce@cedcommerce.com',
                     'reciever' => $email,
                     'email' => $email,
-                    'subject' => 'Thanks for installing BigCommerce walmart integration app',
+                    'subject' => 'Thanks for installing BigCommerce tophatter integration app',
                    // 'bcc' => 'james@cedcommerce.com,kshitijverma@cedcoss.com,satyaprakash@cedcoss.com,karshitbhargava@cedcoss.com',
                    'bcc'=>'stephenjones@cedcommerce.com',
                     'email' =>$email,
@@ -175,7 +175,7 @@ class Sendmail extends Component
 					                                                   <!-- Title -->
 					                                                   <tr>
 					                                                      <td style="font-family: Helvetica, arial, sans-serif; font-size: 18px; color: #018001; text-align:center; line-height: 24px; font-weight:bold;">
-					                                                        We are very sad to see you uninstalled bigcommerce <a href="https://apps.shopify.com/jet-integration" target="_blank">Walmart Marketplace Integration</a> app after spending some time trying. 
+					                                                        We are very sad to see you uninstalled bigcommerce <a href="https://apps.shopify.com/jet-integration" target="_blank">Tophatter Marketplace Integration</a> app after spending some time trying. 
 					                                                      </td>
 					                                                   </tr>
 					                                                   <!-- End of Title -->

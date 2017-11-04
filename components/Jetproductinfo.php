@@ -1,12 +1,12 @@
 <?php 
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 
 use Yii;
 use yii\base\Component;
-use frontend\modules\walmart\components\Jetappdetails;
-use frontend\modules\walmart\models\JetBigcommerceBrand;
-use frontend\modules\walmart\models\JetBigcommerceCategory;
-use frontend\modules\walmart\models\WalmartProduct as WalmartProductModel;
+use frontend\modules\tophatter\components\Jetappdetails;
+use frontend\modules\tophatter\models\JetBigcommerceBrand;
+use frontend\modules\tophatter\models\JetBigcommerceCategory;
+use frontend\modules\tophatter\models\TophatterProduct as TophatterProductModel;
 
 class Jetproductinfo extends component
 {
@@ -49,7 +49,7 @@ class Jetproductinfo extends component
        		}
             //check if product is not exits in database
             $result = Data::sqlRecords("SELECT title,sku,type,ASIN,description,variant_id,image,qty,price,weight,bigcom_attr,upc,jet_browse_node,status,product_type FROM `jet_product` WHERE merchant_id='".$merchant_id."' AND bigproduct_id='".$product_id."' LIMIT 0,1", "one", "select");
-            $resultDetails = Data::sqlRecords("SELECT product_title,long_description,product_price FROM `walmart_product` WHERE product_id='".$product_id."' LIMIT 0,1", "one", "select");
+            $resultDetails = Data::sqlRecords("SELECT product_title,long_description,product_price FROM `tophatter_product` WHERE product_id='".$product_id."' LIMIT 0,1", "one", "select");
             
             if (!$result)
             {
@@ -95,7 +95,7 @@ class Jetproductinfo extends component
             	$optionAttr=false;
                 foreach ($variants as $variant)
                 {
-                    $updateProduct = $updateProductDetails = $updateProductVariant = $updateWalmartProductVariant = "";
+                    $updateProduct = $updateProductDetails = $updateProductVariant = $updateTophatterProductVariant = "";
                     /*if($variant['sku'] == "" || !self::validateSku($variant['sku'],$product_id,$merchant_id) || in_array($variant['sku'], $skus))
                     {
                         continue;
@@ -160,7 +160,7 @@ class Jetproductinfo extends component
 
                     //save data in `jet_product_variants`
                     $resulVar = Data::sqlRecords("SELECT option_title,option_sku,option_image,option_qty,option_weight,option_price,option_unique_id,asin,variant_option1,variant_option2,variant_option3 FROM `jet_product_variants` WHERE merchant_id='".$merchant_id."' AND option_id='".$option_id."' LIMIT 0,1", "one", "select");
-                    $walresult = Data::sqlRecords("SELECT * FROM `walmart_product_variants` WHERE  merchant_id='".$merchant_id."' AND option_id='".$option_id."' LIMIT 0,1", 'one', 'select');
+                    $walresult = Data::sqlRecords("SELECT * FROM `tophatter_product_variants` WHERE  merchant_id='".$merchant_id."' AND option_id='".$option_id."' LIMIT 0,1", 'one', 'select');
 
                     $isVariantExist=false;
                     $isMainProduct=false;
@@ -173,10 +173,10 @@ class Jetproductinfo extends component
                             Data::sqlRecords($sql, null, "insert");
                             $updateChanges=true;
 
-                            $walmartresulVar = Data::sqlRecords("SELECT option_id FROM `walmart_product_variants` WHERE merchant_id='".$merchant_id."' AND option_id='".$option_id."' LIMIT 0,1", "one", "select");
+                            $tophatterresulVar = Data::sqlRecords("SELECT option_id FROM `tophatter_product_variants` WHERE merchant_id='".$merchant_id."' AND option_id='".$option_id."' LIMIT 0,1", "one", "select");
 
-                            if(!$walmartresulVar){
-                                $sql1 = "INSERT INTO `walmart_product_variants`(
+                            if(!$tophatterresulVar){
+                                $sql1 = "INSERT INTO `tophatter_product_variants`(
                                                     `option_id`,`product_id`,`merchant_id`,`status`,`new_variant_option_1`,`new_variant_option_2`,`new_variant_option_3`
                                         )
 
@@ -231,7 +231,7 @@ class Jetproductinfo extends component
                             if(MERCHANT_ID!=434){
                                 if($result['variant_id']==$option_id){
                                 	$isRepricingEnabled=false;
-                                    //$isRepricingEnabled = WalmartRepricing::isRepricingEnabled($option_sku);
+                                    //$isRepricingEnabled = tophatterRepricing::isRepricingEnabled($option_sku);
                                     if(!$isRepricingEnabled){ 
                                         $priceData[$option_id] =["product_id"=>$product_id,"price"=> (float)$option_price,"sku"=>$option_sku,"merchant_id"=>$merchant_id];
                                     }
@@ -298,7 +298,7 @@ class Jetproductinfo extends component
                             }
                             $updateProductVariant.= "`option_sku`='".$option_sku."',";
                             $updateProductVariant.= "`status`='".self::PRODUCT_STATUS_NOT_UPLOADED."',";  
-                            $updateWalmartProductVariant.= "`status`='".self::PRODUCT_STATUS_NOT_UPLOADED."',"; 
+                            $updatetophatterProductVariant.= "`status`='".self::PRODUCT_STATUS_NOT_UPLOADED."',"; 
                         }  */            
                         if($resulVar['option_qty'] != $option_qty && isset($sync['sync-fields']['inventory']))
                         {               
@@ -325,7 +325,7 @@ class Jetproductinfo extends component
                         if($resulVar['option_price'] != $option_price && isset($sync['sync-fields']['price']))
                         {
                         	$isRepricingEnabled=false;
-                            //$isRepricingEnabled = WalmartRepricing::isRepricingEnabled($option_sku);
+                            //$isRepricingEnabled = tophatterRepricing::isRepricingEnabled($option_sku);
                             if(!$isRepricingEnabled){
                                 $priceData[$option_id] =["product_id"=>$product_id,"price"=> (float)$option_price,"sku"=>$option_sku,"merchant_id"=>$merchant_id];
                             }
@@ -343,7 +343,7 @@ class Jetproductinfo extends component
                             }
                             $updateProductVariant.= "`option_price`='".(float)$option_price."',";
                            /* if($walresult['option_prices'])*/
-                                $updateWalmartProductVariant.= "`option_prices`='".(float)$option_price."',"; 
+                                $updateTophatterProductVariant.= "`option_prices`='".(float)$option_price."',"; 
                             
                         }
                         if($option_barcode && $resulVar['option_unique_id'] != $option_barcode && isset($sync['sync-fields']['upc']))
@@ -376,17 +376,17 @@ class Jetproductinfo extends component
                         if($resulVar['variant_option1'] != $variant_option1 && isset($sync['sync-fields']['variant_options']))
                         {
                             $updateProductVariant.= "`variant_option1`='".$variant_option1."',";
-                            $updateWalmartProductVariant.= "`new_variant_option_1`='".$variant_option1."',";
+                            $updateTophatterProductVariant.= "`new_variant_option_1`='".$variant_option1."',";
                         }
                         if($resulVar['variant_option2'] != $variant_option2 && isset($sync['sync-fields']['variant_options']))
                         {
                             $updateProductVariant.= "`variant_option2`='".$variant_option2."',";
-                            $updateWalmartProductVariant.= "`new_variant_option_2`='".$variant_option2."',";
+                            $updateTophatterProductVariant.= "`new_variant_option_2`='".$variant_option2."',";
                         }
                         if($resulVar['variant_option3'] != $variant_option3 && isset($sync['sync-fields']['variant_options']))
                         {
                             $updateProductVariant.= "`variant_option3`='".$variant_option3."',";
-                            $updateWalmartProductVariant.= "`new_variant_option_3`='".$variant_option3."',";
+                            $updateTophatterProductVariant.= "`new_variant_option_3`='".$variant_option3."',";
                         }
                     }
                     
@@ -407,11 +407,11 @@ class Jetproductinfo extends component
                         }  
 
                     
-                        $category_check=Data::sqlRecords("select * from walmart_category_map where product_type='".addslashes($categoryname)."' and merchant_id='".$merchant_id."'","one","select");
+                        $category_check=Data::sqlRecords("select * from tophatter_category_map where product_type='".addslashes($categoryname)."' and merchant_id='".$merchant_id."'","one","select");
                         
                        
                         if(!$category_check){
-                            $c_check = "INSERT INTO `walmart_category_map`(
+                            $c_check = "INSERT INTO `tophatter_category_map`(
                                                 `merchant_id`,`product_type`
                                     )
                                     VALUES('".$merchant_id."','".addslashes($categoryname)."')";
@@ -419,7 +419,7 @@ class Jetproductinfo extends component
 
                            $updateProduct.= "`product_type`='".addslashes($categoryname)."',"; 
 
-                           $query="UPDATE `walmart_product` SET product_type='".$categoryname."',category='' WHERE product_id=".$product_id." AND merchant_id=".$merchant_id;
+                           $query="UPDATE `tophatter_product` SET product_type='".$categoryname."',category='' WHERE product_id=".$product_id." AND merchant_id=".$merchant_id;
                          
                            Data::sqlRecords($query);
    
@@ -427,7 +427,7 @@ class Jetproductinfo extends component
                         else{
                             $updateProduct.= "`product_type`='".addslashes($categoryname)."',"; 
 
-                            $query="UPDATE `walmart_product` SET product_type='".addslashes($categoryname)."',category='".addslashes($category_check['category_id'])."' WHERE  merchant_id=".$merchant_id." AND product_id=".$product_id;
+                            $query="UPDATE `tophatter_product` SET product_type='".addslashes($categoryname)."',category='".addslashes($category_check['category_id'])."' WHERE  merchant_id=".$merchant_id." AND product_id=".$product_id;
                          
                             Data::sqlRecords($query);
                         }
@@ -476,7 +476,7 @@ class Jetproductinfo extends component
                         //echo "<br>updateProductDetails".$updateProductDetails;
                         $updateChanges=true;
                         $updateProductDetails=rtrim($updateProductDetails,',');
-                        $query="UPDATE `walmart_product` SET ".$updateProductDetails." WHERE product_id=".$product_id." AND merchant_id=".$merchant_id;
+                        $query="UPDATE `tophatter_product` SET ".$updateProductDetails." WHERE product_id=".$product_id." AND merchant_id=".$merchant_id;
                         //echo $query."<hr>";
                         Data::sqlRecords($query);
                     }
@@ -489,12 +489,12 @@ class Jetproductinfo extends component
                         //echo $query."<hr>";
                         Data::sqlRecords($query);
                     }
-                    if($updateWalmartProductVariant)
+                    if($updateTophatterProductVariant)
                     {
                         //echo "<br>updateProductVariant".$updateProductVariant;
                         $updateChanges=true;
-                        $updateWalmartProductVariant=rtrim($updateWalmartProductVariant,',');
-                        $query="UPDATE `walmart_product_variants` SET ".$updateWalmartProductVariant." WHERE option_id=".$option_id." AND merchant_id=".$merchant_id;
+                        $updateTophatterProductVariant=rtrim($updateTophatterProductVariant,',');
+                        $query="UPDATE `tophatter_product_variants` SET ".$updateTophatterProductVariant." WHERE option_id=".$option_id." AND merchant_id=".$merchant_id;
                         //echo $query."<hr>";
                         Data::sqlRecords($query);
                     }
@@ -521,8 +521,8 @@ class Jetproductinfo extends component
                 //update inventory on jet (done)
                 $url = Yii::getAlias('@webjeturl')."/jetwebhook/curlprocessforinventoryupdate?maintenanceprocess=1";
                 Data::sendCurlRequest($inventoryData,$url);
-                //update inventory on walmart
-                $url = Yii::getAlias('@weburl')."/walmart-webhook/inventoryupdate?maintenanceprocess=1";
+                //update inventory on tophatter
+                $url = Yii::getAlias('@weburl')."/tophatter-webhook/inventoryupdate?maintenanceprocess=1";
                 Data::sendCurlRequest($inventoryData,$url);
 
             }
@@ -531,18 +531,18 @@ class Jetproductinfo extends component
                 //update price on jet (done)
                 $url = Yii::getAlias('@webjeturl')."/jetwebhook/curlprocessforpriceupdate?maintenanceprocess=1";
                 Data::sendCurlRequest($priceData,$url);
-                //update price on walmart
+                //update price on tophatter
                 if($webhook){
-                    $url = Yii::getAlias('@weburl')."/walmart-webhook/priceupdate?maintenanceprocess=1";
+                    $url = Yii::getAlias('@weburl')."/tophatter-webhook/priceupdate?maintenanceprocess=1";
                     Data::sendCurlRequest($priceData,$url);
                 }
             }
             if(is_array($archiveSKU) && count($archiveSKU)>0)
             {
-                //send curl request to archive/retire on jet/walmart (done)
+                //send curl request to archive/retire on jet/tophatter (done)
             	$archive_data=['archiveSku'=>$archiveSKU,'merchant_id'=>$merchant_id];
                 if($webhook){
-                    $url = Yii::getAlias('@weburl')."/walmart-webhook/productdelete?maintenanceprocess=1";
+                    $url = Yii::getAlias('@weburl')."/tophatter-webhook/productdelete?maintenanceprocess=1";
                     Data::sendCurlRequest($archive_data,$url);
                 }
                 $url = Yii::getAlias('@webjeturl')."/jetwebhook/curlprocessfordelete?maintenanceprocess=1";
@@ -2098,8 +2098,8 @@ class Jetproductinfo extends component
     	}
     	Data::sqlRecords('DELETE FROM `jet_product` WHERE merchant_id="'.$merchant_id.'" AND  bigproduct_id="'.$product_id.'"');
     	Data::sqlRecords('DELETE FROM `jet_product_variants` WHERE merchant_id="'.$merchant_id.'" AND  product_id="'.$product_id.'"');
-    	Data::sqlRecords('DELETE FROM `walmart_product` WHERE merchant_id="'.$merchant_id.'" AND  product_id="'.$product_id.'"');
-    	Data::sqlRecords('DELETE FROM `walmart_product_variants` WHERE merchant_id="'.$merchant_id.'" AND  product_id="'.$product_id.'"');
+    	Data::sqlRecords('DELETE FROM `tophatter_product` WHERE merchant_id="'.$merchant_id.'" AND  product_id="'.$product_id.'"');
+    	Data::sqlRecords('DELETE FROM `tophatter_product_variants` WHERE merchant_id="'.$merchant_id.'" AND  product_id="'.$product_id.'"');
     	$import_status = Data::getConfigValue($merchant_id,'import_product_option');
     	self::saveNewRecords($data, $merchant_id, $connection = false,$import_status,$bigcom);
     	return $archiveSkus;
@@ -2125,13 +2125,13 @@ class Jetproductinfo extends component
             if(isset($data['id']))
             {
 
-            	//if get walmart shop token and storehash
+            	//if get tophatter shop token and storehash
             	if(!$bigcom)
             	{
-            		$shopDetails = Data::getWalmartShopDetails($merchant_id);
+            		$shopDetails = Data::getTophatterShopDetails($merchant_id);
             		$store_hash=isset($shopDetails['store_hash'])?$shopDetails['store_hash']:"";
         			$token = isset($shopDetails['token'])?$shopDetails['token']:'';	
-	    			$bigcom = new BigcommerceClientHelper(WALMART_APP_KEY,$token,$store_hash);
+	    			$bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,$token,$store_hash);
             	}
                 $product_images = "";
                 $product_id=$data['id'];
@@ -2404,11 +2404,11 @@ class Jetproductinfo extends component
                                 Data::sqlRecords($sql,null,'insert');
                             }
                             
-                            //save in `walmart_product` table
-                            $walresult = Data::sqlRecords("SELECT `product_id` FROM `walmart_product` WHERE  merchant_id='".$merchant_id."' AND product_id='".$val['product_id']."' LIMIT 0,1","one","select");
+                            //save in `tophatter_product` table
+                            $walresult = Data::sqlRecords("SELECT `product_id` FROM `tophatter_product` WHERE  merchant_id='".$merchant_id."' AND product_id='".$val['product_id']."' LIMIT 0,1","one","select");
                             if(!$walresult)
                             {
-                                $sql = "INSERT INTO `walmart_product` (`product_id`,`merchant_id`,`status`,`product_type`) VALUES ('".$product_id."','".$merchant_id."','".self::PRODUCT_STATUS_NOT_UPLOADED."','".addslashes($product_type)."')";
+                                $sql = "INSERT INTO `tophatter_product` (`product_id`,`merchant_id`,`status`,`product_type`) VALUES ('".$product_id."','".$merchant_id."','".self::PRODUCT_STATUS_NOT_UPLOADED."','".addslashes($product_type)."')";
                                 Data::sqlRecords($sql);
                             }
                         }
@@ -2439,11 +2439,11 @@ class Jetproductinfo extends component
                                 Data::sqlRecords($sql);
 
                             }
-                            //Insert Data Into `walmart_product_variants`
-                            $walresult = Data::sqlRecords("SELECT `option_id` FROM `walmart_product_variants` WHERE option_id='".$key."' AND merchant_id='".$merchant_id."' LIMIT 0,1","one","select");
+                            //Insert Data Into `tophatter_product_variants`
+                            $walresult = Data::sqlRecords("SELECT `option_id` FROM `tophatter_product_variants` WHERE option_id='".$key."' AND merchant_id='".$merchant_id."' LIMIT 0,1","one","select");
                             if(!$walresult)
                             {
-                                $sql = "INSERT INTO `walmart_product_variants`(
+                                $sql = "INSERT INTO `tophatter_product_variants`(
                                         `option_id`,`product_id`,`merchant_id`,`status`,`new_variant_option_1`,`new_variant_option_2`,`new_variant_option_3`
                                         )
 
@@ -2477,24 +2477,24 @@ class Jetproductinfo extends component
                             $query='INSERT INTO `jet_category_map`(`merchant_id`,`product_type`)VALUES("'.$merchant_id.'","'.addslashes($product_type).'")';
                             Data::sqlRecords($query);
                         }
-                        //add product type in walmart
-                        $query = 'SELECT * FROM `walmart_category_map` where merchant_id="'.$merchant_id.'" AND product_type="'.addslashes($product_type).'" LIMIT 0,1';
+                        //add product type in tophatter
+                        $query = 'SELECT * FROM `tophatter_category_map` where merchant_id="'.$merchant_id.'" AND product_type="'.addslashes($product_type).'" LIMIT 0,1';
                         $walmodelmap = Data::sqlRecords($query,"one","select");
 
                         if($walmodelmap)
                         {
-                            //walmart new product
+                            //tophatter new product
                             $updateResult="";
                             if($walmodelmap['category_id']){
-                                $query='UPDATE `walmart_product` SET category="'.$walmodelmap['category_id'].'" where product_id="'.$product_id.'" AND merchant_id="'.$merchant_id.'"';
+                                $query='UPDATE `tophatter_product` SET category="'.$walmodelmap['category_id'].'" where product_id="'.$product_id.'" AND merchant_id="'.$merchant_id.'"';
                                 Data::sqlRecords($query);
                             }
                         }
                         else
                         {
-                            //walmart category map
+                            //tophatter category map
                             $queryObj="";
-                            $query='INSERT INTO `walmart_category_map`(`merchant_id`,`product_type`)VALUES("'.$merchant_id.'","'.addslashes($product_type).'")';
+                            $query='INSERT INTO `tophatter_category_map`(`merchant_id`,`product_type`)VALUES("'.$merchant_id.'","'.addslashes($product_type).'")';
                             Data::sqlRecords($query);
                         }
                     }
@@ -3080,7 +3080,7 @@ class Jetproductinfo extends component
             $merchant_id = Yii::$app->user->identity->id;
 
 
-        $query = "SELECT `merged_data`.* FROM ((SELECT `variant_id` FROM `walmart_product` INNER JOIN `jet_product` ON `walmart_product`.`product_id`=`jet_product`.`bigproduct_id` WHERE `walmart_product`.`merchant_id`=".$merchant_id." AND `jet_product`.`merchant_id`=".$merchant_id." AND `jet_product`.`type`='simple' AND `jet_product`.upc='{$barcode}') UNION (SELECT `walmart_product_variants`.`option_id` AS `variant_id` FROM `walmart_product_variants`  INNER JOIN `jet_product_variants` ON `walmart_product_variants`.`option_id`=`jet_product_variants`.`option_id` WHERE `walmart_product_variants`.`merchant_id`=".$merchant_id." AND `jet_product_variants`.option_unique_id='{$barcode}')) as `merged_data`";
+        $query = "SELECT `merged_data`.* FROM ((SELECT `variant_id` FROM `tophatter_product` INNER JOIN `jet_product` ON `tophatter_product`.`product_id`=`jet_product`.`bigproduct_id` WHERE `tophatter_product`.`merchant_id`=".$merchant_id." AND `jet_product`.`merchant_id`=".$merchant_id." AND `jet_product`.`type`='simple' AND `jet_product`.upc='{$barcode}') UNION (SELECT `tophatter_product_variants`.`option_id` AS `variant_id` FROM `tophatter_product_variants`  INNER JOIN `jet_product_variants` ON `tophatter_product_variants`.`option_id`=`jet_product_variants`.`option_id` WHERE `tophatter_product_variants`.`merchant_id`=".$merchant_id." AND `jet_product_variants`.option_unique_id='{$barcode}')) as `merged_data`";
 
         $result = Data::sqlRecords($query, 'all', 'select');
 
@@ -3200,7 +3200,7 @@ class Jetproductinfo extends component
 				{
 					$archiveSKU[]=$value['option_sku'];
 					Data::sqlRecords("DELETE FROM `jet_product_variants` WHERE merchant_id=".$merchant_id." AND option_id=".$value['option_id']);
-					Data::sqlRecords("DELETE FROM `walmart_product_variants` WHERE merchant_id=".$merchant_id." AND option_id=".$value['option_id']);
+					Data::sqlRecords("DELETE FROM `tophatter_product_variants` WHERE merchant_id=".$merchant_id." AND option_id=".$value['option_id']);
 				}
 			}
 		}
@@ -3209,16 +3209,16 @@ class Jetproductinfo extends component
 
      /**
       * Change the status of Product Variants to 'Item Processing'
-      * When feed send to walmart
+      * When feed send to tophatter
       * 
       * @param $optionId
       * @return void
       */
     public static function chnageUploadingProductStatus($optionId)
     {
-        /*$query = 'UPDATE `walmart_product` `wp` INNER JOIN `walmart_product_variants` `wpv` on `wp`.`product_id`=`wpv`.`product_id` SET `wp`';*/
-        $status = WalmartProductModel::PRODUCT_STATUS_PROCESSING;
-        $query = "UPDATE `walmart_product_variants` `wpv` SET `wpv`.`status`='{$status}' WHERE `wpv`.`option_id`='{$optionId}'";
+        /*$query = 'UPDATE `tophatter_product` `wp` INNER JOIN `tophatter_product_variants` `wpv` on `wp`.`product_id`=`wpv`.`product_id` SET `wp`';*/
+        $status = TophatterProductModel::PRODUCT_STATUS_PROCESSING;
+        $query = "UPDATE `tophatter_product_variants` `wpv` SET `wpv`.`status`='{$status}' WHERE `wpv`.`option_id`='{$optionId}'";
         Data::sqlRecords($query, null, 'update');
     }
 

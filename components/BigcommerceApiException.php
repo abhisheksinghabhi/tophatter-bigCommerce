@@ -1,9 +1,9 @@
 <?php
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 
 use Yii;
 use yii\base\Component;
-use frontend\modules\walmart\components\Bigcomapi;
+use frontend\modules\tophatter\components\Bigcomapi;
 use yii\base\Exception;
 
 class BigcommerceApiException extends Exception

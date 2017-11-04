@@ -1,5 +1,5 @@
 <?php
-namespace frontend\modules\walmart\components\Grid\OrderDetails;
+namespace frontend\modules\tophatter\components\Grid\OrderDetails;
 
 use Yii;
 use Closure;
@@ -42,7 +42,7 @@ class ActionColumn extends CoreActionColumn
 
            
             $this->buttons['cancel'] = function ($url, $model, $key) {
-                $cancelUrl = \yii\helpers\Url::toRoute(['walmartorderdetail/cancel-order','pid'=>$model->purchase_order_id]);
+                $cancelUrl = \yii\helpers\Url::toRoute(['tophatterorderdetail/cancel-order','pid'=>$model->purchase_order_id]);
                  if( $model->status !='shipped'){
                     $options = array_merge([
                         'title' => Yii::t('yii', 'Cancel'),
@@ -51,7 +51,7 @@ class ActionColumn extends CoreActionColumn
                         'data-pjax' => '1',
                     ], $this->buttonOptions);
                     $options['data-step']='3';
-                $options['data-intro']="Cancel order from walmart.";
+                $options['data-intro']="Cancel order from tophatter.";
                 $options['data-position']='left';
                     return Html::a('<span class="glyphicon glyphicon-remove-circle"></span>', 'javascript:void(0);', $options);
                 }
@@ -66,7 +66,7 @@ class ActionColumn extends CoreActionColumn
                         'data-pjax' => '1',
                     ], $this->buttonOptions);
                     $options['data-step']='5';
-                    $options['data-intro']="Shipped order from walmart";
+                    $options['data-intro']="Shipped order from tophatter";
                     $options['data-position']='left';
                     return Html::a('<span class="fa fa-truck"></span>', 'javascript:void(0);', $options);
                 }

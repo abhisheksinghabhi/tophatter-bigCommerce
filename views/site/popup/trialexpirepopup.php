@@ -2,7 +2,7 @@
 //use Yii;
 //use yii\web\Session;
 $session = Yii::$app->session;
-$paymentplanurl="http://cedcommerce.com/bigcommerce-extensions/walmart-bigcommerce-integration";
+$paymentplanurl="http://cedcommerce.com/bigcommerce-extensions/tophatter-bigcommerce-integration";
 ?>
 <style>	
 .fieldset.welcome_message > h3 {
@@ -31,7 +31,7 @@ $paymentplanurl="http://cedcommerce.com/bigcommerce-extensions/walmart-bigcommer
 				<h4 class="fieldset-legend">Your app subscription plan is going to expire on <b><?= date("d-m-Y",strtotime($session['expire_date']));?></b>.</h4>
 			</div>
 			<div class="fieldset welcome_message">
-				<h3>To continue our app services ,We'd recommend you to purchase Walmart Marketplace Integration app before <span style="color: #337ab7;"><b><?= date("d-m-Y",strtotime($session['expire_date']));?></b>.</span></h3>
+				<h3>To continue our app services ,We'd recommend you to purchase Tophatter Marketplace Integration app before <span style="color: #337ab7;"><b><?= date("d-m-Y",strtotime($session['expire_date']));?></b>.</span></h3>
 				<a href="<?= $paymentplanurl;?> "target=_blank" class="checkout_trial checkout_trial1" >Proceed To Payment</a>
 				<ul>
 					<li class="col-lg-12 plan col-md-12">

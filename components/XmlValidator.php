@@ -1,5 +1,5 @@
 <?php
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 
 use DOMDocument;
 use XMLReader;
@@ -125,7 +125,7 @@ class XmlValidator extends Component
 
         if (!$xml->schemaValidate($this->xsdFile)) {
             $errors = $this->getXMLErrorsString();
-            $errors = str_replace('{http://walmart.com/}', '', $errors);
+            $errors = str_replace('{http://tophatter.com/}', '', $errors);
             throw new \Exception($errors);
         }
 

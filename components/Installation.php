@@ -1,11 +1,11 @@
 <?php 
-namespace frontend\modules\walmart\components;
+namespace frontend\modules\tophatter\components;
 
 use Yii;
 use yii\base\Component;
-use frontend\modules\walmart\components\Data;
-use frontend\modules\walmart\models\WalmartInstallation;
-use frontend\modules\walmart\components\Dashboard\Setupprogress;
+use frontend\modules\tophatter\components\Data;
+use frontend\modules\tophatter\models\TophatterInstallation;
+use frontend\modules\tophatter\components\Dashboard\Setupprogress;
 
 class Installation extends Component
 {
@@ -18,8 +18,8 @@ class Installation extends Component
                                     'template'=>'register.php'
                                  ],
                             '2'=>[
-                                    'name'=>'Enter Walmart Api',
-                                    'template'=>'walmart-api.php'
+                                    'name'=>'Enter tophatter Api',
+                                    'template'=>'tophatter-api.php'
                                  ],
                             '3'=>[
                                     'name'=>'Import Products',
@@ -38,7 +38,7 @@ class Installation extends Component
     public static function isInstallationComplete($merchant_id)
     {
         if(is_numeric($merchant_id)) {
-            $query = "SELECT `status`,`step` FROM `walmart_installation` WHERE `merchant_id`=".$merchant_id." LIMIT 0,1";
+            $query = "SELECT `status`,`step` FROM `tophatter_installation` WHERE `merchant_id`=".$merchant_id." LIMIT 0,1";
             $result = Data::sqlRecords($query,'one');
             if($result && isset($result['status'])) {
                 return $result;
@@ -70,12 +70,12 @@ class Installation extends Component
 
     public static function completeInstallationForOldMerchants($merchant_id)
     {
-        $model = WalmartInstallation::find()->where(['merchant_id'=>$merchant_id])->one();
+        $model = TophatterInstallation::find()->where(['merchant_id'=>$merchant_id])->one();
         if(is_null($model))
         {
-            if(Setupprogress::getWalmartApiStatus($merchant_id) && Setupprogress::getCategoryMapStatus($merchant_id)) 
+            if(Setupprogress::getTophatterApiStatus($merchant_id) && Setupprogress::getCategoryMapStatus($merchant_id)) 
             {
-                $model = new WalmartInstallation();
+                $model = new TophatterInstallation();
                 $model->merchant_id = $merchant_id;                
                 $model->status = Installation::INSTALLATION_STATUS_COMPLETE;
                 $model->step = self::getFinalStep();
@@ -86,7 +86,7 @@ class Installation extends Component
                 $step = self::getCompletedStepId($merchant_id);
 
                 if(is_null($model)) {
-                    $model = new WalmartInstallation();
+                    $model = new tophatterInstallation();
                     $model->merchant_id = $merchant_id;
                 }
                 
@@ -141,14 +141,14 @@ class Installation extends Component
             $merchant_id = Yii::$app->user->identity->id;
         }
 
-        $query = "SELECT `selling_on_walmart`,`approved_by_walmart` FROM `walmart_registration` WHERE `merchant_id`='{$merchant_id}'";
+        $query = "SELECT `selling_on_tophatter`,`approved_by_tophatter` FROM `tophatter_registration` WHERE `merchant_id`='{$merchant_id}'";
         $result = Data::sqlRecords($query, 'one');
 
         if($result)
         {
-            if(isset($result['selling_on_walmart']) && $result['selling_on_walmart']=='yes') {
+            if(isset($result['selling_on_tophatter']) && $result['selling_on_tophatter']=='yes') {
                 return true;
-            } elseif(isset($result['approved_by_walmart']) && $result['approved_by_walmart']=='yes') {
+            } elseif(isset($result['approved_by_tophatter']) && $result['approved_by_tophatter']=='yes') {
                 return true;
             } else {
                 return false;
