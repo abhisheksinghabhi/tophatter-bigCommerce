@@ -1803,6 +1803,10 @@ class TophatterproductController extends TophattermainController
         $store_hash=STOREHASH;
         $countProducts=0;$pages=0;
 
+        /*echo TOPHATTER_APP_KEY;
+        echo TOKEN;
+        echo STOREHASH;die("dsfds");*/
+
         $bigcom = new BigcommerceClientHelper(TOPHATTER_APP_KEY,TOKEN,STOREHASH);
           
         $resource='catalog/products';

@@ -244,7 +244,7 @@ class BigcommerceClientHelper extends Component{
 
 		$response = $this->curlHttpApiRequest($method, $url, $query, $payload, $request_headers);
 		$response = json_decode($response, true);
-		/*print_r($this->last_response_headers['http_status_code']);
+		/*print_r($response);
 		die("bjkljsdkhanumant");*/
 		
 		if (isset($response['errors']) or ($this->last_response_headers['http_status_code'] >= 400))

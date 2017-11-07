@@ -501,7 +501,10 @@ class TophatterproductimportController extends Controller
             }
 
             //$resource='catalog/products?sort=id,categories&include=variants&is_visible=1&limit=250&pages='.$page;
+           
             $products = $this->bigcom->call('GET', $resource);
+
+            //print_r($products);die("fggf");
 
             Data::saveConfigValue($merchant_id,'import_product_option',$select);
             if(isset($products['errors'])){

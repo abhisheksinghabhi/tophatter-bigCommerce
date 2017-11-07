@@ -19,7 +19,7 @@ use Yii;
  * @property string $walmart_attribute_values
  * @property string $attributes_order
  */
-class WalmartCategory extends \yii\db\ActiveRecord
+class TophatterCategory extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
